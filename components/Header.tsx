@@ -17,7 +17,7 @@ export default function Header() {
 
 
   return (
-    <View style={{ padding: 15, backgroundColor: '#000', alignItems: 'center'  }}>
+    <View style={{ paddingLeft:15, paddingRight:15, paddingTop:50, paddingBottom:15,   backgroundColor: '#000', alignItems: 'center'  }}>
       <TouchableOpacity onPress={() => Linking.openURL('https://dev4work.com/thefirstonmars/')}>
        <Image 
         source={{ uri: page?.theme_options?.example_uploader }} 

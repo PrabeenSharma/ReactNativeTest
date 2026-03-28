@@ -9,12 +9,14 @@ export default function HomeScreen() {
   return (
     <ScrollView>
 
-    <View style={{ flex: 1 , alignItems: 'center', padding: 30, }}>
-    <Text style={{ paddingBottom: 30, fontSize: 24, fontWeight:800  }}>Welcome to Red Planel Resort </Text>
+    <View style={{ flex: 1 , alignItems: 'center', padding: 30, justifyContent: 'center', gap: 0, }}>
+    <Text style={{ paddingBottom: 30, fontSize: 24, fontWeight: '800', textAlign:'center'  }}>Welcome to Red Planel Resort </Text>
 
     <View style={{ flex:1, flexDirection:'row', gap:20, }}>
       <Link style={styles.linkStyle} href="/scanner">scanner</Link>
-      <TouchableOpacity style={styles.linkStyle} onPress={() => Linking.openURL('https://dev4work.com/thefirstonmars/')}>Buy Ticket</TouchableOpacity>
+      <TouchableOpacity style={styles.linkStyle} onPress={() => Linking.openURL('https://dev4work.com/thefirstonmars/')}>
+        <Text>Buy Ticket</Text>
+      </TouchableOpacity>
     </View>
 
     <Link style={styles.linkStyleRed} href="/dashboard">Dashboard</Link>
