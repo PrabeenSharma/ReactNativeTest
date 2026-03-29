@@ -1,7 +1,7 @@
-import { CameraType, CameraView, FlashMode, useCameraPermissions } from 'expo-camera';
+import { CameraType, CameraView, useCameraPermissions } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Image,
   StyleSheet,
@@ -13,15 +13,19 @@ import {
 export default function Scanner() {
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
-  const [imageUri, setImageUri] = useState(null);
+  const [imageUri, setImageUri] = useState<string | null>(null);
 
-  // ✅ ENUM BASED (type-safe)
-  const [flash, setFlash] = useState<FlashMode>('off');
+  const [flash, setFlash] = useState<'off' | 'torch'>('off');
   const [cameraType, setCameraType] = useState<CameraType>('back');
 
   const router = useRouter();
 
-  const extractSlug = (data: any) => {
+  useEffect(() => {
+    ImagePicker.requestMediaLibraryPermissionsAsync();
+  }, []);
+
+  // 🔍 Extract slug
+  const extractSlug = (data: string) => {
     let slug = '';
 
     if (data.includes('slug=')) {
@@ -35,7 +39,8 @@ export default function Scanner() {
     return slug;
   };
 
-  const handleScan = ({ data }: { data: any }) => {
+  // 📷 Camera scan
+  const handleScan = ({ data }: { data: string }) => {
     setScanned(true);
 
     const slug = extractSlug(data);
@@ -48,25 +53,32 @@ export default function Scanner() {
     setTimeout(() => setScanned(false), 2000);
   };
 
+  // 🖼️ Image QR scan (API based - FIXED)
   const pickImageAndScan = async () => {
+    const permission =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (!permission.granted) {
+      alert('Permission required');
+      return;
+    }
+
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ['images'], // ✅ FIXED
       quality: 1,
     });
 
     if (!result.canceled) {
       const uri = result.assets[0].uri;
-      const [imageUri, setImageUri] = useState<string | null>(null);
+      setImageUri(uri);
 
       const formData = new FormData();
-      formData.append(
-        'file',
-        {
-          uri: uri,
-          name: 'qr.jpg',
-          type: 'image/jpeg',
-        } as unknown as Blob
-      );
+
+      formData.append('file', {
+        uri: uri,
+        name: 'qr.jpg',
+        type: 'image/jpeg',
+      } as any);
 
       try {
         const res = await fetch(
@@ -78,6 +90,8 @@ export default function Scanner() {
         );
 
         const data = await res.json();
+        console.log('QR API response:', data);
+
         const qrData = data?.[0]?.symbol?.[0]?.data;
 
         if (qrData) {
@@ -91,11 +105,13 @@ export default function Scanner() {
           alert('No QR found in image');
         }
       } catch (err) {
+        console.log('Scan error:', err);
         alert('Error scanning image');
       }
     }
   };
 
+  // 🔒 Permission handling
   if (!permission) {
     return <Text>Requesting permission...</Text>;
   }
@@ -121,8 +137,8 @@ export default function Scanner() {
       <View style={styles.scannerBox}>
         <CameraView
           style={{ flex: 1 }}
-          facing={cameraType}   // ✅ works
-          flash={flash}         // ✅ works
+          facing={cameraType}
+          enableTorch={flash === 'torch'} // 🔥 Flash FIX
           barcodeScannerSettings={{
             barcodeTypes: ['qr'],
           }}
@@ -130,12 +146,13 @@ export default function Scanner() {
         />
       </View>
 
+      {/* Controls */}
       <View style={styles.controlRow}>
-        {/* 🔦 Flash */}
+        {/* Flash */}
         <TouchableOpacity
           style={[styles.button, { marginRight: 10 }]}
           onPress={() =>
-            setFlash((flash === 'off' ? 'torch' : 'off') as FlashMode)
+            setFlash(flash === 'off' ? 'torch' : 'off')
           }
         >
           <Text style={styles.buttonText}>
@@ -143,7 +160,7 @@ export default function Scanner() {
           </Text>
         </TouchableOpacity>
 
-        {/* 🔄 Camera */}
+        {/* Camera switch */}
         <TouchableOpacity
           style={styles.button}
           onPress={() =>
@@ -158,6 +175,7 @@ export default function Scanner() {
         </TouchableOpacity>
       </View>
 
+      {/* Upload */}
       <TouchableOpacity
         style={[styles.button, { marginTop: 20 }]}
         onPress={pickImageAndScan}
@@ -165,10 +183,12 @@ export default function Scanner() {
         <Text style={styles.buttonText}>Upload QR Image</Text>
       </TouchableOpacity>
 
+      {/* Preview */}
       {imageUri && (
         <Image source={{ uri: imageUri }} style={styles.image} />
       )}
 
+      {/* Scan again */}
       {scanned && (
         <TouchableOpacity
           style={[styles.button, { marginTop: 10 }]}
