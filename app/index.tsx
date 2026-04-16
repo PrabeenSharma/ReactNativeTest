@@ -1,30 +1,81 @@
 import { Link, useRouter } from 'expo-router';
-import { Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
-import { GlobalStyles } from '../styles/globalStyles';
 
 export default function HomeScreen() {
 
    const router = useRouter();
 
   return (
-    <ScrollView style={GlobalStyles.container}>
+    
+    <ScrollView
+  style={{ flex: 1, backgroundColor: 'transparent' }}
+  contentContainerStyle={{
+    flexGrow: 1,
+    backgroundColor: 'transparent', // 👈 ADD THIS
+  }}
+  showsVerticalScrollIndicator={false}
+>
+      <View
+        style={{
+          alignItems: 'center',
+          padding: 30,
+          justifyContent: 'center',
+          backgroundColor: 'transparent',
+          flex: 1 // 👈 FIX
+        }}
+      >
+        <Text
+          style={{
+            paddingBottom: 30,
+            fontSize: 35,
+            fontWeight: '400',
+            textAlign: 'center',
+            color: '#fff', 
+            fontFamily: 'Audiowide_400Regular'
+          }}
+        >
+          Welcome to Red Planet Resort
+        </Text>
 
-    <View style={{ flex: 1 , alignItems: 'center', padding: 30, justifyContent: 'center', gap: 0, }}>
-    <Text style={{ paddingBottom: 30, fontSize: 24, fontWeight: '800', textAlign:'center'  }}>Welcome to Red Planel Resort </Text>
+        <View style={{ flexDirection: 'column', gap: 20, padding:15 }}>
+          
+          <Pressable
+              style={({ pressed }) => [
+                styles.linkStyle,
+                pressed && styles.pressed
+              ]}
+              onPress={() => router.push('/scanner')}
+            >
+              <Text style={{ color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize: 14, fontWeight: '400', textTransform: 'uppercase', marginBottom:14, textAlign: 'center' }}>Scan your ticket</Text>
 
-    <View style={{ flex:1, flexDirection:'row', gap:20, }}>
-      <Link style={styles.linkStyle} href="/scanner">scanner</Link>
-      <TouchableOpacity style={styles.linkStyle} onPress={() => Linking.openURL('https://dev4work.com/thefirstonmars/')}>
-        <Text>Buy Ticket</Text>
-      </TouchableOpacity>
-    </View>
+              <Image
+                source={require('./../assets/images/scannerImage.png')}
+                style={{ width: 140, height: 137, alignSelf: 'center' }}
+              />
+            </Pressable>
 
-    <Link style={styles.linkStyleRed} href="/dashboard">Dashboard</Link>
+          <Pressable
+            style={({ pressed }) => [
+              styles.linkStyle,
+              pressed && styles.pressed
+            ]}
+            onPress={() =>
+              Linking.openURL('https://dev4work.com/thefirstonmars/')
+            }
+          >
+            <Text style={{ color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize: 14, fontWeight: '400', textTransform: 'uppercase', marginBottom:14, textAlign: 'center' }}>Buy Ticket</Text>
+            <Image
+                source={require('./../assets/images/ticket.png')}
+                style={{ width: 161, height: 105, alignSelf: 'center' }}
+              />
+          </Pressable>
+        </View>
 
-
-    </View>
-
+        <Link style={styles.linkStyleRed} href="/dashboard">
+          Dashboard
+        </Link>
+      </View>
     </ScrollView>
     
   );
@@ -32,8 +83,14 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   linkStyle:{
-    backgroundColor: '#00ddf1', paddingLeft:15, paddingRight:15, paddingTop:12, paddingBottom:12, 
+    backgroundColor: 'rgba(217, 217, 217, 0.12)', paddingLeft:22, paddingRight:22, paddingTop:22, paddingBottom:22, borderRadius: 6, color:'#fff', textAlign: 'center', fontFamily: 'Audiowide_400Regular', fontSize:14, fontWeight: '400', textTransform: 'uppercase',
   },
+
+  pressed: {
+    backgroundColor: 'rgba(0, 0, 0, 0.50)',
+    transform: [{ scale: 0.98 }],
+  },
+  
   linkStyleRed:{
     backgroundColor: 'red', paddingLeft:15, paddingRight:15, paddingTop:12, paddingBottom:12, marginTop:20, color:'#fff'
   },

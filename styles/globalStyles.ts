@@ -9,6 +9,14 @@ export const Colors = {
 };
 
 export const GlobalStyles = StyleSheet.create({
+
+  mainbody:{
+    backgroundImage: 'url(../assets/images/mainBg.png)', backgroundSize: 'cover', flex:1, backgroundPosition: 'bottom', backgroundRepeat: 'no-repeat'
+  },  
+  header:{
+    paddingTop:15, paddingBottom:15,  alignItems: 'center'
+  }, 
+
   container: {
     flex: 1,
     backgroundColor: Colors.background,
@@ -31,4 +39,13 @@ export const GlobalStyles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
   },
+
+  mainheading:{
+    fontSize:35,
+    lineHeight: 42,
+    color: '#000',
+    textAlign:'center'
+  },
+
+
 });

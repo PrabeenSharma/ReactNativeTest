@@ -2,7 +2,7 @@ import { Text, View } from 'react-native';
 
 export default function Footer() {
   return (
-    <View style={{ padding: 10, backgroundColor: '#222' }}>
+    <View style={{ padding: 10, backgroundColor: 'transparent' }}>
       <Text style={{ color: '#fff', textAlign: 'center' }}>
         © 2026 My App
       </Text>
