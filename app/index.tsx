@@ -1,13 +1,14 @@
 import { Link, useRouter } from 'expo-router';
 import { Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
+import { GlobalStyles } from '../styles/globalStyles';
 
 export default function HomeScreen() {
 
    const router = useRouter();
 
   return (
-    <ScrollView>
+    <ScrollView style={GlobalStyles.container}>
 
     <View style={{ flex: 1 , alignItems: 'center', padding: 30, justifyContent: 'center', gap: 0, }}>
     <Text style={{ paddingBottom: 30, fontSize: 24, fontWeight: '800', textAlign:'center'  }}>Welcome to Red Planel Resort </Text>
