@@ -30,19 +30,39 @@ export default function Scanner() {
     }
   }, []);
 
-  // 🔍 Extract slug
+  // 🔍 Extract slug from decoded QR data.
+  // Supported formats:
+  //   1. "slug=trip7hge34" or "...?slug=trip7hge34&foo=bar"
+  //   2. "https://trip.redplanetresorts.com/trip7hge34"
+  //   3. "https://trip.redplanetresorts.com/trip7hge34/" (trailing slash)
+  //   4. "https://trip.redplanetresorts.com/trip7hge34/locationbg.jpg"
+  //      (trailing segment is a filename; we skip it and use the real slug)
+  //   5. "trip7hge34" (plain slug)
   const extractSlug = (data: string) => {
-    let slug = '';
+    const raw = (data || '').trim();
 
-    if (data.includes('slug=')) {
-      slug = data.split('slug=')[1];
-    } else if (data.startsWith('http')) {
-      slug = data.split('/').filter(Boolean).pop() || '';
-    } else {
-      slug = data;
+    // 1. explicit slug= query/param anywhere in the string
+    const slugMatch = raw.match(/[?&]slug=([^&#\s]+)/) || raw.match(/(?:^|\b)slug=([^&#\s]+)/);
+    if (slugMatch?.[1]) return decodeURIComponent(slugMatch[1]);
+
+    // 2. URL: strip query/hash, then find the last non-filename path segment
+    if (/^https?:\/\//i.test(raw)) {
+      const pathOnly = raw.split('?')[0].split('#')[0];
+      // drop scheme://host
+      const afterScheme = pathOnly.replace(/^https?:\/\/[^/]+/i, '');
+      const segments = afterScheme.split('/').filter(Boolean);
+
+      // strip trailing filename-like segments (e.g. locationbg.jpg, logo.png)
+      while (segments.length > 1 && /\.[a-z0-9]{2,5}$/i.test(segments[segments.length - 1])) {
+        segments.pop();
+      }
+
+      const last = segments.pop();
+      if (last) return decodeURIComponent(last);
     }
 
-    return slug;
+    // 3. plain text
+    return raw;
   };
 
   const goToNotificationSettings = (slug: string) => {
