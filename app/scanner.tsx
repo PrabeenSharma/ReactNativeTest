@@ -46,7 +46,7 @@ export default function Scanner() {
     const slug = extractSlug(data);
 
     router.push({
-      pathname: '/dashboard',
+      pathname: '/notification-settings',
       params: { slug },
     });
 
@@ -98,7 +98,7 @@ export default function Scanner() {
           const slug = extractSlug(qrData);
 
           router.push({
-            pathname: '/dashboard',
+            pathname: '/notification-settings',
             params: { slug },
           });
         } else {

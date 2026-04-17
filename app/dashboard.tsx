@@ -1,4 +1,5 @@
 import { formatDate } from '@/utils/date';
+import { clearScannedSlug, getScannedSlug } from '@/utils/storage';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Button, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -6,17 +7,38 @@ import { Button, ScrollView, StyleSheet, Text, View } from 'react-native';
 export default function DashboardScreen() {
   const [page, setPage] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [resolvedSlug, setResolvedSlug] = useState<string | null>(null);
 
-  const { slug } = useLocalSearchParams(); // 👈 get slug from scanner
+  const { slug: slugParam } = useLocalSearchParams<{ slug?: string }>();
   const router = useRouter();
 
+  // Resolve slug from params first, fall back to saved slug from storage.
   useEffect(() => {
-    if (!slug) return;
+    let active = true;
 
-    // 🔥 Build API URL from slug
-    const apiUrl = `https://dev4work.com/thefirstonmars/wp-json/wp/v2/pages?slug=${slug}`;
+    (async () => {
+      if (slugParam) {
+        if (active) setResolvedSlug(slugParam);
+        return;
+      }
+      const saved = await getScannedSlug();
+      if (active) {
+        setResolvedSlug(saved);
+        if (!saved) setLoading(false);
+      }
+    })();
 
+    return () => {
+      active = false;
+    };
+  }, [slugParam]);
 
+  useEffect(() => {
+    if (!resolvedSlug) return;
+
+    const apiUrl = `https://dev4work.com/thefirstonmars/wp-json/wp/v2/pages?slug=${resolvedSlug}`;
+
+    setLoading(true);
     fetch(apiUrl)
       .then((res) => res.json())
       .then((data) => {
@@ -27,7 +49,12 @@ export default function DashboardScreen() {
         console.log(err);
         setLoading(false);
       });
-  }, [slug]);
+  }, [resolvedSlug]);
+
+  const handleScanAgain = async () => {
+    await clearScannedSlug();
+    router.replace('/scanner');
+  };
 
   // 🔄 Loading
   if (loading) {
@@ -42,12 +69,8 @@ export default function DashboardScreen() {
   if (!page) {
     return (
       <View style={styles.center}>
-
-      
-
-
         <Text>Invalid QR Code. Please scan a valid Ticket QR code</Text>
-        <Button title="Back" onPress={() => router.push('/')} />
+        <Button title="Scan Again" onPress={handleScanAgain} />
       </View>
     );
   }
@@ -85,11 +108,8 @@ export default function DashboardScreen() {
       {/* 🖼 Extra */}
       <Text>{page?.theme_options?.example_uploader}</Text>
 
-      {/* 🔙 Back */}
-      <Button
-        title="Back To Home"
-        onPress={() => router.push('/')}
-      />
+      {/* 🔁 Scan another QR */}
+      <Button title="Scan Another QR" onPress={handleScanAgain} />
     </ScrollView>
   );
 }
