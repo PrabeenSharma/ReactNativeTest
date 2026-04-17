@@ -1,5 +1,5 @@
 // components/Header.tsx
-import { useNavigation, usePathname } from 'expo-router';
+import { usePathname, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
   Image,
@@ -12,7 +12,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { CommonActions } from '@react-navigation/native';
 
 import {
   clearAllScanData,
@@ -23,7 +22,7 @@ import {
 export default function Header() {
   const [page, setPage] = useState<any>(null);
   const pathname = usePathname();
-  const navigation = useNavigation();
+  const router = useRouter();
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [notificationsOn, setNotificationsOn] = useState(false);
@@ -61,14 +60,13 @@ export default function Header() {
   const handleNewScan = async () => {
     setMenuOpen(false);
     await clearAllScanData();
-    // Reset the navigation stack back to Home so the user is forced to
-    // re-scan a QR code.
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [{ name: 'index' }],
-      }),
-    );
+    // After notification-settings reset the stack to [{ name: 'dashboard' }],
+    // a CommonActions.reset targeting 'index' is not handled by the navigator
+    // (the 'index' route is no longer in the stack). Use expo-router's replace
+    // to navigate back to Home — because the stack only contains '/dashboard'
+    // at this point, replacing with '/' effectively resets to Home without
+    // leaving /dashboard in history.
+    router.replace('/');
   };
 
   return (
