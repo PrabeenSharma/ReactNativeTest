@@ -1,7 +1,7 @@
 import { CameraType, CameraView, useCameraPermissions } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Image,
   Platform,
@@ -23,7 +23,6 @@ export default function Scanner() {
   const [cameraType, setCameraType] = useState<CameraType>('back');
 
   const router = useRouter();
-  const webInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     if (Platform.OS !== 'web') {
@@ -87,25 +86,32 @@ export default function Scanner() {
     }
   };
 
-  // 🖥️ Web: browse file from PC via hidden <input type="file"/>
-  const onWebUploadPress = () => {
-    webInputRef.current?.click();
-  };
+  // 🖥️ Web: browse file from PC. React Native Web does not render raw DOM
+  // <input> elements, so we create one imperatively, trigger the OS file
+  // picker, and clean it up after the user makes a selection.
+  const pickImageAndScanWeb = () => {
+    if (typeof document === 'undefined') return;
 
-  const onWebFileSelected = async (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const file = event.target.files?.[0];
-    // reset so selecting the same file again still fires the change event
-    event.target.value = '';
-    if (!file) return;
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.style.display = 'none';
 
-    setImageUri(URL.createObjectURL(file));
+    input.onchange = async () => {
+      const file = input.files?.[0];
+      input.remove();
+      if (!file) return;
 
-    const formData = new FormData();
-    formData.append('file', file);
+      setImageUri(URL.createObjectURL(file));
 
-    await decodeQrAndRoute(formData);
+      const formData = new FormData();
+      formData.append('file', file);
+
+      await decodeQrAndRoute(formData);
+    };
+
+    document.body.appendChild(input);
+    input.click();
   };
 
   // 📱 Native: pick image from device library
@@ -141,7 +147,7 @@ export default function Scanner() {
   const handleUploadPress = () => {
     if (processing) return;
     if (Platform.OS === 'web') {
-      onWebUploadPress();
+      pickImageAndScanWeb();
     } else {
       pickImageAndScanNative();
     }
@@ -244,17 +250,6 @@ export default function Scanner() {
               : 'Upload QR Image'}
         </Text>
       </TouchableOpacity>
-
-      {/* Hidden file input used on web to open the OS file browser */}
-      {Platform.OS === 'web' && (
-        <input
-          ref={webInputRef}
-          type="file"
-          accept="image/*"
-          onChange={onWebFileSelected}
-          style={{ display: 'none' }}
-        />
-      )}
 
       {/* Preview */}
       {imageUri && <Image source={{ uri: imageUri }} style={styles.image} />}
