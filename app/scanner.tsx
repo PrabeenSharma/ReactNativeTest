@@ -45,8 +45,8 @@ export default function Scanner() {
 
     const slug = extractSlug(data);
 
-    router.push({
-      pathname: '/dashboard',
+    router.replace({
+      pathname: '/notification-settings',
       params: { slug },
     });
 

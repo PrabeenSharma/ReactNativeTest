@@ -1,9 +1,10 @@
 // components/Layout.js
+import type { ReactNode } from 'react';
 import { View } from 'react-native';
 import Footer from './Footer';
 import Header from './Header';
 
-export default function Layout({ children }) {
+export default function Layout({ children }: { children: ReactNode }) {
   return (
     <View style={{ flex: 1 }}>
       <Header />

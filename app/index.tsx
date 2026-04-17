@@ -1,56 +1,55 @@
-import { Link, useRouter } from 'expo-router';
-import { Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-
-import { GlobalStyles } from '../styles/globalStyles';
+import { useRouter } from 'expo-router';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function HomeScreen() {
-
-   const router = useRouter();
+  const router = useRouter();
 
   return (
-    <ScrollView style={GlobalStyles.container}>
+    <View style={styles.container}>
+      <Text style={styles.title}>Welcome to Red Planet Resort</Text>
+      <Text style={styles.subtitle}>Scan your ticket QR code to continue</Text>
 
-    <View style={{ flex: 1 , alignItems: 'center', padding: 30, justifyContent: 'center', gap: 0, }}>
-    <Text style={{ paddingBottom: 30, fontSize: 24, fontWeight: '800', textAlign:'center'  }}>Welcome to Red Planel Resort </Text>
-
-    <View style={{ flex:1, flexDirection:'row', gap:20, }}>
-      <Link style={styles.linkStyle} href="/scanner">scanner</Link>
-      <TouchableOpacity style={styles.linkStyle} onPress={() => Linking.openURL('https://dev4work.com/thefirstonmars/')}>
-        <Text>Buy Ticket</Text>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => router.push('/scanner')}
+        activeOpacity={0.85}
+      >
+        <Text style={styles.buttonText}>Scan QR Code</Text>
       </TouchableOpacity>
     </View>
-
-    <Link style={styles.linkStyleRed} href="/dashboard">Dashboard</Link>
-
-
-    </View>
-
-    </ScrollView>
-    
   );
 }
 
 const styles = StyleSheet.create({
-  linkStyle:{
-    backgroundColor: '#00ddf1', paddingLeft:15, paddingRight:15, paddingTop:12, paddingBottom:12, 
-  },
-  linkStyleRed:{
-    backgroundColor: 'red', paddingLeft:15, paddingRight:15, paddingTop:12, paddingBottom:12, marginTop:20, color:'#fff'
-  },
-  titleContainer: {
-    flexDirection: 'row',
+  container: {
+    flex: 1,
     alignItems: 'center',
-    gap: 8,
+    justifyContent: 'center',
+    padding: 24,
+    backgroundColor: '#fff',
   },
-  stepContainer: {
-    gap: 8,
+  title: {
+    fontSize: 26,
+    fontWeight: '800',
+    textAlign: 'center',
     marginBottom: 8,
+    color: '#111',
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  subtitle: {
+    fontSize: 16,
+    color: '#555',
+    textAlign: 'center',
+    marginBottom: 40,
+  },
+  button: {
+    backgroundColor: '#00ddf1',
+    paddingHorizontal: 32,
+    paddingVertical: 16,
+    borderRadius: 10,
+  },
+  buttonText: {
+    color: '#000',
+    fontWeight: '700',
+    fontSize: 16,
   },
 });
