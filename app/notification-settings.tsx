@@ -1,12 +1,13 @@
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { CommonActions } from '@react-navigation/native';
 
 import { saveNotificationsEnabled, saveScannedSlug } from '@/utils/storage';
 
 export default function NotificationSettings() {
   const { slug } = useLocalSearchParams<{ slug?: string }>();
-  const router = useRouter();
+  const navigation = useNavigation();
 
   const [enabled, setEnabled] = useState<boolean | null>(null);
   const [saving, setSaving] = useState(false);
@@ -21,10 +22,20 @@ export default function NotificationSettings() {
     }
     await saveNotificationsEnabled(enabled);
 
-    router.replace({
-      pathname: '/dashboard',
-      params: slug ? { slug } : {},
-    });
+    // Reset the navigation stack so Dashboard is the only route in history.
+    // This prevents the user from going back to Home / Scanner / this screen
+    // via hardware back button or gesture after the scan is complete.
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [
+          {
+            name: 'dashboard',
+            params: slug ? { slug } : undefined,
+          },
+        ],
+      }),
+    );
   };
 
   return (

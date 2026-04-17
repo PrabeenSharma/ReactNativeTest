@@ -46,3 +46,15 @@ export async function getNotificationsEnabled(): Promise<boolean | null> {
     return null;
   }
 }
+
+export async function clearNotificationsEnabled(): Promise<void> {
+  try {
+    await AsyncStorage.removeItem(NOTIFICATIONS_KEY);
+  } catch (err) {
+    console.log('Failed to clear notifications preference', err);
+  }
+}
+
+export async function clearAllScanData(): Promise<void> {
+  await Promise.all([clearScannedSlug(), clearNotificationsEnabled()]);
+}

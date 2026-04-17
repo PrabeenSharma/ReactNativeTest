@@ -1,8 +1,9 @@
 import { formatDate } from '@/utils/date';
-import { clearScannedSlug, getScannedSlug } from '@/utils/storage';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { clearAllScanData, getScannedSlug } from '@/utils/storage';
+import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Button, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { CommonActions } from '@react-navigation/native';
 
 export default function DashboardScreen() {
   const [page, setPage] = useState<any>(null);
@@ -10,7 +11,7 @@ export default function DashboardScreen() {
   const [resolvedSlug, setResolvedSlug] = useState<string | null>(null);
 
   const { slug: slugParam } = useLocalSearchParams<{ slug?: string }>();
-  const router = useRouter();
+  const navigation = useNavigation();
 
   // Resolve slug from params first, fall back to saved slug from storage.
   useEffect(() => {
@@ -51,9 +52,17 @@ export default function DashboardScreen() {
       });
   }, [resolvedSlug]);
 
+  // Invalid-QR fallback: clear storage and send the user back to Home so
+  // they can scan again. The main "New Scan" entry point lives in the
+  // dashboard header dropdown (components/Header.tsx).
   const handleScanAgain = async () => {
-    await clearScannedSlug();
-    router.replace('/scanner');
+    await clearAllScanData();
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: 'index' }],
+      }),
+    );
   };
 
   // 🔄 Loading
@@ -107,9 +116,6 @@ export default function DashboardScreen() {
 
       {/* 🖼 Extra */}
       <Text>{page?.theme_options?.example_uploader}</Text>
-
-      {/* 🔁 Scan another QR */}
-      <Button title="Scan Another QR" onPress={handleScanAgain} />
     </ScrollView>
   );
 }

@@ -72,7 +72,7 @@ export default function HomeScreen() {
 
         <View style={{ flex: 1, flexDirection: 'row', gap: 20 }}>
           <Link style={styles.linkStyle} href="/scanner">
-            scanner
+            Scan QR Code
           </Link>
           <TouchableOpacity
             style={styles.linkStyle}
@@ -83,10 +83,6 @@ export default function HomeScreen() {
             <Text>Buy Ticket</Text>
           </TouchableOpacity>
         </View>
-
-        <Link style={styles.linkStyleRed} href="/dashboard">
-          Dashboard
-        </Link>
       </View>
     </ScrollView>
   );

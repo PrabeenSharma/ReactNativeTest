@@ -130,6 +130,10 @@ export default function Scanner() {
       await decodeQrAndRoute(formData);
     };
 
+    // If the user cancels the OS file dialog, the `change` event never fires,
+    // so without this handler the hidden <input> would leak into the DOM.
+    input.addEventListener('cancel', () => input.remove());
+
     document.body.appendChild(input);
     input.click();
   };
