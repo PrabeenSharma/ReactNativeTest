@@ -29,7 +29,7 @@ export default function HomeScreen() {
 
       if (savedSlug) {
         router.replace({
-          pathname: '/dashboard',
+          pathname: '/dashboard/index',
           params: { slug: savedSlug },
         });
         return;
