@@ -7,6 +7,9 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { saveNotificationsEnabled, saveScannedSlug } from '@/utils/storage';
 
+import Footer from '@/components/Footer';
+import Header from '@/components/Header';
+
 export default function NotificationSettings() {
   const { slug } = useLocalSearchParams<{ slug?: string }>();
   const navigation = useNavigation();
@@ -40,55 +43,59 @@ export default function NotificationSettings() {
   };
 
   return (
-    <View style={styles.container}>
-      <LinearGradient
-        colors={['#0C2046', '#004F99']}
-        locations={[0.1624, 0.816]}
-        start={{ x: 0.85, y: 0.15 }}
-        end={{ x: 0.15, y: 0.85 }}
-        style={styles.iconWrapper}
-      >
-        <Image
-          source={require('./../assets/images/notificationIcon.png')}
-          style={styles.icon}
-        />
-      </LinearGradient>
-
-      <Text style={styles.description}>
-        Would you like to receive mission updates?
-      </Text>
-
-      <View style={styles.optionsRow}>
-        {/* YES */}
-        <TouchableOpacity
-          style={[styles.option, enabled === true && styles.optionSelected]}
-          onPress={() => handleSelection(true)}
+    <View style={{ flex: 1, }}>
+      <Header/>
+      <View style={styles.container}>
+        <LinearGradient
+          colors={['#0C2046', '#004F99']}
+          locations={[0.1624, 0.816]}
+          start={{ x: 0.85, y: 0.15 }}
+          end={{ x: 0.15, y: 0.85 }}
+          style={styles.iconWrapper}
         >
-          <LinearGradient
-            colors={['#0C2046', '#004F99']}
-            locations={[0.1624, 0.816]}
-            start={{ x: 0.85, y: 0.15 }}
-            end={{ x: 0.15, y: 0.85 }}
-            style={styles.optionGradient}
-          >
-            <Text style={styles.optionText}>Yes</Text>
-          </LinearGradient>
-        </TouchableOpacity>
+          <Image
+            source={require('./../assets/images/notificationIcon.png')}
+            style={styles.icon}
+          />
+        </LinearGradient>
 
-        {/* NO */}
-        <TouchableOpacity
-          style={[styles.optionNo, enabled === false && styles.optionSelected]}
-          onPress={() => handleSelection(false)}
-        >
-          <Text style={styles.optionNoText}>No</Text>
-        </TouchableOpacity>
-      </View>
-
-      {saving && (
-        <Text style={{ color: '#fff', textAlign: 'center' }}>
-          Saving...
+        <Text style={styles.description}>
+          Would you like to receive mission updates?
         </Text>
-      )}
+
+        <View style={styles.optionsRow}>
+          {/* YES */}
+          <TouchableOpacity
+            style={[styles.option, enabled === true && styles.optionSelected]}
+            onPress={() => handleSelection(true)}
+          >
+            <LinearGradient
+              colors={['#0C2046', '#004F99']}
+              locations={[0.1624, 0.816]}
+              start={{ x: 0.85, y: 0.15 }}
+              end={{ x: 0.15, y: 0.85 }}
+              style={styles.optionGradient}
+            >
+              <Text style={styles.optionText}>Yes</Text>
+            </LinearGradient>
+          </TouchableOpacity>
+
+          {/* NO */}
+          <TouchableOpacity
+            style={[styles.optionNo, enabled === false && styles.optionSelected]}
+            onPress={() => handleSelection(false)}
+          >
+            <Text style={styles.optionNoText}>No</Text>
+          </TouchableOpacity>
+        </View>
+
+        {saving && (
+          <Text style={{ color: '#fff', textAlign: 'center' }}>
+            Saving...
+          </Text>
+        )}
+      </View>
+      <Footer/>
     </View>
   );
 }

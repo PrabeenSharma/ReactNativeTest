@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
   menuButton: {
     position:'absolute',
     right:15,
-    top:25,
+    top:60,
   },
   menuButtonText: {
     color: '#fff',

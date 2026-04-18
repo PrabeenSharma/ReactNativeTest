@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import Footer from '../components/Footer';
 
+import Header from '@/components/Header';
 import { getScannedSlug } from '@/utils/storage';
 import { GlobalStyles } from '../styles/globalStyles';
 
@@ -52,60 +53,59 @@ export default function HomeScreen() {
 
   return (
     <View style={{ flex: 1, }}>
-      
-    
-    <ScrollView style={{ flex:1, }} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
-      <View
-        style={{
-          width: '100%',
-      padding: 30,
-      alignItems: 'center',
-        }}
-      >
-        <Text
-          style={{
-            paddingBottom: 30,
-            fontSize: 35,
-            fontWeight: '400',
-            textAlign: 'center',
-            color: '#fff', 
-            fontFamily: 'Audiowide_400Regular'
-          }}
-        >
-          Welcome to Red Planel Resort{' '}
-        </Text>
-
-        <View style={{ flex: 1, flexDirection: 'column', gap: 20 }}>
-          <Pressable style={({ pressed }) => [
-                styles.linkStyle,
-                pressed && styles.pressed
-              ]}
-              onPress={() => router.push('/scanner')}>
-            <Text style={{ color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize: 14, fontWeight: '400', textTransform: 'uppercase', marginBottom:14, textAlign: 'center' }}>Scan your ticket</Text>
-            <Image
-                source={require('./../assets/images/scannerImage.png')}
-                style={{ width: 140, height: 137, alignSelf: 'center' }}
-              />
-          </Pressable>
-          <Pressable
-            style={({ pressed }) => [
-              styles.linkStyle,
-              pressed && styles.pressed
-            ]}
-            onPress={() =>
-              Linking.openURL('https://dev4work.com/thefirstonmars/')
-            }
+        <Header />
+        <ScrollView style={{ flex:1, }} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
+          <View
+            style={{
+              width: '100%',
+              padding: 30,
+              alignItems: 'center',
+            }}
           >
-            <Text style={{ color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize: 14, fontWeight: '400', textTransform: 'uppercase', marginBottom:14, textAlign: 'center' }}>Buy Ticket</Text>
-              <Image
-                source={require('./../assets/images/ticket.png')}
-                style={{ width: 161, height: 105, alignSelf: 'center' }}
-              />
-          </Pressable>
-        </View>
-      </View>
-    </ScrollView>
-    <Footer/>
+            <Text
+              style={{
+                paddingBottom: 30,
+                fontSize: 35,
+                fontWeight: '400',
+                textAlign: 'center',
+                color: '#fff', 
+                fontFamily: 'Audiowide_400Regular'
+              }}
+            >
+              Welcome to Red Planel Resort{' '}
+            </Text>
+
+            <View style={{ flex: 1, flexDirection: 'column', gap: 20 }}>
+              <Pressable style={({ pressed }) => [
+                    styles.linkStyle,
+                    pressed && styles.pressed
+                  ]}
+                  onPress={() => router.push('/scanner')}>
+                <Text style={{ color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize: 14, fontWeight: '400', textTransform: 'uppercase', marginBottom:14, textAlign: 'center' }}>Scan your ticket</Text>
+                <Image
+                    source={require('./../assets/images/scannerImage.png')}
+                    style={{ width: 140, height: 137, alignSelf: 'center' }}
+                  />
+              </Pressable>
+              <Pressable
+                style={({ pressed }) => [
+                  styles.linkStyle,
+                  pressed && styles.pressed
+                ]}
+                onPress={() =>
+                  Linking.openURL('https://dev4work.com/thefirstonmars/')
+                }
+              >
+                <Text style={{ color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize: 14, fontWeight: '400', textTransform: 'uppercase', marginBottom:14, textAlign: 'center' }}>Buy Ticket</Text>
+                  <Image
+                    source={require('./../assets/images/ticket.png')}
+                    style={{ width: 161, height: 105, alignSelf: 'center' }}
+                  />
+              </Pressable>
+            </View>
+          </View>
+        </ScrollView>
+      <Footer/>
     </View>
   );
 }

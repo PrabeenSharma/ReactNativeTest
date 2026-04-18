@@ -11,6 +11,10 @@ import {
   View,
 } from 'react-native';
 
+import Footer from '@/components/Footer';
+import Header from '@/components/Header';
+import { LinearGradient } from 'expo-linear-gradient';
+
 const QR_API_URL = 'https://api.qrserver.com/v1/read-qr-code/';
 
 export default function Scanner() {
@@ -185,108 +189,124 @@ export default function Scanner() {
 
     if (!permission.granted) {
       return (
-        <View style={styles.container}>
-          <Text style={{ color: '#fff', marginBottom: 10 }}>
-            No camera access
-          </Text>
-
-          <TouchableOpacity style={styles.button} onPress={requestPermission}>
-            <Text style={styles.buttonText}>Allow Camera</Text>
-          </TouchableOpacity>
-
-          {/* Even without camera, user can still upload an image */}
-          <TouchableOpacity
-            style={[styles.button, { marginTop: 20 }]}
-            onPress={handleUploadPress}
-            disabled={processing}
-          >
-            <Text style={styles.buttonText}>
-              {processing ? 'Scanning...' : 'Upload QR Image'}
+        <View style={{ flex: 1, }}>
+          <Header />
+          <View style={styles.container}>
+            <Text style={{ color: '#fff', marginBottom: 10 , fontFamily: 'Audiowide_400Regular', fontSize:16, fontWeight:'400'}}>
+              No camera access
             </Text>
-          </TouchableOpacity>
+
+            <TouchableOpacity style={styles.button} onPress={requestPermission}>
+              <Text style={styles.buttonText}>Allow Camera</Text>
+            </TouchableOpacity>
+
+            {/* Even without camera, user can still upload an image */}
+            <TouchableOpacity
+              style={[styles.button, { marginTop: 20 }]}
+              onPress={handleUploadPress}
+              disabled={processing}
+            >
+              <Text style={styles.buttonText}>
+                {processing ? 'Scanning...' : 'Upload QR Image'}
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <Footer/>
         </View>
       );
     }
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Scan Ticket</Text>
+    <View style={{ flex: 1, }}>
+        <Header />
+        <View style={styles.container}>
+          <Text style={styles.title}>Scan Ticket</Text>
 
-      {Platform.OS !== 'web' && (
-        <>
-          <View style={styles.scannerBox}>
-            <CameraView
-              style={{ flex: 1 }}
-              facing={cameraType}
-              enableTorch={flash === 'torch'}
-              barcodeScannerSettings={{
-                barcodeTypes: ['qr'],
-              }}
-              onBarcodeScanned={scanned ? undefined : handleScan}
-            />
-          </View>
+          {Platform.OS !== 'web' && (
+            <>
+              <View style={styles.scannerBox}>
+                <CameraView
+                  style={{ flex: 1 }}
+                  facing={cameraType}
+                  enableTorch={flash === 'torch'}
+                  barcodeScannerSettings={{
+                    barcodeTypes: ['qr'],
+                  }}
+                  onBarcodeScanned={scanned ? undefined : handleScan}
+                />
+              </View>
 
-          {/* Controls */}
-          <View style={styles.controlRow}>
-            {/* Flash */}
+              {/* Controls */}
+              <View style={styles.controlRow}>
+                {/* Flash */}
+                <TouchableOpacity
+                  style={[styles.button, { marginRight: 10 }]}
+                  onPress={() => setFlash(flash === 'off' ? 'torch' : 'off')}
+                >
+                  <Text style={styles.buttonText}>
+                    Flash: {flash === 'off' ? 'OFF' : 'ON'}
+                  </Text>
+                </TouchableOpacity>
+
+                {/* Camera switch */}
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() =>
+                    setCameraType(cameraType === 'back' ? 'front' : 'back')
+                  }
+                >
+                  <Text style={styles.buttonText}>
+                    Camera: {cameraType === 'back' ? 'Back' : 'Front'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          )}
+
+          {Platform.OS === 'web' && (
+            <Text style={styles.webHint}>
+              Upload a QR code image from your computer to scan it.
+            </Text>
+          )}
+
+          {/* Upload (works on mobile library + PC file browse on web) */}
+          <TouchableOpacity
+            style={[styles.button, { marginTop: 20 }]}
+            onPress={handleUploadPress}
+            disabled={processing}
+          >
+            <LinearGradient
+              colors={['#0C2046', '#004F99']}
+              locations={[0.1624, 0.816]}
+              start={{ x: 0.85, y: 0.15 }}
+              end={{ x: 0.15, y: 0.85 }}
+              style={styles.optionGradient}
+                      >
+            <Text style={styles.buttonText}>
+              {processing
+                ? 'Scanning...'
+                : Platform.OS === 'web'
+                  ? 'Browse QR Image'
+                  : 'Upload QR Image'}
+            </Text>
+            </LinearGradient>
+          </TouchableOpacity>
+
+          {/* Preview */}
+          {imageUri && <Image source={{ uri: imageUri }} style={styles.image} />}
+
+          {/* Scan again (native camera only) */}
+          {Platform.OS !== 'web' && scanned && (
             <TouchableOpacity
-              style={[styles.button, { marginRight: 10 }]}
-              onPress={() => setFlash(flash === 'off' ? 'torch' : 'off')}
+              style={[styles.button, { marginTop: 10 }]}
+              onPress={() => setScanned(false)}
             >
-              <Text style={styles.buttonText}>
-                Flash: {flash === 'off' ? 'OFF' : 'ON'}
-              </Text>
+              <Text style={styles.buttonText}>Scan Again</Text>
             </TouchableOpacity>
-
-            {/* Camera switch */}
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() =>
-                setCameraType(cameraType === 'back' ? 'front' : 'back')
-              }
-            >
-              <Text style={styles.buttonText}>
-                Camera: {cameraType === 'back' ? 'Back' : 'Front'}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </>
-      )}
-
-      {Platform.OS === 'web' && (
-        <Text style={styles.webHint}>
-          Upload a QR code image from your computer to scan it.
-        </Text>
-      )}
-
-      {/* Upload (works on mobile library + PC file browse on web) */}
-      <TouchableOpacity
-        style={[styles.button, { marginTop: 20 }]}
-        onPress={handleUploadPress}
-        disabled={processing}
-      >
-        <Text style={styles.buttonText}>
-          {processing
-            ? 'Scanning...'
-            : Platform.OS === 'web'
-              ? 'Browse QR Image'
-              : 'Upload QR Image'}
-        </Text>
-      </TouchableOpacity>
-
-      {/* Preview */}
-      {imageUri && <Image source={{ uri: imageUri }} style={styles.image} />}
-
-      {/* Scan again (native camera only) */}
-      {Platform.OS !== 'web' && scanned && (
-        <TouchableOpacity
-          style={[styles.button, { marginTop: 10 }]}
-          onPress={() => setScanned(false)}
-        >
-          <Text style={styles.buttonText}>Scan Again</Text>
-        </TouchableOpacity>
-      )}
+          )}
+        </View>
+        <Footer/>
     </View>
   );
 }
@@ -297,12 +317,11 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     alignItems: 'center',
     backgroundColor: 'transparent',
+    justifyContent: 'center',
   },
   title: {
-    color: '#fff',
-    fontSize: 22,
     marginBottom: 20,
-    fontWeight: '600',
+    color: '#fff',  fontFamily: 'Audiowide_400Regular', fontSize:24, fontWeight:'400'
   },
   scannerBox: {
     width: '90%',
@@ -315,14 +334,10 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   button: {
-    backgroundColor: '#00ddf1',
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderRadius: 8,
+    
   },
   buttonText: {
-    color: '#000',
-    fontWeight: '600',
+    color: '#fff', marginBottom: 10 , fontFamily: 'Audiowide_400Regular', fontSize:16, fontWeight:'400'
   },
   webHint: {
     color: '#fff',
@@ -330,11 +345,20 @@ const styles = StyleSheet.create({
     marginTop: 10,
     textAlign: 'center',
     paddingHorizontal: 20,
+     marginBottom: 10 , fontFamily: 'Audiowide_400Regular',fontWeight:'400'
   },
   image: {
     width: 200,
     height: 200,
     marginTop: 10,
     borderRadius: 10,
+  },
+   optionGradient: {
+    borderRadius: 6,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingBottom:8,
+    paddingTop:15
   },
 });
