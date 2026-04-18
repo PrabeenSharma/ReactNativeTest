@@ -1,3 +1,4 @@
+import Header from '@/components/Header';
 import { formatDate } from '@/utils/date';
 import { clearAllScanData, getScannedSlug } from '@/utils/storage';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -87,6 +88,7 @@ export default function DashboardScreen() {
 
   return (
     <ScrollView style={styles.container}>
+      <Header/>
       {/* 🧾 Title */}
       <Text style={styles.title}>
         {page?.title?.rendered}
