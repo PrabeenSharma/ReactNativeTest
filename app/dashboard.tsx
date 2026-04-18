@@ -2,7 +2,7 @@ import { formatDate } from '@/utils/date';
 import { clearAllScanData, getScannedSlug } from '@/utils/storage';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Button, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Button, Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function DashboardScreen() {
   const [page, setPage] = useState<any>(null);
@@ -67,7 +67,10 @@ export default function DashboardScreen() {
   if (loading) {
     return (
       <View style={styles.center}>
-        <Text>Loading...</Text>
+        <Image
+          source={require('./../assets/images/loading.gif')}
+          style={{ width: 150, height: 150, alignSelf: 'center' }}
+        /> 
       </View>
     );
   }

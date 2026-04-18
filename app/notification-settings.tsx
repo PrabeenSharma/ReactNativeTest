@@ -1,7 +1,9 @@
+
+import { CommonActions } from '@react-navigation/native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { CommonActions } from '@react-navigation/native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { saveNotificationsEnabled, saveScannedSlug } from '@/utils/storage';
 
@@ -12,19 +14,18 @@ export default function NotificationSettings() {
   const [enabled, setEnabled] = useState<boolean | null>(null);
   const [saving, setSaving] = useState(false);
 
-  const handleContinue = async () => {
-    if (enabled === null || saving) return;
+  const handleSelection = async (value: boolean) => {
+    if (saving) return;
 
+    setEnabled(value);
     setSaving(true);
 
     if (slug) {
       await saveScannedSlug(slug);
     }
-    await saveNotificationsEnabled(enabled);
 
-    // Reset the navigation stack so Dashboard is the only route in history.
-    // This prevents the user from going back to Home / Scanner / this screen
-    // via hardware back button or gesture after the scan is complete.
+    await saveNotificationsEnabled(value);
+
     navigation.dispatch(
       CommonActions.reset({
         index: 0,
@@ -40,53 +41,54 @@ export default function NotificationSettings() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Notification Settings</Text>
+      <LinearGradient
+        colors={['#0C2046', '#004F99']}
+        locations={[0.1624, 0.816]}
+        start={{ x: 0.85, y: 0.15 }}
+        end={{ x: 0.15, y: 0.85 }}
+        style={styles.iconWrapper}
+      >
+        <Image
+          source={require('./../assets/images/notificationIcon.png')}
+          style={styles.icon}
+        />
+      </LinearGradient>
+
       <Text style={styles.description}>
-        Would you like to receive notifications from the app?
+        Would you like to receive mission updates?
       </Text>
 
       <View style={styles.optionsRow}>
+        {/* YES */}
         <TouchableOpacity
           style={[styles.option, enabled === true && styles.optionSelected]}
-          onPress={() => setEnabled(true)}
+          onPress={() => handleSelection(true)}
         >
-          <Text
-            style={[
-              styles.optionText,
-              enabled === true && styles.optionTextSelected,
-            ]}
+          <LinearGradient
+            colors={['#0C2046', '#004F99']}
+            locations={[0.1624, 0.816]}
+            start={{ x: 0.85, y: 0.15 }}
+            end={{ x: 0.15, y: 0.85 }}
+            style={styles.optionGradient}
           >
-            Yes
-          </Text>
+            <Text style={styles.optionText}>Yes</Text>
+          </LinearGradient>
         </TouchableOpacity>
 
+        {/* NO */}
         <TouchableOpacity
-          style={[styles.option, enabled === false && styles.optionSelected]}
-          onPress={() => setEnabled(false)}
+          style={[styles.optionNo, enabled === false && styles.optionSelected]}
+          onPress={() => handleSelection(false)}
         >
-          <Text
-            style={[
-              styles.optionText,
-              enabled === false && styles.optionTextSelected,
-            ]}
-          >
-            No
-          </Text>
+          <Text style={styles.optionNoText}>No</Text>
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity
-        style={[
-          styles.continueButton,
-          (enabled === null || saving) && styles.continueButtonDisabled,
-        ]}
-        onPress={handleContinue}
-        disabled={enabled === null || saving}
-      >
-        <Text style={styles.continueButtonText}>
-          {saving ? 'Saving...' : 'Continue'}
+      {saving && (
+        <Text style={{ color: '#fff', textAlign: 'center' }}>
+          Saving...
         </Text>
-      </TouchableOpacity>
+      )}
     </View>
   );
 }
@@ -96,59 +98,76 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 24,
     justifyContent: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: 'transparent',
   },
-  title: {
-    fontSize: 24,
-    fontWeight: '800',
-    textAlign: 'center',
-    marginBottom: 12,
-  },
-  description: {
-    fontSize: 16,
-    textAlign: 'center',
-    color: '#444',
-    marginBottom: 32,
-  },
-  optionsRow: {
-    flexDirection: 'row',
+
+  iconWrapper: {
+    padding: 20,
+    width: 60,
+    height: 60,
+    borderRadius: 100,
     justifyContent: 'center',
-    gap: 16,
+    alignItems: 'center',
+    alignSelf: 'center',
+  },
+
+  icon: {
+    width: 30,
+    height: 35,
+  },
+
+  description: {
+    fontSize: 23,
+    fontWeight: '400',
+    textAlign: 'center',
+    color: '#fff',
+    lineHeight: 32,
+    fontFamily: 'Audiowide_400Regular',
+    padding: 25,
+  },
+
+  optionsRow: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    gap: 24,
     marginBottom: 40,
   },
+
   option: {
-    minWidth: 110,
-    paddingVertical: 14,
-    paddingHorizontal: 24,
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: '#00ddf1',
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    borderRadius: 6,
   },
+
+  optionGradient: {
+    height: 60,
+    borderRadius: 6,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  optionNo: {
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: 'rgba(126, 148, 181, 1)',
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
   optionSelected: {
-    backgroundColor: '#00ddf1',
+    opacity: 0.8,
   },
+
   optionText: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#00ddf1',
-  },
-  optionTextSelected: {
-    color: '#000',
-  },
-  continueButton: {
-    backgroundColor: 'red',
-    paddingVertical: 14,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  continueButtonDisabled: {
-    backgroundColor: '#aaa',
-  },
-  continueButtonText: {
-    color: '#fff',
+    fontFamily: 'Audiowide_400Regular',
     fontSize: 16,
-    fontWeight: '700',
+    textTransform: 'uppercase',
+    color: '#fff',
+  },
+
+  optionNoText: {
+    fontFamily: 'Audiowide_400Regular',
+    fontSize: 16,
+    textTransform: 'uppercase',
+    color: '#fff',
   },
 });

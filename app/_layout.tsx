@@ -2,7 +2,6 @@ import { DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import { ImageBackground, View } from 'react-native';
 
-import Footer from '../components/Footer';
 import Header from '../components/Header';
 
 import { Audiowide_400Regular, useFonts } from '@expo-google-fonts/audiowide';
@@ -36,7 +35,6 @@ export default function RootLayout() {
 
           <Stack screenOptions={{ headerShown: false }} />
 
-          <Footer />
         </ImageBackground>
       </View>
     </ThemeProvider>

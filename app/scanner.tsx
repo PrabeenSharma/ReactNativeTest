@@ -296,7 +296,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 60,
     alignItems: 'center',
-    backgroundColor: '#000',
+    backgroundColor: 'transparent',
   },
   title: {
     color: '#fff',

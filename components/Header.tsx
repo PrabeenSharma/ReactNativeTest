@@ -78,25 +78,28 @@ export default function Header() {
         }
       >
         <Image
-          source={{ uri: page?.theme_options?.example_uploader }}
-          style={styles.logo}
+          source={require('./../assets/images/Logo.png')}
+          style={{ width: 252, height: 51, alignSelf: 'center' }}
         />
       </TouchableOpacity>
 
-      {/* ⋮ Dashboard dropdown trigger (right side) */}
       {isDashboard ? (
         <TouchableOpacity
           onPress={() => setMenuOpen(true)}
           style={styles.menuButton}
           accessibilityLabel="Open dashboard menu"
         >
-          <Text style={styles.menuButtonText}>⋮</Text>
+          <Image
+          source={require('./../assets/images/settingIcon.png')}
+          style={{ width: 17, height: 17, alignSelf: 'center' }}
+        />
+          
+
         </TouchableOpacity>
       ) : (
         <View style={styles.menuButtonPlaceholder} />
       )}
 
-      {/* 📋 Dropdown menu */}
       <Modal
         visible={menuOpen}
         transparent
@@ -108,19 +111,21 @@ export default function Header() {
           onPress={() => setMenuOpen(false)}
         >
           <Pressable style={styles.menuSheet} onPress={() => {}}>
-            <TouchableOpacity
-              style={styles.menuItem}
-              onPress={handleNewScan}
-            >
-              <Text style={styles.menuItemText}>New Scan</Text>
-            </TouchableOpacity>
-
-            <View style={styles.menuDivider} />
+            
 
             <View style={[styles.menuItem, styles.menuItemRow]}>
               <Text style={styles.menuItemText}>Notifications</Text>
               <Switch value={notificationsOn} onValueChange={handleToggle} />
             </View>
+            <View style={styles.menuDivider} />
+            <TouchableOpacity
+              style={styles.menuItem}
+              onPress={handleNewScan}
+            >
+              <Text style={styles.menuItemText}>Scan a new ticket</Text>
+            </TouchableOpacity>
+
+            
           </Pressable>
         </Pressable>
       </Modal>
@@ -144,10 +149,9 @@ const styles = StyleSheet.create({
     height: 49,
   },
   menuButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 6,
-    backgroundColor: '#222',
+    position:'absolute',
+    right:15,
+    top:25,
   },
   menuButtonText: {
     color: '#fff',

@@ -2,13 +2,15 @@ import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
+  Image,
   Linking,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
-  View
+  View,
 } from 'react-native';
+import Footer from '../components/Footer';
 
 import { getScannedSlug } from '@/utils/storage';
 import { GlobalStyles } from '../styles/globalStyles';
@@ -49,14 +51,15 @@ export default function HomeScreen() {
   }
 
   return (
-    <ScrollView style={GlobalStyles.container}>
+    <View style={{ flex: 1, }}>
+      
+    
+    <ScrollView style={{ flex:1, }} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
       <View
         style={{
-          flex: 1,
-          alignItems: 'center',
-          padding: 30,
-          justifyContent: 'center',
-          gap: 0,
+          width: '100%',
+      padding: 30,
+      alignItems: 'center',
         }}
       >
         <Text
@@ -79,6 +82,10 @@ export default function HomeScreen() {
               ]}
               onPress={() => router.push('/scanner')}>
             <Text style={{ color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize: 14, fontWeight: '400', textTransform: 'uppercase', marginBottom:14, textAlign: 'center' }}>Scan your ticket</Text>
+            <Image
+                source={require('./../assets/images/scannerImage.png')}
+                style={{ width: 140, height: 137, alignSelf: 'center' }}
+              />
           </Pressable>
           <Pressable
             style={({ pressed }) => [
@@ -90,10 +97,16 @@ export default function HomeScreen() {
             }
           >
             <Text style={{ color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize: 14, fontWeight: '400', textTransform: 'uppercase', marginBottom:14, textAlign: 'center' }}>Buy Ticket</Text>
+              <Image
+                source={require('./../assets/images/ticket.png')}
+                style={{ width: 161, height: 105, alignSelf: 'center' }}
+              />
           </Pressable>
         </View>
       </View>
     </ScrollView>
+    <Footer/>
+    </View>
   );
 }
 
