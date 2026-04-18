@@ -1,17 +1,17 @@
-import { Link, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Linking,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 
-import { GlobalStyles } from '../styles/globalStyles';
 import { getScannedSlug } from '@/utils/storage';
+import { GlobalStyles } from '../styles/globalStyles';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -62,26 +62,35 @@ export default function HomeScreen() {
         <Text
           style={{
             paddingBottom: 30,
-            fontSize: 24,
-            fontWeight: '800',
+            fontSize: 35,
+            fontWeight: '400',
             textAlign: 'center',
+            color: '#fff', 
+            fontFamily: 'Audiowide_400Regular'
           }}
         >
           Welcome to Red Planel Resort{' '}
         </Text>
 
-        <View style={{ flex: 1, flexDirection: 'row', gap: 20 }}>
-          <Link style={styles.linkStyle} href="/scanner">
-            Scan QR Code
-          </Link>
-          <TouchableOpacity
-            style={styles.linkStyle}
+        <View style={{ flex: 1, flexDirection: 'column', gap: 20 }}>
+          <Pressable style={({ pressed }) => [
+                styles.linkStyle,
+                pressed && styles.pressed
+              ]}
+              onPress={() => router.push('/scanner')}>
+            <Text style={{ color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize: 14, fontWeight: '400', textTransform: 'uppercase', marginBottom:14, textAlign: 'center' }}>Scan your ticket</Text>
+          </Pressable>
+          <Pressable
+            style={({ pressed }) => [
+              styles.linkStyle,
+              pressed && styles.pressed
+            ]}
             onPress={() =>
               Linking.openURL('https://dev4work.com/thefirstonmars/')
             }
           >
-            <Text>Buy Ticket</Text>
-          </TouchableOpacity>
+            <Text style={{ color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize: 14, fontWeight: '400', textTransform: 'uppercase', marginBottom:14, textAlign: 'center' }}>Buy Ticket</Text>
+          </Pressable>
         </View>
       </View>
     </ScrollView>
@@ -94,11 +103,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   linkStyle: {
-    backgroundColor: '#00ddf1',
-    paddingLeft: 15,
-    paddingRight: 15,
-    paddingTop: 12,
-    paddingBottom: 12,
+    backgroundColor: 'rgba(217, 217, 217, 0.12)', paddingLeft:22, paddingRight:22, paddingTop:22, paddingBottom:22, borderRadius: 6, color:'#fff', textAlign: 'center', fontFamily: 'Audiowide_400Regular', fontSize:14, fontWeight: '400', textTransform: 'uppercase',
   },
   linkStyleRed: {
     backgroundColor: 'red',
@@ -124,5 +129,9 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     position: 'absolute',
+  },
+  pressed: {
+    backgroundColor: 'rgba(0, 0, 0, 0.50)',
+    transform: [{ scale: 0.98 }],
   },
 });
