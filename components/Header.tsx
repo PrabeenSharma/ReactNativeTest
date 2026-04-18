@@ -132,12 +132,12 @@ const styles = StyleSheet.create({
   container: {
     paddingLeft: 15,
     paddingRight: 15,
-    paddingTop: 50,
+    paddingTop: 15,
     paddingBottom: 15,
-    backgroundColor: '#000',
+    backgroundColor: 'transparent',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
   },
   logo: {
     width: 238,
