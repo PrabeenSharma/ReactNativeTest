@@ -15,7 +15,6 @@ import Header from '@/components/Header';
 import { LinearGradient } from 'expo-linear-gradient';
 
 const QR_API_URL = 'https://api.qrserver.com/v1/read-qr-code/';
-const VALIDATE_API = 'https://dev4work.com/thefirstonmars/wp-json/wp/v2/pages?slug=';
 
 export default function Scanner() {
   const [permission, requestPermission] = useCameraPermissions();
@@ -34,25 +33,30 @@ export default function Scanner() {
     }
   }, []);
 
-  // ✅ Extract slug
+  // 🔍 Extract slug from decoded QR data.
+  // Supported formats:
+  //   1. "slug=trip7hge34" or "...?slug=trip7hge34&foo=bar"
+  //   2. "https://trip.redplanetresorts.com/trip7hge34"
+  //   3. "https://trip.redplanetresorts.com/trip7hge34/" (trailing slash)
+  //   4. "https://trip.redplanetresorts.com/trip7hge34/locationbg.jpg"
+  //      (trailing segment is a filename; we skip it and use the real slug)
+  //   5. "trip7hge34" (plain slug)
   const extractSlug = (data: string) => {
     const raw = (data || '').trim();
 
-    const slugMatch =
-      raw.match(/[?&]slug=([^&#\s]+)/) ||
-      raw.match(/(?:^|\b)slug=([^&#\s]+)/);
-
+    // 1. explicit slug= query/param anywhere in the string
+    const slugMatch = raw.match(/[?&]slug=([^&#\s]+)/) || raw.match(/(?:^|\b)slug=([^&#\s]+)/);
     if (slugMatch?.[1]) return decodeURIComponent(slugMatch[1]);
 
+    // 2. URL: strip query/hash, then find the last non-filename path segment
     if (/^https?:\/\//i.test(raw)) {
       const pathOnly = raw.split('?')[0].split('#')[0];
+      // drop scheme://host
       const afterScheme = pathOnly.replace(/^https?:\/\/[^/]+/i, '');
       const segments = afterScheme.split('/').filter(Boolean);
 
-      while (
-        segments.length > 1 &&
-        /\.[a-z0-9]{2,5}$/i.test(segments[segments.length - 1])
-      ) {
+      // strip trailing filename-like segments (e.g. locationbg.jpg, logo.png)
+      while (segments.length > 1 && /\.[a-z0-9]{2,5}$/i.test(segments[segments.length - 1])) {
         segments.pop();
       }
 
@@ -60,19 +64,8 @@ export default function Scanner() {
       if (last) return decodeURIComponent(last);
     }
 
+    // 3. plain text
     return raw;
-  };
-
-  // ✅ Validate slug from API
-  const validateSlug = async (slug: string) => {
-    try {
-      const res = await fetch(`${VALIDATE_API}${slug}`);
-      const data = await res.json();
-      return data && data.length > 0;
-    } catch (e) {
-      console.log('Validation error:', e);
-      return false;
-    }
   };
 
   const goToNotificationSettings = (slug: string) => {
@@ -82,30 +75,16 @@ export default function Scanner() {
     });
   };
 
-  // ✅ Camera Scan
-  const handleScan = async ({ data }: { data: string }) => {
-    if (scanned || processing) return;
-
+  // 📷 Camera scan
+  const handleScan = ({ data }: { data: string }) => {
     setScanned(true);
-    setProcessing(true);
-
-    const slug = extractSlug(data);
-    const isValid = await validateSlug(slug);
-
-    if (isValid) {
-      goToNotificationSettings(slug);
-    } else {
-      alert('Invalid QR Code');
-      setScanned(false);
-    }
-
-    setProcessing(false);
+    goToNotificationSettings(extractSlug(data));
+    setTimeout(() => setScanned(false), 2000);
   };
 
-  // ✅ Decode QR from image
+  // 🔎 Send a QR image to the QR decode API and route on success.
   const decodeQrAndRoute = async (body: FormData) => {
     setProcessing(true);
-
     try {
       const res = await fetch(QR_API_URL, {
         method: 'POST',
@@ -113,38 +92,37 @@ export default function Scanner() {
       });
 
       const data = await res.json();
+      console.log('QR API response:', data);
+
       const qrData = data?.[0]?.symbol?.[0]?.data;
 
       if (qrData) {
-        const slug = extractSlug(qrData);
-        const isValid = await validateSlug(slug);
-
-        if (isValid) {
-          goToNotificationSettings(slug);
-        } else {
-          alert('Invalid QR Code');
-        }
+        goToNotificationSettings(extractSlug(qrData));
       } else {
-        alert('No QR found');
+        alert('No QR found in image');
       }
     } catch (err) {
-      console.log(err);
+      console.log('Scan error:', err);
       alert('Error scanning image');
+    } finally {
+      setProcessing(false);
     }
-
-    setProcessing(false);
   };
 
-  // ✅ Web file picker
+  // 🖥️ Web: browse file from PC. React Native Web does not render raw DOM
+  // <input> elements, so we create one imperatively, trigger the OS file
+  // picker, and clean it up after the user makes a selection.
   const pickImageAndScanWeb = () => {
     if (typeof document === 'undefined') return;
 
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
+    input.style.display = 'none';
 
     input.onchange = async () => {
       const file = input.files?.[0];
+      input.remove();
       if (!file) return;
 
       setImageUri(URL.createObjectURL(file));
@@ -155,11 +133,15 @@ export default function Scanner() {
       await decodeQrAndRoute(formData);
     };
 
+    // If the user cancels the OS file dialog, the `change` event never fires,
+    // so without this handler the hidden <input> would leak into the DOM.
+    input.addEventListener('cancel', () => input.remove());
+
     document.body.appendChild(input);
     input.click();
   };
 
-  // ✅ Mobile picker
+  // 📱 Native: pick image from device library
   const pickImageAndScanNative = async () => {
     const mediaPermission =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -191,7 +173,6 @@ export default function Scanner() {
 
   const handleUploadPress = () => {
     if (processing) return;
-
     if (Platform.OS === 'web') {
       pickImageAndScanWeb();
     } else {
@@ -199,7 +180,7 @@ export default function Scanner() {
     }
   };
 
-  // ✅ Permission UI
+  // 🔒 Permission handling (only meaningful on native)
   if (Platform.OS !== 'web') {
     if (!permission) {
       return <Text>Requesting permission...</Text>;
@@ -207,73 +188,132 @@ export default function Scanner() {
 
     if (!permission.granted) {
       return (
-        <View style={styles.container}>
-          <Text style={{ color: '#fff' }}>No camera access</Text>
+        <View style={{ flex: 1, }}>
+          <Header />
+          <View style={styles.container}>
+            <Text style={{ color: '#fff', marginBottom: 10 , fontFamily: 'Audiowide_400Regular', fontSize:16, fontWeight:'400'}}>
+              No camera access
+            </Text>
 
-          <TouchableOpacity onPress={requestPermission}>
-            <Text style={styles.buttonText}>Allow Camera</Text>
-          </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={requestPermission}>
+              <LinearGradient
+              colors={['#0C2046', '#004F99']}
+              locations={[0.1624, 0.816]}
+              start={{ x: 0.85, y: 0.15 }}
+              end={{ x: 0.15, y: 0.85 }}
+              style={styles.optionGradient}
+                      >
+              <Text style={styles.buttonText}>Allow Camera</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+
+            {/* Even without camera, user can still upload an image */}
+            <TouchableOpacity
+              style={[styles.button, { marginTop: 20 }]}
+              onPress={handleUploadPress}
+              disabled={processing}
+            >
+              <Text style={styles.buttonText}>
+                {processing ? 'Scanning...' : 'Upload QR Image'}
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <Footer/>
         </View>
       );
     }
   }
 
   return (
-    <View style={{ flex: 1 }}>
-      <Header />
+    <View style={{ flex: 1, }}>
+        <Header />
+        <View style={styles.container}>
+          <Text style={styles.title}>Scan Ticket</Text>
 
-      <View style={styles.container}>
-        <Text style={styles.title}>Scan Ticket</Text>
+          {Platform.OS !== 'web' && (
+            <>
+              <View style={styles.scannerBox}>
+                <CameraView
+                  style={{ flex: 1 }}
+                  facing={cameraType}
+                  enableTorch={flash === 'torch'}
+                  barcodeScannerSettings={{
+                    barcodeTypes: ['qr'],
+                  }}
+                  onBarcodeScanned={scanned ? undefined : handleScan}
+                />
+              </View>
 
-        {Platform.OS !== 'web' && (
-          <>
-            <View style={styles.scannerBox}>
-              <CameraView
-                style={{ flex: 1 }}
-                facing={cameraType}
-                enableTorch={flash === 'torch'}
-                barcodeScannerSettings={{
-                  barcodeTypes: ['qr'],
-                }}
-                onBarcodeScanned={handleScan}
-              />
-            </View>
+              {/* Controls */}
+              <View style={styles.controlRow}>
+                {/* Flash */}
+                <TouchableOpacity
+                  style={[styles.button, { marginRight: 10 }]}
+                  onPress={() => setFlash(flash === 'off' ? 'torch' : 'off')}
+                >
+                  <Text style={styles.buttonText}>
+                    Flash: {flash === 'off' ? 'OFF' : 'ON'}
+                  </Text>
+                </TouchableOpacity>
 
-            <View style={styles.controlRow}>
-              <TouchableOpacity onPress={() => setFlash(flash === 'off' ? 'torch' : 'off')}>
-                <Text style={styles.buttonText}>
-                  Flash: {flash === 'off' ? 'OFF' : 'ON'}
-                </Text>
-              </TouchableOpacity>
+                {/* Camera switch */}
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() =>
+                    setCameraType(cameraType === 'back' ? 'front' : 'back')
+                  }
+                >
+                  <Text style={styles.buttonText}>
+                    Camera: {cameraType === 'back' ? 'Back' : 'Front'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          )}
 
-              <TouchableOpacity
-                onPress={() =>
-                  setCameraType(cameraType === 'back' ? 'front' : 'back')
-                }
-              >
-                <Text style={styles.buttonText}>
-                  Camera: {cameraType === 'back' ? 'Back' : 'Front'}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </>
-        )}
-
-        <TouchableOpacity onPress={handleUploadPress}>
-          <LinearGradient
-            colors={['#0C2046', '#004F99']}
-            style={styles.optionGradient}
-          >
-            <Text style={styles.buttonText}>
-              {processing ? 'Scanning...' : 'Upload QR Image'}
+          {Platform.OS === 'web' && (
+            <Text style={styles.webHint}>
+              Upload a QR code image from your computer to scan it.
             </Text>
-          </LinearGradient>
-        </TouchableOpacity>
+          )}
 
-      
-      </View>
+          {/* Upload (works on mobile library + PC file browse on web) */}
+          <TouchableOpacity
+            style={[styles.button, { marginTop: 20 }]}
+            onPress={handleUploadPress}
+            disabled={processing}
+          >
+            <LinearGradient
+              colors={['#0C2046', '#004F99']}
+              locations={[0.1624, 0.816]}
+              start={{ x: 0.85, y: 0.15 }}
+              end={{ x: 0.15, y: 0.85 }}
+              style={styles.optionGradient}
+                      >
+            <Text style={styles.buttonText}>
+              {processing
+                ? 'Scanning...'
+                : Platform.OS === 'web'
+                  ? 'Browse QR Image'
+                  : 'Upload QR Image'}
+            </Text>
+            </LinearGradient>
+          </TouchableOpacity>
 
-      <Footer />
+          {/* Preview */}
+          {/* {imageUri && <Image source={{ uri: imageUri }} style={styles.image} />} */}
+
+          {/* Scan again (native camera only) */}
+          {Platform.OS !== 'web' && scanned && (
+            <TouchableOpacity
+              style={[styles.button, { marginTop: 10 }]}
+              onPress={() => setScanned(false)}
+            >
+              <Text style={styles.buttonText}>Scan Again</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+        <Footer/>
     </View>
   );
 }
@@ -283,11 +323,12 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 60,
     alignItems: 'center',
+    backgroundColor: 'transparent',
     justifyContent: 'center',
   },
   title: {
-    color: '#fff',
-    fontSize: 24,
+    marginBottom: 20,
+    color: '#fff',  fontFamily: 'Audiowide_400Regular', fontSize:24, fontWeight:'400'
   },
   scannerBox: {
     width: '90%',
@@ -298,20 +339,33 @@ const styles = StyleSheet.create({
   controlRow: {
     flexDirection: 'row',
     marginTop: 10,
-    gap: 20,
+  },
+  button: {
+    
   },
   buttonText: {
+    color: '#fff', marginBottom: 10 , fontFamily: 'Audiowide_400Regular', fontSize:16, fontWeight:'400'
+  },
+  webHint: {
     color: '#fff',
+    fontSize: 14,
     marginTop: 10,
+    textAlign: 'center',
+    paddingHorizontal: 20,
+     marginBottom: 10 , fontFamily: 'Audiowide_400Regular',fontWeight:'400'
   },
   image: {
     width: 200,
     height: 200,
     marginTop: 10,
+    borderRadius: 10,
   },
-  optionGradient: {
-    marginTop: 20,
-    padding: 15,
-    borderRadius: 8,
+   optionGradient: {
+    borderRadius: 6,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingBottom:8,
+    paddingTop:15
   },
 });

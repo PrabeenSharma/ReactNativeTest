@@ -20,37 +20,29 @@ import {
 } from '@/utils/storage';
 
 export default function Header() {
-  const [page, setPage] = useState<any>(null);
   const pathname = usePathname();
   const router = useRouter();
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [notificationsOn, setNotificationsOn] = useState(false);
 
-  const isDashboard = pathname.startsWith('/dashboard');
+  const isDashboardRoot = pathname === '/dashboard';
+  const isDashboardSubPage =
+    pathname.startsWith('/dashboard') && pathname !== '/dashboard';
 
   useEffect(() => {
-    fetch(
-      'https://dev4work.com/thefirstonmars/wp-json/wp/v2/pages?slug=trip7hge34',
-    )
-      .then((res) => res.json())
-      .then((data) => setPage(data[0]))
-      .catch((err) => console.log(err));
-  }, []);
+    if (!isDashboardRoot && !isDashboardSubPage) return;
 
-  // Keep the switch in sync with persisted preference whenever the dropdown
-  // is about to be shown (and on first mount of the dashboard header).
-  useEffect(() => {
-    if (!isDashboard) return;
     let active = true;
     (async () => {
       const value = await getNotificationsEnabled();
       if (active) setNotificationsOn(value === true);
     })();
+
     return () => {
       active = false;
     };
-  }, [isDashboard, menuOpen]);
+  }, [pathname, menuOpen]);
 
   const handleToggle = async (next: boolean) => {
     setNotificationsOn(next);
@@ -60,18 +52,24 @@ export default function Header() {
   const handleNewScan = async () => {
     setMenuOpen(false);
     await clearAllScanData();
-    // After notification-settings reset the stack to [{ name: 'dashboard' }],
-    // a CommonActions.reset targeting 'index' is not handled by the navigator
-    // (the 'index' route is no longer in the stack). Use expo-router's replace
-    // to navigate back to Home — because the stack only contains '/dashboard'
-    // at this point, replacing with '/' effectively resets to Home without
-    // leaving /dashboard in history.
     router.replace('/');
   };
 
   return (
     <View style={styles.container}>
-      {/* 🖼 Logo */}
+      {/* ⬅️ Back Button (LEFT) */}
+      {isDashboardSubPage ? (
+        <TouchableOpacity
+          onPress={() => router.replace('/dashboard')}
+          style={styles.backButton}
+        >
+          <Text style={styles.backText}>←</Text>
+        </TouchableOpacity>
+      ) : (
+        <View style={styles.leftPlaceholder} />
+      )}
+
+      {/* 🖼 Logo (CENTER) */}
       <TouchableOpacity
         onPress={() =>
           Linking.openURL('https://dev4work.com/thefirstonmars/')
@@ -79,27 +77,26 @@ export default function Header() {
       >
         <Image
           source={require('./../assets/images/Logo.png')}
-          style={{ width: 252, height: 51, alignSelf: 'center' }}
+          style={styles.logo}
         />
       </TouchableOpacity>
 
-      {isDashboard ? (
+      {/* ⚙️ Settings (RIGHT — SAME AS BEFORE) */}
+      {pathname.startsWith('/dashboard') ? (
         <TouchableOpacity
           onPress={() => setMenuOpen(true)}
           style={styles.menuButton}
-          accessibilityLabel="Open dashboard menu"
         >
           <Image
-          source={require('./../assets/images/settingIcon.png')}
-          style={{ width: 17, height: 17, alignSelf: 'center' }}
-        />
-          
-
+            source={require('./../assets/images/settingIcon.png')}
+            style={{ width: 17, height: 17 }}
+          />
         </TouchableOpacity>
       ) : (
         <View style={styles.menuButtonPlaceholder} />
       )}
 
+      {/* ⚙️ Menu Modal */}
       <Modal
         visible={menuOpen}
         transparent
@@ -111,21 +108,19 @@ export default function Header() {
           onPress={() => setMenuOpen(false)}
         >
           <Pressable style={styles.menuSheet} onPress={() => {}}>
-            
-
             <View style={[styles.menuItem, styles.menuItemRow]}>
               <Text style={styles.menuItemText}>Notifications</Text>
               <Switch value={notificationsOn} onValueChange={handleToggle} />
             </View>
+
             <View style={styles.menuDivider} />
+
             <TouchableOpacity
               style={styles.menuItem}
               onPress={handleNewScan}
             >
               <Text style={styles.menuItemText}>Scan a new ticket</Text>
             </TouchableOpacity>
-
-            
           </Pressable>
         </Pressable>
       </Modal>
@@ -135,33 +130,45 @@ export default function Header() {
 
 const styles = StyleSheet.create({
   container: {
-    paddingLeft: 15,
-    paddingRight: 15,
-    paddingTop: 15,
-    paddingBottom: 15,
-    backgroundColor: 'transparent',
+    paddingHorizontal: 15,
+    paddingVertical: 15,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center', // 🔥 important
   },
+
   logo: {
-    width: 238,
-    height: 49,
+    width: 252,
+    height: 51,
+    alignSelf: 'center',
   },
-  menuButton: {
-    position:'absolute',
-    right:15,
-    top:30,
+
+  backButton: {
+    position: 'absolute',
+    left: 15,
+    top: 30,
   },
-  menuButtonText: {
-    color: '#fff',
+
+  backText: {
     fontSize: 22,
-    fontWeight: '700',
-    lineHeight: 22,
+    color: '#fff',
+    fontWeight: '600',
   },
+
+  leftPlaceholder: {
+    width: 30, // keeps logo centered
+  },
+
+  menuButton: {
+    position: 'absolute',
+    right: 15,
+    top: 30,
+  },
+
   menuButtonPlaceholder: {
-    width: 0,
+    width: 30,
   },
+
   backdrop: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.3)',
@@ -169,6 +176,7 @@ const styles = StyleSheet.create({
     paddingTop: 100,
     paddingRight: 15,
   },
+
   menuSheet: {
     minWidth: 220,
     backgroundColor: '#fff',
@@ -180,19 +188,23 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     elevation: 6,
   },
+
   menuItem: {
     paddingVertical: 12,
     paddingHorizontal: 16,
   },
+
   menuItemRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
+
   menuItemText: {
     fontSize: 16,
     color: '#111',
   },
+
   menuDivider: {
     height: 1,
     backgroundColor: '#eee',
