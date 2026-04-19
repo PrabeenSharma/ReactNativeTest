@@ -27,7 +27,7 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [notificationsOn, setNotificationsOn] = useState(false);
 
-  const isDashboard = pathname === '/dashboard';
+  const isDashboard = pathname.startsWith('/dashboard');
 
   useEffect(() => {
     fetch(

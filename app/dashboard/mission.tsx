@@ -1,8 +1,8 @@
+import Header from '@/components/Header';
 import { getScannedSlug } from '@/utils/storage';
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
-
 export default function MissionPage() {
   const { slug: slugParam } = useLocalSearchParams<{ slug?: string }>();
 
@@ -61,7 +61,8 @@ export default function MissionPage() {
   }
 
   return (
-    <View>
+    <View style={ {flex:1}}>
+       <Header/>
       <Text>Mission Status: {page?.acf?.mission_status}</Text>
     </View>
   );
