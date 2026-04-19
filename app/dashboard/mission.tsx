@@ -1,8 +1,7 @@
-import Header from '@/components/Header';
 import { getScannedSlug } from '@/utils/storage';
-import { router, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 export default function MissionPage() {
   const { slug: slugParam } = useLocalSearchParams<{ slug?: string }>();
@@ -62,15 +61,8 @@ export default function MissionPage() {
   }
 
   return (
-    <View style={{ flex:1}}>
-      <Header/>
+    <View>
       <Text>Mission Status: {page?.acf?.mission_status}</Text>
-
-      <Pressable  onPress={() => router.push('/dashboard/mission')} style={{ marginTop: 20, backgroundColor: '#fff', padding: 10, borderRadius: 5 }}>
-                      <Text style={{ color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize: 14, fontWeight: '400', textTransform: 'uppercase', marginBottom:14, textAlign: 'center' }}>Mission</Text>
-                      
-                    </Pressable>
     </View>
   );
 }
-
