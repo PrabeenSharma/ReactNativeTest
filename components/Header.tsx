@@ -70,7 +70,7 @@ export default function Header() {
       )}
 
       {/* 🖼 Logo (CENTER) */}
-      <TouchableOpacity
+      <TouchableOpacity style={styles.logo}
         onPress={() =>
           Linking.openURL('https://dev4work.com/thefirstonmars/')
         }
