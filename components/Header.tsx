@@ -28,6 +28,9 @@ export default function Header() {
   const [notificationsOn, setNotificationsOn] = useState(false);
 
   const isDashboard = pathname === '/dashboard';
+  const isMission = pathname === '/mission';
+  // Dashboard and Mission both share the same dropdown (New Scan + Notifications).
+  const showMenu = isDashboard || isMission;
 
   useEffect(() => {
     fetch(
@@ -39,9 +42,9 @@ export default function Header() {
   }, []);
 
   // Keep the switch in sync with persisted preference whenever the dropdown
-  // is about to be shown (and on first mount of the dashboard header).
+  // is about to be shown (and on first mount of the dashboard/mission header).
   useEffect(() => {
-    if (!isDashboard) return;
+    if (!showMenu) return;
     let active = true;
     (async () => {
       const value = await getNotificationsEnabled();
@@ -50,7 +53,7 @@ export default function Header() {
     return () => {
       active = false;
     };
-  }, [isDashboard, menuOpen]);
+  }, [showMenu, menuOpen]);
 
   const handleToggle = async (next: boolean) => {
     setNotificationsOn(next);
@@ -69,8 +72,29 @@ export default function Header() {
     router.replace('/');
   };
 
+  const handleBackToDashboard = () => {
+    // Mission page back button: always go to Dashboard, regardless of how the
+    // user arrived at the mission route. replace (not push) so we don't build
+    // up a dashboard→mission→dashboard stack.
+    router.replace('/dashboard');
+  };
+
   return (
     <View style={styles.container}>
+      {/* ⬅️ Mission-only back button (absolute, top-left) */}
+      {isMission ? (
+        <TouchableOpacity
+          onPress={handleBackToDashboard}
+          style={styles.backButton}
+          accessibilityLabel="Back to dashboard"
+        >
+          <Image
+            source={require('./../assets/images/arrow.png')}
+            style={{ width: 17, height: 17, alignSelf: 'center' }}
+          />
+        </TouchableOpacity>
+      ) : null}
+
       {/* 🖼 Logo */}
       <TouchableOpacity
         onPress={() =>
@@ -83,7 +107,7 @@ export default function Header() {
         />
       </TouchableOpacity>
 
-      {isDashboard ? (
+      {showMenu ? (
         <TouchableOpacity
           onPress={() => setMenuOpen(true)}
           style={styles.menuButton}
@@ -152,6 +176,13 @@ const styles = StyleSheet.create({
     position:'absolute',
     right:15,
     top:60,
+  },
+  backButton: {
+    position: 'absolute',
+    left: 15,
+    top: 60,
+    padding: 4,
+    zIndex: 1,
   },
   menuButtonText: {
     color: '#fff',

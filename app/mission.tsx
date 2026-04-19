@@ -1,18 +1,10 @@
 import { formatDate } from '@/utils/date';
-import { clearAllScanData, getScannedSlug } from '@/utils/storage';
+import { getScannedSlug } from '@/utils/storage';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import {
-  Button,
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
-export default function DashboardScreen() {
+export default function MissionScreen() {
   const [page, setPage] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [resolvedSlug, setResolvedSlug] = useState<string | null>(null);
@@ -21,6 +13,8 @@ export default function DashboardScreen() {
   const router = useRouter();
 
   // Resolve slug from params first, fall back to saved slug from storage.
+  // Mission page is gated behind a valid scan: if no slug is available,
+  // bounce the user to Home so they have to scan a QR first.
   useEffect(() => {
     let active = true;
 
@@ -30,16 +24,18 @@ export default function DashboardScreen() {
         return;
       }
       const saved = await getScannedSlug();
-      if (active) {
-        setResolvedSlug(saved);
-        if (!saved) setLoading(false);
+      if (!active) return;
+      if (!saved) {
+        router.replace('/');
+        return;
       }
+      setResolvedSlug(saved);
     })();
 
     return () => {
       active = false;
     };
-  }, [slugParam]);
+  }, [slugParam, router]);
 
   useEffect(() => {
     if (!resolvedSlug) return;
@@ -59,36 +55,18 @@ export default function DashboardScreen() {
       });
   }, [resolvedSlug]);
 
-  // Invalid-QR fallback: clear storage and send the user back to Home so
-  // they can scan again. The main "New Scan" entry point lives in the
-  // dashboard header dropdown (components/Header.tsx).
-  // We use router.replace instead of CommonActions.reset because
-  // notification-settings already reset the stack to [{ name: 'dashboard' }],
-  // so an 'index' route is no longer registered with the native stack
-  // navigator and the reset action gets dropped.
-  const handleScanAgain = async () => {
-    await clearAllScanData();
-    router.replace('/');
-  };
-
-  // 🔄 Loading
   if (loading) {
     return (
       <View style={styles.center}>
-        <Image
-          source={require('./../assets/images/loading.gif')}
-          style={{ width: 150, height: 150, alignSelf: 'center' }}
-        /> 
+        <Text>Loading...</Text>
       </View>
     );
   }
 
-  // ❌ No data
   if (!page) {
     return (
       <View style={styles.center}>
-        <Text>Invalid QR Code. Please scan a valid Ticket QR code</Text>
-        <Button title="Scan Again" onPress={handleScanAgain} />
+        <Text>Mission details unavailable.</Text>
       </View>
     );
   }
@@ -96,11 +74,9 @@ export default function DashboardScreen() {
   return (
     <ScrollView style={styles.container}>
       {/* 🧾 Title */}
-      <Text style={styles.title}>
-        {page?.title?.rendered}
-      </Text>
+      <Text style={styles.title}>{page?.title?.rendered}</Text>
 
-      {/* 🚀 Mission Info */}
+      {/* 🚀 Mission summary */}
       <Text>Mission Name: {page?.acf?.mission_name}</Text>
       <Text>Mission Status: {page?.acf?.mission_status}</Text>
 
@@ -109,7 +85,6 @@ export default function DashboardScreen() {
         {page?.custom_info?.info_row_1} :{' '}
         {page?.mission_calculation?.time_seconds} sec
       </Text>
-
       <Text>
         {page?.custom_info?.info_row_2} :{' '}
         {(page?.mission_calculation?.time_seconds || 0) * 2} sec
@@ -119,26 +94,10 @@ export default function DashboardScreen() {
       <Text>Ship Speed: {page?.acf?.ship_speed}</Text>
 
       {/* 📅 Date */}
-      <Text>
-        Launch Date: {formatDate(page?.acf?.launch_date || '')}
-      </Text>
+      <Text>Launch Date: {formatDate(page?.acf?.launch_date || '')}</Text>
 
       {/* 🖼 Extra */}
       <Text>{page?.theme_options?.example_uploader}</Text>
-
-      {/* 🔍 Navigate to Mission details */}
-      <TouchableOpacity
-        style={styles.missionButton}
-        onPress={() =>
-          router.push(
-            resolvedSlug
-              ? `/mission?slug=${encodeURIComponent(resolvedSlug)}`
-              : '/mission',
-          )
-        }
-      >
-        <Text style={styles.missionButtonText}>View Mission Details</Text>
-      </TouchableOpacity>
     </ScrollView>
   );
 }
@@ -156,19 +115,5 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 15,
-  },
-  missionButton: {
-    marginTop: 24,
-    backgroundColor: '#00ddf1',
-    paddingVertical: 14,
-    paddingHorizontal: 18,
-    borderRadius: 10,
-    alignItems: 'center',
-    alignSelf: 'flex-start',
-  },
-  missionButtonText: {
-    color: '#000',
-    fontSize: 16,
-    fontWeight: '700',
   },
 });
