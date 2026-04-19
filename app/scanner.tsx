@@ -3,17 +3,25 @@ import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
-  Image,
+  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
+
+import Footer from '@/components/Footer';
+import Header from '@/components/Header';
+import { LinearGradient } from 'expo-linear-gradient';
+
+const QR_API_URL = 'https://api.qrserver.com/v1/read-qr-code/';
+const VALIDATE_API = 'https://dev4work.com/thefirstonmars/wp-json/wp/v2/pages?slug=';
 
 export default function Scanner() {
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
   const [imageUri, setImageUri] = useState<string | null>(null);
+  const [processing, setProcessing] = useState(false);
 
   const [flash, setFlash] = useState<'off' | 'torch'>('off');
   const [cameraType, setCameraType] = useState<CameraType>('back');
@@ -21,182 +29,251 @@ export default function Scanner() {
   const router = useRouter();
 
   useEffect(() => {
-    ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (Platform.OS !== 'web') {
+      ImagePicker.requestMediaLibraryPermissionsAsync();
+    }
   }, []);
 
-  // 🔍 Extract slug
+  // ✅ Extract slug
   const extractSlug = (data: string) => {
-    let slug = '';
+    const raw = (data || '').trim();
 
-    if (data.includes('slug=')) {
-      slug = data.split('slug=')[1];
-    } else if (data.startsWith('http')) {
-      slug = data.split('/').filter(Boolean).pop() || '';
-    } else {
-      slug = data;
+    const slugMatch =
+      raw.match(/[?&]slug=([^&#\s]+)/) ||
+      raw.match(/(?:^|\b)slug=([^&#\s]+)/);
+
+    if (slugMatch?.[1]) return decodeURIComponent(slugMatch[1]);
+
+    if (/^https?:\/\//i.test(raw)) {
+      const pathOnly = raw.split('?')[0].split('#')[0];
+      const afterScheme = pathOnly.replace(/^https?:\/\/[^/]+/i, '');
+      const segments = afterScheme.split('/').filter(Boolean);
+
+      while (
+        segments.length > 1 &&
+        /\.[a-z0-9]{2,5}$/i.test(segments[segments.length - 1])
+      ) {
+        segments.pop();
+      }
+
+      const last = segments.pop();
+      if (last) return decodeURIComponent(last);
     }
 
-    return slug;
+    return raw;
   };
 
-  // 📷 Camera scan
-  const handleScan = ({ data }: { data: string }) => {
-    setScanned(true);
+  // ✅ Validate slug from API
+  const validateSlug = async (slug: string) => {
+    try {
+      const res = await fetch(`${VALIDATE_API}${slug}`);
+      const data = await res.json();
+      return data && data.length > 0;
+    } catch (e) {
+      console.log('Validation error:', e);
+      return false;
+    }
+  };
 
-    const slug = extractSlug(data);
-
+  const goToNotificationSettings = (slug: string) => {
     router.push({
-      pathname: '/dashboard',
+      pathname: '/notification-settings',
       params: { slug },
     });
-
-    setTimeout(() => setScanned(false), 2000);
   };
 
-  // 🖼️ Image QR scan (API based - FIXED)
-  const pickImageAndScan = async () => {
-    const permission =
+  // ✅ Camera Scan
+  const handleScan = async ({ data }: { data: string }) => {
+    if (scanned || processing) return;
+
+    setScanned(true);
+    setProcessing(true);
+
+    const slug = extractSlug(data);
+    const isValid = await validateSlug(slug);
+
+    if (isValid) {
+      goToNotificationSettings(slug);
+    } else {
+      alert('Invalid QR Code');
+      setScanned(false);
+    }
+
+    setProcessing(false);
+  };
+
+  // ✅ Decode QR from image
+  const decodeQrAndRoute = async (body: FormData) => {
+    setProcessing(true);
+
+    try {
+      const res = await fetch(QR_API_URL, {
+        method: 'POST',
+        body,
+      });
+
+      const data = await res.json();
+      const qrData = data?.[0]?.symbol?.[0]?.data;
+
+      if (qrData) {
+        const slug = extractSlug(qrData);
+        const isValid = await validateSlug(slug);
+
+        if (isValid) {
+          goToNotificationSettings(slug);
+        } else {
+          alert('Invalid QR Code');
+        }
+      } else {
+        alert('No QR found');
+      }
+    } catch (err) {
+      console.log(err);
+      alert('Error scanning image');
+    }
+
+    setProcessing(false);
+  };
+
+  // ✅ Web file picker
+  const pickImageAndScanWeb = () => {
+    if (typeof document === 'undefined') return;
+
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+
+    input.onchange = async () => {
+      const file = input.files?.[0];
+      if (!file) return;
+
+      setImageUri(URL.createObjectURL(file));
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      await decodeQrAndRoute(formData);
+    };
+
+    document.body.appendChild(input);
+    input.click();
+  };
+
+  // ✅ Mobile picker
+  const pickImageAndScanNative = async () => {
+    const mediaPermission =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-    if (!permission.granted) {
+    if (!mediaPermission.granted) {
       alert('Permission required');
       return;
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'], // ✅ FIXED
+      mediaTypes: ['images'],
       quality: 1,
     });
 
-    if (!result.canceled) {
-      const uri = result.assets[0].uri;
-      setImageUri(uri);
+    if (result.canceled) return;
 
-      const formData = new FormData();
+    const uri = result.assets[0].uri;
+    setImageUri(uri);
 
-      formData.append('file', {
-        uri: uri,
-        name: 'qr.jpg',
-        type: 'image/jpeg',
-      } as any);
+    const formData = new FormData();
+    formData.append('file', {
+      uri,
+      name: 'qr.jpg',
+      type: 'image/jpeg',
+    } as any);
 
-      try {
-        const res = await fetch(
-          'https://api.qrserver.com/v1/read-qr-code/',
-          {
-            method: 'POST',
-            body: formData,
-          }
-        );
+    await decodeQrAndRoute(formData);
+  };
 
-        const data = await res.json();
-        console.log('QR API response:', data);
+  const handleUploadPress = () => {
+    if (processing) return;
 
-        const qrData = data?.[0]?.symbol?.[0]?.data;
-
-        if (qrData) {
-          const slug = extractSlug(qrData);
-
-          router.push({
-            pathname: '/dashboard',
-            params: { slug },
-          });
-        } else {
-          alert('No QR found in image');
-        }
-      } catch (err) {
-        console.log('Scan error:', err);
-        alert('Error scanning image');
-      }
+    if (Platform.OS === 'web') {
+      pickImageAndScanWeb();
+    } else {
+      pickImageAndScanNative();
     }
   };
 
-  // 🔒 Permission handling
-  if (!permission) {
-    return <Text>Requesting permission...</Text>;
-  }
+  // ✅ Permission UI
+  if (Platform.OS !== 'web') {
+    if (!permission) {
+      return <Text>Requesting permission...</Text>;
+    }
 
-  if (!permission.granted) {
-    return (
-      <View style={styles.container}>
-        <Text style={{ color: '#fff', marginBottom: 10 }}>
-          No camera access
-        </Text>
+    if (!permission.granted) {
+      return (
+        <View style={styles.container}>
+          <Text style={{ color: '#fff' }}>No camera access</Text>
 
-        <TouchableOpacity style={styles.button} onPress={requestPermission}>
-          <Text style={styles.buttonText}>Allow Camera</Text>
-        </TouchableOpacity>
-      </View>
-    );
+          <TouchableOpacity onPress={requestPermission}>
+            <Text style={styles.buttonText}>Allow Camera</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Scan Ticket</Text>
+    <View style={{ flex: 1 }}>
+      <Header />
 
-      <View style={styles.scannerBox}>
-        <CameraView
-          style={{ flex: 1 }}
-          facing={cameraType}
-          enableTorch={flash === 'torch'} // 🔥 Flash FIX
-          barcodeScannerSettings={{
-            barcodeTypes: ['qr'],
-          }}
-          onBarcodeScanned={scanned ? undefined : handleScan}
-        />
+      <View style={styles.container}>
+        <Text style={styles.title}>Scan Ticket</Text>
+
+        {Platform.OS !== 'web' && (
+          <>
+            <View style={styles.scannerBox}>
+              <CameraView
+                style={{ flex: 1 }}
+                facing={cameraType}
+                enableTorch={flash === 'torch'}
+                barcodeScannerSettings={{
+                  barcodeTypes: ['qr'],
+                }}
+                onBarcodeScanned={handleScan}
+              />
+            </View>
+
+            <View style={styles.controlRow}>
+              <TouchableOpacity onPress={() => setFlash(flash === 'off' ? 'torch' : 'off')}>
+                <Text style={styles.buttonText}>
+                  Flash: {flash === 'off' ? 'OFF' : 'ON'}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() =>
+                  setCameraType(cameraType === 'back' ? 'front' : 'back')
+                }
+              >
+                <Text style={styles.buttonText}>
+                  Camera: {cameraType === 'back' ? 'Back' : 'Front'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </>
+        )}
+
+        <TouchableOpacity onPress={handleUploadPress}>
+          <LinearGradient
+            colors={['#0C2046', '#004F99']}
+            style={styles.optionGradient}
+          >
+            <Text style={styles.buttonText}>
+              {processing ? 'Scanning...' : 'Upload QR Image'}
+            </Text>
+          </LinearGradient>
+        </TouchableOpacity>
+
+      
       </View>
 
-      {/* Controls */}
-      <View style={styles.controlRow}>
-        {/* Flash */}
-        <TouchableOpacity
-          style={[styles.button, { marginRight: 10 }]}
-          onPress={() =>
-            setFlash(flash === 'off' ? 'torch' : 'off')
-          }
-        >
-          <Text style={styles.buttonText}>
-            Flash: {flash === 'off' ? 'OFF' : 'ON'}
-          </Text>
-        </TouchableOpacity>
-
-        {/* Camera switch */}
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() =>
-            setCameraType(
-              cameraType === 'back' ? 'front' : 'back'
-            )
-          }
-        >
-          <Text style={styles.buttonText}>
-            Camera: {cameraType === 'back' ? 'Back' : 'Front'}
-          </Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Upload */}
-      <TouchableOpacity
-        style={[styles.button, { marginTop: 20 }]}
-        onPress={pickImageAndScan}
-      >
-        <Text style={styles.buttonText}>Upload QR Image</Text>
-      </TouchableOpacity>
-
-      {/* Preview */}
-      {imageUri && (
-        <Image source={{ uri: imageUri }} style={styles.image} />
-      )}
-
-      {/* Scan again */}
-      {scanned && (
-        <TouchableOpacity
-          style={[styles.button, { marginTop: 10 }]}
-          onPress={() => setScanned(false)}
-        >
-          <Text style={styles.buttonText}>Scan Again</Text>
-        </TouchableOpacity>
-      )}
+      <Footer />
     </View>
   );
 }
@@ -206,13 +283,11 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 60,
     alignItems: 'center',
-    backgroundColor: '#000',
+    justifyContent: 'center',
   },
   title: {
     color: '#fff',
-    fontSize: 22,
-    marginBottom: 20,
-    fontWeight: '600',
+    fontSize: 24,
   },
   scannerBox: {
     width: '90%',
@@ -223,21 +298,20 @@ const styles = StyleSheet.create({
   controlRow: {
     flexDirection: 'row',
     marginTop: 10,
-  },
-  button: {
-    backgroundColor: '#00ddf1',
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderRadius: 8,
+    gap: 20,
   },
   buttonText: {
-    color: '#000',
-    fontWeight: '600',
+    color: '#fff',
+    marginTop: 10,
   },
   image: {
     width: 200,
     height: 200,
     marginTop: 10,
-    borderRadius: 10,
+  },
+  optionGradient: {
+    marginTop: 20,
+    padding: 15,
+    borderRadius: 8,
   },
 });
