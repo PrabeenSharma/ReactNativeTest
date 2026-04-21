@@ -3,14 +3,19 @@ import { getScannedSlug } from '@/utils/storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
+
 import {
   ImageBackground,
   Modal,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
+  useWindowDimensions,
 } from 'react-native';
+
+import RenderHTML from 'react-native-render-html';
 
 export default function MissionPage() {
   const { slug: slugParam } = useLocalSearchParams<{ slug?: string }>();
@@ -19,6 +24,7 @@ export default function MissionPage() {
   const [slug, setSlug] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [visible, setVisible] = useState(false); // ✅ FIX: top level
+  const { width } = useWindowDimensions();
 
   // ✅ Resolve slug
   useEffect(() => {
@@ -71,12 +77,13 @@ export default function MissionPage() {
     return <Text style={{ color: '#fff' }}>No data found</Text>;
   }
 
+  
+
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.mainContent}>
         <Text style={styles.mainHeading}>Mission information</Text>
 
-        {/* 3 Column Layout */}
         <View style={styles.thereeColumns}>
           <View style={{ width: '31%' }}>
             <View style={styles.topContentHolder}>
@@ -124,7 +131,6 @@ export default function MissionPage() {
           </View>
         </View>
 
-        {/* Captain Section */}
         <View
           style={{
             backgroundColor: '#000f1e',
@@ -136,7 +142,7 @@ export default function MissionPage() {
         >
           <ImageBackground
             source={require('../../assets/images/captainImage.jpg')}
-            style={{  backgroundPosition:'center' , backgroundSize:'cover' , backgroundRepeat:'no-repeat'}}
+            style={{  backgroundPosition:'center', width:'100%', backgroundSize:'cover' , backgroundRepeat:'no-repeat', height:243}}
             resizeMode="cover"
           >
             <View style={{ paddingTop: 60, paddingHorizontal: 17 }}>
@@ -180,10 +186,19 @@ export default function MissionPage() {
               {page?.acf?.cap_heading}
             </Text>
 
+            {/* <ScrollView style={{ flex: 1, marginTop: 10 }}>
             <Text style={{ marginTop: 10 }}>
               {page?.acf?.captains_message ||
                 'No message available'}
-            </Text>
+            </Text> 
+            </ScrollView> */}
+
+            <ScrollView style={{ flex: 1 }}>
+      <RenderHTML
+        contentWidth={width}
+        source={{ html: page?.acf?.captains_message || '' }}
+      />
+    </ScrollView>
 
             <TouchableOpacity
               onPress={() => setVisible(false)}
@@ -280,6 +295,7 @@ const styles = StyleSheet.create({
   },
   modalBox: {
     width: '85%',
+    maxHeight: '80%',
     backgroundColor: '#fff',
     padding: 20,
     borderRadius: 12,
