@@ -5,6 +5,7 @@ import { ImageBackground, View } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import Header from '@/components/Header';
 import { Audiowide_400Regular, useFonts } from '@expo-google-fonts/audiowide';
 
 const MyTheme = {
@@ -25,6 +26,7 @@ export default function RootLayout() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'transparent' }}>
+      
       <ThemeProvider value={MyTheme}>
         <View style={{ flex: 1, backgroundColor:'#000' }}>
           <ImageBackground
@@ -33,7 +35,7 @@ export default function RootLayout() {
             resizeMode="cover"
             imageStyle={{ alignSelf: 'flex-end' }}
           >
-            
+            <Header />
 
             <Stack screenOptions={{ headerShown: false, animation: 'fade' }} />
 

@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 import Footer from '../components/Footer';
 
-import Header from '@/components/Header';
 import { getScannedSlug } from '@/utils/storage';
 import { GlobalStyles } from '../styles/globalStyles';
 
@@ -53,7 +52,7 @@ export default function HomeScreen() {
 
   return (
     <View style={{ flex: 1, }}>
-        <Header />
+        
         <ScrollView style={{ flex:1, }} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
           <View
             style={{

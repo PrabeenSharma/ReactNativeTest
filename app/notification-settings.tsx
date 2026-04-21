@@ -8,7 +8,6 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { saveNotificationsEnabled, saveScannedSlug } from '@/utils/storage';
 
 import Footer from '@/components/Footer';
-import Header from '@/components/Header';
 
 export default function NotificationSettings() {
   const { slug } = useLocalSearchParams<{ slug?: string }>();
@@ -44,7 +43,6 @@ export default function NotificationSettings() {
 
   return (
     <View style={{ flex: 1, }}>
-      <Header/>
       <View style={styles.container}>
         <LinearGradient
           colors={['#0C2046', '#004F99']}

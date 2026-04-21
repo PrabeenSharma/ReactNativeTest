@@ -1,8 +1,7 @@
-import Header from '@/components/Header';
 import { getScannedSlug } from '@/utils/storage';
-import { router, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 export default function MissionPage() {
   const { slug: slugParam } = useLocalSearchParams<{ slug?: string }>();
@@ -63,14 +62,76 @@ export default function MissionPage() {
 
   return (
     <View style={{ flex:1}}>
-      <Header/>
-      <Text>Mission Status: {page?.acf?.mission_status}</Text>
 
-      <Pressable  onPress={() => router.push('/dashboard/mission')} style={{ marginTop: 20, backgroundColor: '#fff', padding: 10, borderRadius: 5 }}>
-                      <Text style={{ color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize: 14, fontWeight: '400', textTransform: 'uppercase', marginBottom:14, textAlign: 'center' }}>Mission</Text>
-                      
-                    </Pressable>
+      <View style={styles.mainContent}>
+        <Text style={styles.mainHeading}>Mission information</Text>
+        <View style={styles.thereeColumns}>
+        <View style={{ width: '30%' }}>
+          <View style={styles.topContentHolder}>
+            <Text style={styles.topHeading}>Starship Sagan:</Text>
+            <Text style={styles.topContent}>{page?.acf?.mission_code}</Text>
+          </View>
+        </View>
+        <View style={{ width: '25%' }}>
+          <View style={styles.topContentHolder}>
+            <Text style={styles.topHeading}>Launch Date:</Text>
+            <Text style={styles.topContent}>{page?.acf?.launch_date}</Text>
+          </View>
+        </View>
+        <View style={{ width: '35%' }}>
+          <View style={styles.topContentHolder}>
+            <Text style={styles.topHeading}>Mission Duration:</Text>
+            <Text style={styles.topContent}>{page?.acf?.mission_duration}</Text>
+          </View>
+        </View>
+      </View>
+      </View>
+      
+
+      
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  thereeColumns:{
+    flexDirection: 'row', 
+    flexWrap: 'wrap',
+    gap:25,
+  },
+  mainContent:{
+    flex:1,
+    paddingHorizontal:17,
+    paddingVertical:17,
+    backgroundColor: 'transparent',
+  },
+  mainHeading:{
+    fontSize:16,
+    lineHeight:31,
+    color:'#fff',
+    fontFamily: 'Audiowide_400Regular',
+    textTransform:'uppercase',
+    marginBottom:17,
+  },
+  topContentHolder:{
+    flexDirection:'column',
+    gap:0,
+  },
+  topHeading:{
+    fontSize:9,
+    lineHeight:17,
+    color:'#fff',
+    fontFamily: 'Audiowide_400Regular',
+    textTransform:'uppercase',
+    marginBottom:5,
+  },
+  topContent:{
+    fontSize:11,
+    lineHeight:17,
+    color:'rgba(0, 221, 241, 1)',
+    fontFamily: 'Audiowide_400Regular',
+    textTransform:'uppercase',
+    marginBottom:5,
+  },
+});
 

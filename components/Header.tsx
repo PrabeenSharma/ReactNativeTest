@@ -57,7 +57,6 @@ export default function Header() {
 
   return (
     <View style={styles.container}>
-      {/* ⬅️ Back Button (LEFT) */}
       {isDashboardSubPage ? (
         <TouchableOpacity
           onPress={() => router.replace('/dashboard')}
@@ -69,7 +68,6 @@ export default function Header() {
         <View style={styles.leftPlaceholder} />
       )}
 
-      {/* 🖼 Logo (CENTER) */}
       <TouchableOpacity style={styles.logo}
         onPress={() =>
           Linking.openURL('https://dev4work.com/thefirstonmars/')
@@ -81,7 +79,6 @@ export default function Header() {
         />
       </TouchableOpacity>
 
-      {/* ⚙️ Settings (RIGHT — SAME AS BEFORE) */}
       {pathname.startsWith('/dashboard') ? (
         <TouchableOpacity
           onPress={() => setMenuOpen(true)}
@@ -96,7 +93,6 @@ export default function Header() {
         <View style={styles.menuButtonPlaceholder} />
       )}
 
-      {/* ⚙️ Menu Modal */}
       <Modal
         visible={menuOpen}
         transparent
@@ -134,7 +130,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center', // 🔥 important
+    justifyContent: 'center', 
   },
 
   logo: {
@@ -146,7 +142,7 @@ const styles = StyleSheet.create({
   backButton: {
     position: 'absolute',
     left: 15,
-    top: 30,
+    top: 20,
   },
 
   backText: {
@@ -156,7 +152,7 @@ const styles = StyleSheet.create({
   },
 
   leftPlaceholder: {
-    width: 30, // keeps logo centered
+    width: 0, 
   },
 
   menuButton: {

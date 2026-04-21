@@ -1,4 +1,3 @@
-import Header from '@/components/Header';
 import { getScannedSlug } from '@/utils/storage';
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -62,7 +61,6 @@ export default function MissionPage() {
 
   return (
     <View style={ {flex:1}}>
-       <Header/>
       <Text>Mission Status: {page?.acf?.mission_status}</Text>
     </View>
   );

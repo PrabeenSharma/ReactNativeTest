@@ -189,7 +189,7 @@ export default function Scanner() {
     if (!permission.granted) {
       return (
         <View style={{ flex: 1, }}>
-          <Header />
+          
           <View style={styles.container}>
             <Text style={{ color: '#fff', marginBottom: 10 , fontFamily: 'Audiowide_400Regular', fontSize:16, fontWeight:'400'}}>
               No camera access
