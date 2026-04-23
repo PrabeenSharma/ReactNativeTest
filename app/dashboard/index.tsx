@@ -3,6 +3,10 @@ import { getScannedSlug } from '@/utils/storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
+
+import SpaceHistory from '../../components/SpaceHistory';
+import SubmitStoryModal from '../../components/SubmitYoursForm';
+
 import {
   Image,
   ImageBackground,
@@ -27,6 +31,9 @@ export default function MissionPage() {
   const [loading, setLoading] = useState(true);
   const [visible, setVisible] = useState(false); 
   const { width } = useWindowDimensions();
+  const [submitted, setSubmitted] = useState(false);
+
+  const [modalVisible, setModalVisible] = useState(false);
 
   // ✅ Resolve slug
   useEffect(() => {
@@ -374,7 +381,61 @@ export default function MissionPage() {
         <Text style={styles.headingCenter}>
           Space History
         </Text>
+        <SpaceHistory/>
       </View>
+
+      <View style={styles.communityContainer}>
+        <Text style={styles.headingCenter}>
+          Mars Community
+        </Text>
+      </View>
+      <View style={{ paddingHorizontal:17, paddingBottom:17,}}>
+      
+              <LinearGradient
+                  colors={[
+                  'rgba(24,58,86,0.2)',
+                  'rgba(63,125,139,0.2)',
+                  'rgba(24,58,86,0.2)',
+                  ]}
+                  locations={[0.03, 0.51, 0.99]}
+                  start={{ x: 0, y: 0 }}  
+                  end={{ x: 1, y: 0 }}  
+                  style={styles.historyBox}
+              >
+              
+                  <Image
+                    source={{ uri: page.mc_image_url  }}
+                    style={{ width: '100%' , aspectRatio: 1,}} resizeMode="cover"
+                  />
+                  
+                  <Text style={styles.communityHeading}>{ page?.acf?.mc_sub_heading }</Text>
+                  <Text style={styles.communityContent}>{ page?.acf?.mc_content }</Text>
+
+                  {submitted ? (
+                  <Text style={[styles.optionText, { textAlign: 'center', marginTop: 10 }]}>
+                    🎉 Thank you! Submitted successfully
+                  </Text>
+                ) : (
+                  <TouchableOpacity onPress={() => setModalVisible(true)}>
+                    <LinearGradient
+                      colors={['#0C2046', '#004F99']}
+                      locations={[0.1624, 0.816]}
+                      start={{ x: 0.85, y: 0.15 }}
+                      end={{ x: 0.15, y: 0.85 }}
+                      style={styles.optionGradient}
+                    >
+                      <Text style={styles.optionText}>
+                        submit yours
+                      </Text>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                )}
+                  
+              </LinearGradient>
+      
+      
+            
+          </View>
 
       <Modal
         visible={visible}
@@ -405,6 +466,12 @@ export default function MissionPage() {
           </View>
         </View>
       </Modal>
+
+      <SubmitStoryModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        onSuccess={() => setSubmitted(true)} // ✅ ADD THIS LINE
+      />
     
     </View>
   </ScrollView>
@@ -547,7 +614,11 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   anchorBox:{ width:'100%', height:50, borderRadius:10, justifyContent:'center', alignItems:'center', borderColor:'rgba(101, 129, 135, 1)', borderWidth:1, borderStyle:'solid', paddingHorizontal:5, },
+  hsitoryContainer:{},
+  communityContainer:{ marginTop:15,} ,
+  historyBox:{ borderStyle:'solid', borderWidth:1, borderColor:'rgba(101, 129, 135, 1)', borderRadius:10, paddingVertical:20, paddingHorizontal:20,},
+  communityHeading:{ textAlign:'center', fontFamily: 'Audiowide_400Regular', fontWeight:400,  fontSize: 16,   textTransform: 'uppercase',  color: '#00DDF1', paddingTop:20, paddingBottom:15,},
+  communityContent:{ textAlign:'center', fontFamily: 'Audiowide_400Regular', fontWeight:400,  fontSize: 12,   textTransform: 'uppercase',  color: '#CCF6FF', marginBottom:25,},
 
-  hsitoryContainer:{ },
 
 });
