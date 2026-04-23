@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 
 import Footer from '@/components/Footer';
-import Header from '@/components/Header';
 import { LinearGradient } from 'expo-linear-gradient';
 
 const QR_API_URL = 'https://api.qrserver.com/v1/read-qr-code/';
@@ -226,7 +225,6 @@ export default function Scanner() {
 
   return (
     <View style={{ flex: 1, }}>
-        <Header />
         <View style={styles.container}>
           <Text style={styles.title}>Scan Ticket</Text>
 

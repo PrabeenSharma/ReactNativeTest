@@ -1,29 +1,31 @@
 import { formatDate } from '@/utils/date';
 import { getScannedSlug } from '@/utils/storage';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-
 import {
+  Image,
   ImageBackground,
+  Linking,
   Modal,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  useWindowDimensions,
+  useWindowDimensions
 } from 'react-native';
 
-import RenderHTML from 'react-native-render-html';
 
 export default function MissionPage() {
+  const router = useRouter();
   const { slug: slugParam } = useLocalSearchParams<{ slug?: string }>();
 
   const [page, setPage] = useState<any>(null);
   const [slug, setSlug] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [visible, setVisible] = useState(false); // ✅ FIX: top level
+  const [visible, setVisible] = useState(false); 
   const { width } = useWindowDimensions();
 
   // ✅ Resolve slug
@@ -80,6 +82,7 @@ export default function MissionPage() {
   
 
   return (
+  <ScrollView style={{ flex: 1 }}>
     <View style={{ flex: 1 }}>
       <View style={styles.mainContent}>
         <Text style={styles.mainHeading}>Mission information</Text>
@@ -154,7 +157,6 @@ export default function MissionPage() {
                 {page?.acf?.information}
               </Text>
 
-              {/* Button */}
               <TouchableOpacity onPress={() => setVisible(true)}>
                 <LinearGradient
                   colors={['#0C2046', '#004F99']}
@@ -171,9 +173,209 @@ export default function MissionPage() {
             </View>
           </ImageBackground>
         </View>
+        <View style={{ flexDirection:'row', gap:11,marginVertical:15,}}>
+          <TouchableOpacity onPress={() => Linking.openURL('https://example.com')} style={{ flexGrow:1}}>
+            <LinearGradient
+              colors={['#0C2046', '#004F99']}
+              locations={[0.1624, 0.816]}
+              start={{ x: 0.85, y: 0.15 }}
+              end={{ x: 0.15, y: 0.85 }}
+              style={styles.optionGradient2}
+            >
+              <Image
+                  source={require('../../assets/images/earthIcon.png')}
+                  style={{ width: 22, height: 22 }}
+                />
+              <Text style={styles.optionText}>
+                Earth view
+              </Text>
+              <Image
+                  source={require('../../assets/images/arrow.png')}
+                  style={{ width: 14, height: 11 }}
+                />
+            </LinearGradient>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => Linking.openURL('https://example.com')} style={{ flexGrow:1}}>
+            <LinearGradient
+              colors={['#0C2046', '#004F99']}
+              locations={[0.1624, 0.816]}
+              start={{ x: 0.85, y: 0.15 }}
+              end={{ x: 0.15, y: 0.85 }}
+              style={styles.optionGradient2}
+            >
+              <Image
+                  source={require('../../assets/images/spaceIcon.png')}
+                  style={{ width: 22, height: 22 }}
+                />
+              <Text style={styles.optionText}>
+                Space Map
+              </Text>
+              <Image
+                  source={require('../../assets/images/arrow.png')}
+                  style={{ width: 14, height: 11 }}
+                />
+            </LinearGradient>
+          </TouchableOpacity>
+        </View>
+
       </View>
 
-      {/* ✅ Modal */}
+      <LinearGradient
+          colors={['#0E1F3F', 'rgba(14,42,97,0.5)', 'rgba(1,10,27,0)']}
+          locations={[0, 0.22, 0.88]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          style={{ borderTopLeftRadius:10, borderTopRightRadius:10, paddingHorizontal:17, paddingVertical:25, }}
+        >
+          <View>
+            <Text style={styles.headingCenter}>Mission Control Hub</Text>
+            <View style={styles.row}>
+              <View style={styles.box}>
+                <Pressable style={({ pressed }) => [
+                      styles.linkStyle,
+                      pressed && styles.pressed
+                    ]}
+                    onPress={() => router.push('/scanner')}>
+                    <LinearGradient
+                      colors={[
+                        'rgba(24,58,86,0.2)',
+                        'rgba(63,125,139,0.2)',
+                        'rgba(24,58,86,0.2)',
+                      ]}
+                      locations={[0.03, 0.51, 0.99]}
+                      start={{ x: 0, y: 0 }}  
+                      end={{ x: 1, y: 0 }}  
+                      style={styles.anchorBox}
+                    >
+                    <Text style={{ color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize: 10, fontWeight: '400', textTransform: 'uppercase', marginBottom:0, textAlign: 'center' }}>Distance & Progress Indicators</Text>
+                  </LinearGradient>
+                </Pressable>
+              </View>
+              <View style={styles.box}>
+                <Pressable style={({ pressed }) => [
+                      styles.linkStyle,
+                      pressed && styles.pressed
+                    ]}
+                    onPress={() => router.push('/scanner')}>
+                    <LinearGradient
+                      colors={[
+                        'rgba(24,58,86,0.2)',
+                        'rgba(63,125,139,0.2)',
+                        'rgba(24,58,86,0.2)',
+                      ]}
+                      locations={[0.03, 0.51, 0.99]}
+                      start={{ x: 0, y: 0 }}  
+                      end={{ x: 1, y: 0 }}  
+                      style={styles.anchorBox}
+                    >
+                    <Text style={{ color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize: 10, fontWeight: '400', textTransform: 'uppercase', marginBottom:0, textAlign: 'center' }}>Environmental \n Data</Text>
+                  </LinearGradient>
+                </Pressable>
+              </View>
+            </View>
+
+            <View style={styles.row}>
+              <View style={styles.box}>
+                <Pressable style={({ pressed }) => [
+                      styles.linkStyle,
+                      pressed && styles.pressed
+                    ]}
+                    onPress={() => router.push('/scanner')}>
+                    <LinearGradient
+                      colors={[
+                        'rgba(24,58,86,0.2)',
+                        'rgba(63,125,139,0.2)',
+                        'rgba(24,58,86,0.2)',
+                      ]}
+                      locations={[0.03, 0.51, 0.99]}
+                      start={{ x: 0, y: 0 }}  
+                      end={{ x: 1, y: 0 }}  
+                      style={styles.anchorBox}
+                    >
+                    <Text style={{ color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize: 10, fontWeight: '400', textTransform: 'uppercase', marginBottom:0, textAlign: 'center' }}>Communication \n Metrics</Text>
+                  </LinearGradient>
+                </Pressable>
+              </View>
+              <View style={styles.box}>
+                <Pressable style={({ pressed }) => [
+                      styles.linkStyle,
+                      pressed && styles.pressed
+                    ]}
+                    onPress={() => router.push('/scanner')}>
+                    <LinearGradient
+                      colors={[
+                        'rgba(24,58,86,0.2)',
+                        'rgba(63,125,139,0.2)',
+                        'rgba(24,58,86,0.2)',
+                      ]}
+                      locations={[0.03, 0.51, 0.99]}
+                      start={{ x: 0, y: 0 }}  
+                      end={{ x: 1, y: 0 }}  
+                      style={styles.anchorBox}
+                    >
+                    <Text style={{ color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize: 10, fontWeight: '400', textTransform: 'uppercase', marginBottom:0, textAlign: 'center' }}>Ship \n Tracker</Text>
+                  </LinearGradient>
+                </Pressable>
+              </View>
+            </View>
+
+            <View style={styles.row}>
+              <View style={styles.box}>
+                <Pressable style={({ pressed }) => [
+                      styles.linkStyle,
+                      pressed && styles.pressed
+                    ]}
+                    onPress={() => router.push('/scanner')}>
+                    <LinearGradient
+                      colors={[
+                        'rgba(24,58,86,0.2)',
+                        'rgba(63,125,139,0.2)',
+                        'rgba(24,58,86,0.2)',
+                      ]}
+                      locations={[0.03, 0.51, 0.99]}
+                      start={{ x: 0, y: 0 }}  
+                      end={{ x: 1, y: 0 }}  
+                      style={styles.anchorBox}
+                    >
+                    <Text style={{ color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize: 10, fontWeight: '400', textTransform: 'uppercase', marginBottom:0, textAlign: 'center' }}>Weekly Schedule Snapshot</Text>
+                  </LinearGradient>
+                </Pressable>
+              </View>
+              <View style={styles.box}>
+                <Pressable style={({ pressed }) => [
+                      styles.linkStyle,
+                      pressed && styles.pressed
+                    ]}
+                    onPress={() => router.push('/scanner')}>
+                    <LinearGradient
+                      colors={[
+                        'rgba(24,58,86,0.2)',
+                        'rgba(63,125,139,0.2)',
+                        'rgba(24,58,86,0.2)',
+                      ]}
+                      locations={[0.03, 0.51, 0.99]}
+                      start={{ x: 0, y: 0 }}  
+                      end={{ x: 1, y: 0 }}  
+                      style={styles.anchorBox}
+                    >
+                    <Text style={{ color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize: 10, fontWeight: '400', textTransform: 'uppercase', marginBottom:0, textAlign: 'center' }}>Solar Data \n Graph</Text>
+                  </LinearGradient>
+                </Pressable>
+              </View>
+            </View>
+            <View style={styles.hsitoryContainer}>
+
+            </View>
+
+          </View>
+      </LinearGradient>
+
+      <View style={styles.hsitoryContainer}>
+        <Text style={styles.headingCenter}>
+          Space History
+        </Text>
+      </View>
+
       <Modal
         visible={visible}
         transparent
@@ -186,19 +388,12 @@ export default function MissionPage() {
               {page?.acf?.cap_heading}
             </Text>
 
-            {/* <ScrollView style={{ flex: 1, marginTop: 10 }}>
-            <Text style={{ marginTop: 10 }}>
-              {page?.acf?.captains_message ||
-                'No message available'}
-            </Text> 
-            </ScrollView> */}
 
             <ScrollView style={{ flex: 1 }}>
-      <RenderHTML
-        contentWidth={width}
-        source={{ html: page?.acf?.captains_message || '' }}
-      />
-    </ScrollView>
+
+               <Text> {page?.acf?.captains_message?.replace(/<br\s*\/?>/gi, '\n')}</Text>
+              
+            </ScrollView>
 
             <TouchableOpacity
               onPress={() => setVisible(false)}
@@ -206,10 +401,15 @@ export default function MissionPage() {
             >
               <Text style={{ color: '#fff' }}>Close</Text>
             </TouchableOpacity>
+
           </View>
         </View>
       </Modal>
+    
     </View>
+  </ScrollView>
+
+
   );
 }
 
@@ -221,9 +421,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   mainContent: {
-    flex: 1,
     paddingHorizontal: 17,
     paddingVertical: 17,
+    maxWidth:360,
+    alignSelf:'center',
   },
   mainHeading: {
     fontSize: 16,
@@ -233,6 +434,17 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     marginBottom: 17,
   },
+
+ headingCenter: {
+    fontSize: 16,
+    lineHeight: 31,
+    color: '#fff',
+    fontFamily: 'Audiowide_400Regular',
+    textTransform: 'uppercase',
+    marginBottom: 17,
+    textAlign:'center',
+  },
+  
   topContentHolder: {
     marginBottom: 8,
   },
@@ -281,6 +493,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  optionGradient2: {
+    height: 36,
+    borderRadius: 6,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection:'row',
+    gap:8,
+    
+  },
+
+
+
   optionText: {
     fontFamily: 'Audiowide_400Regular',
     fontSize: 12,
@@ -307,4 +531,23 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
   },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
+  box: {
+    width: '48%', 
+    alignItems: 'center',
+  },
+  linkStyle:{
+    width:'100%'
+  },
+  pressed: {
+    opacity: 0.6,
+  },
+  anchorBox:{ width:'100%', height:50, borderRadius:10, justifyContent:'center', alignItems:'center', borderColor:'rgba(101, 129, 135, 1)', borderWidth:1, borderStyle:'solid', paddingHorizontal:5, },
+
+  hsitoryContainer:{ },
+
 });
