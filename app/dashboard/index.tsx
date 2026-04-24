@@ -35,7 +35,6 @@ export default function MissionPage() {
 
   const [modalVisible, setModalVisible] = useState(false);
 
-  // ✅ Resolve slug
   useEffect(() => {
     let active = true;
 
@@ -54,7 +53,6 @@ export default function MissionPage() {
     };
   }, [slugParam]);
 
-  // ✅ Fetch API
   useEffect(() => {
     if (!slug) return;
 
@@ -76,12 +74,11 @@ export default function MissionPage() {
     fetchData();
   }, [slug]);
 
-  // ✅ Loading state
   if (loading) {
-    return <Text style={{ color: '#fff' }}>Loading...</Text>;
+    return 
+    
   }
 
-  // ✅ No data
   if (!page) {
     return <Text style={{ color: '#fff' }}>No data found</Text>;
   }
@@ -620,5 +617,6 @@ const styles = StyleSheet.create({
   communityHeading:{ textAlign:'center', fontFamily: 'Audiowide_400Regular', fontWeight:400,  fontSize: 16,   textTransform: 'uppercase',  color: '#00DDF1', paddingTop:20, paddingBottom:15,},
   communityContent:{ textAlign:'center', fontFamily: 'Audiowide_400Regular', fontWeight:400,  fontSize: 12,   textTransform: 'uppercase',  color: '#CCF6FF', marginBottom:25,},
 
+  loading:{ width:109, height:16,}
 
 });
