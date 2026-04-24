@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import SpaceHistory from '../../components/SpaceHistory';
 import SubmitStoryModal from '../../components/SubmitYoursForm';
 
+
 import {
   Image,
   ImageBackground,
@@ -75,6 +76,16 @@ export default function MissionPage() {
   }, [slug]);
 
   if (loading) {
+
+    <View style={styles.loaderContainer}>
+      <Image
+        source={require('../../assets/images/loading.gif')}
+        style={styles.loading}
+        resizeMode="contain"
+      />
+    </View>
+
+
     return 
     
   }
@@ -178,7 +189,7 @@ export default function MissionPage() {
           </ImageBackground>
         </View>
         <View style={{ flexDirection:'row', gap:11,marginVertical:15,}}>
-          <TouchableOpacity onPress={() => Linking.openURL('https://example.com')} style={{ flexGrow:1}}>
+          <TouchableOpacity onPress={() => Linking.openURL('https://stellarium-web.org/')} style={{ flexGrow:1}}>
             <LinearGradient
               colors={['#0C2046', '#004F99']}
               locations={[0.1624, 0.816]}
@@ -199,7 +210,7 @@ export default function MissionPage() {
                 />
             </LinearGradient>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => Linking.openURL('https://example.com')} style={{ flexGrow:1}}>
+          <TouchableOpacity onPress={() => Linking.openURL('https://eyes.nasa.gov/apps/solar-system/#/home')} style={{ flexGrow:1}}>
             <LinearGradient
               colors={['#0C2046', '#004F99']}
               locations={[0.1624, 0.816]}
@@ -239,7 +250,7 @@ export default function MissionPage() {
                       styles.linkStyle,
                       pressed && styles.pressed
                     ]}
-                    onPress={() => router.push('/scanner')}>
+                    onPress={() => router.push('/dashboard/mission')}>
                     <LinearGradient
                       colors={[
                         'rgba(24,58,86,0.2)',
@@ -260,7 +271,7 @@ export default function MissionPage() {
                       styles.linkStyle,
                       pressed && styles.pressed
                     ]}
-                    onPress={() => router.push('/scanner')}>
+                    onPress={() => router.push('/dashboard/mission')}>
                     <LinearGradient
                       colors={[
                         'rgba(24,58,86,0.2)',
@@ -284,7 +295,7 @@ export default function MissionPage() {
                       styles.linkStyle,
                       pressed && styles.pressed
                     ]}
-                    onPress={() => router.push('/scanner')}>
+                    onPress={() => router.push('/dashboard/mission')}>
                     <LinearGradient
                       colors={[
                         'rgba(24,58,86,0.2)',
@@ -305,7 +316,7 @@ export default function MissionPage() {
                       styles.linkStyle,
                       pressed && styles.pressed
                     ]}
-                    onPress={() => router.push('/scanner')}>
+                    onPress={() => router.push('/dashboard/mission')}>
                     <LinearGradient
                       colors={[
                         'rgba(24,58,86,0.2)',
@@ -406,7 +417,7 @@ export default function MissionPage() {
                   />
                   
                   <Text style={styles.communityHeading}>{ page?.acf?.mc_sub_heading }</Text>
-                  <Text style={styles.communityContent}>{ page?.acf?.mc_content }</Text>
+                  <Text style={styles.communityContent}>{ page?.acf?.mc_content ?.replace(/<br\s*\/?>/gi, '\n')}</Text>
 
                   {submitted ? (
                   <Text style={[styles.optionText, { textAlign: 'center', marginTop: 10 }]}>
@@ -449,7 +460,13 @@ export default function MissionPage() {
 
             <ScrollView style={{ flex: 1 }}>
 
-               <Text> {page?.acf?.captains_message?.replace(/<br\s*\/?>/gi, '\n')}</Text>
+               <Text> 
+
+                {page?.acf?.captains_message
+                ?.replace(/<br\s*\/?>/gi, '\n')
+                ?.replace(/<[^>]+>/g, '')}
+
+               </Text>
               
             </ScrollView>
 
@@ -471,6 +488,7 @@ export default function MissionPage() {
       />
     
     </View>
+    
   </ScrollView>
 
 
@@ -487,8 +505,8 @@ const styles = StyleSheet.create({
   mainContent: {
     paddingHorizontal: 17,
     paddingVertical: 17,
-    maxWidth:360,
     alignSelf:'center',
+    width:'100%',
   },
   mainHeading: {
     fontSize: 16,
@@ -617,6 +635,8 @@ const styles = StyleSheet.create({
   communityHeading:{ textAlign:'center', fontFamily: 'Audiowide_400Regular', fontWeight:400,  fontSize: 16,   textTransform: 'uppercase',  color: '#00DDF1', paddingTop:20, paddingBottom:15,},
   communityContent:{ textAlign:'center', fontFamily: 'Audiowide_400Regular', fontWeight:400,  fontSize: 12,   textTransform: 'uppercase',  color: '#CCF6FF', marginBottom:25,},
 
-  loading:{ width:109, height:16,}
+  loading:{ width:109, height:16,},
+
+  loaderContainer:{  flex: 1,  justifyContent: 'center',  alignItems: 'center',  backgroundColor: '#000',}
 
 });

@@ -33,7 +33,7 @@ export default function NotificationSettings() {
         index: 0,
         routes: [
           {
-            name: 'dashboard/index',
+            name: 'dashboard',
             params: slug ? { slug } : undefined,
           },
         ],
