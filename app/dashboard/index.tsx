@@ -484,7 +484,7 @@ export default function MissionPage() {
       <SubmitStoryModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
-        onSuccess={() => setSubmitted(true)} // ✅ ADD THIS LINE
+        onSuccess={() => setSubmitted(true)} 
       />
     
     </View>
