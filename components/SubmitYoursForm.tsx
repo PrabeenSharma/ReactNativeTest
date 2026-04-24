@@ -104,7 +104,7 @@ export default function SubmitStoryModal({ visible, onClose, onSuccess }: Props)
           onSuccess();
         }
       } else {
-        alert('Submit failed ❌');
+        alert('Submit failed');
       }
     } catch (err) {
       console.log(err);
@@ -127,7 +127,7 @@ export default function SubmitStoryModal({ visible, onClose, onSuccess }: Props)
           <Text style={styles.label}>NAME</Text>
           <TextInput
             placeholder="Your Name"
-            placeholderTextColor="#aaa"
+            placeholderTextColor="#fff"
             style={styles.input}
             value={name}
             onChangeText={setName}
@@ -136,7 +136,7 @@ export default function SubmitStoryModal({ visible, onClose, onSuccess }: Props)
           <Text style={styles.label}>PASSENGER NUMBER</Text>
           <TextInput
             placeholder="Your Passenger Number"
-            placeholderTextColor="#aaa"
+            placeholderTextColor="#fff"
             style={styles.input}
             value={passenger}
             onChangeText={setPassenger}
@@ -144,7 +144,7 @@ export default function SubmitStoryModal({ visible, onClose, onSuccess }: Props)
 
           <Text style={styles.label}>UPLOAD IMAGE</Text>
           <TouchableOpacity style={styles.uploadBtn} onPress={pickImage}>
-            <Text style={{ color: '#fff' }}>
+            <Text style={{ color: '#fff', fontSize: 13, lineHeight: 20, fontFamily: 'Audiowide_400Regular', fontWeight:400 }}>
               {image ? 'Image Selected' : 'Choose File'}
             </Text>
           </TouchableOpacity>
@@ -156,7 +156,7 @@ export default function SubmitStoryModal({ visible, onClose, onSuccess }: Props)
           <Text style={styles.label}>YOUR MESSAGE (OPTIONAL)</Text>
           <TextInput
             placeholder="Your message"
-            placeholderTextColor="#aaa"
+            placeholderTextColor="#fff"
             style={[styles.input, { height: 80 }]}
             multiline
             value={message}
@@ -198,18 +198,16 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   title: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 16,  lineHeight: 20,   color: '#fff',  fontFamily: 'Audiowide_400Regular',  textTransform: 'uppercase', 
   },
   close: {
     color: '#fff',
     fontSize: 18,
   },
   label: {
-    color: '#aaa',
+    color: '#fff',
     marginTop: 10,
-    marginBottom: 5,
+    marginBottom: 5, fontSize: 12,  lineHeight: 20,    fontFamily: 'Audiowide_400Regular', marginEnd:10,
   },
   input: {
     borderWidth: 1,
@@ -217,30 +215,31 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 10,
     color: '#fff',
+    fontSize: 13,  lineHeight: 20,    fontFamily: 'Audiowide_400Regular', 
   },
   uploadBtn: {
     borderWidth: 1,
     borderColor: '#3aaed8',
     padding: 12,
-    borderRadius: 8,
-    alignItems: 'center',
+    borderRadius: 8, fontSize: 13, lineHeight: 20,  fontFamily: 'Audiowide_400Regular', fontWeight:400,
   },
   preview: {
     width: '100%',
-    height: 150,
+    height: 100,
     marginTop: 10,
     borderRadius: 10,
   },
   submitBtn: {
     marginTop: 20,
-    borderWidth: 1,
-    borderColor: '#00d9ff',
-    padding: 12,
+    borderWidth: 0,
     alignItems: 'center',
     borderRadius: 8,
+    backgroundColor:'#004f99',
+    padding:15, fontSize: 14, lineHeight: 20, 
+
   },
   submitText: {
-    color: '#00d9ff',
-    fontWeight: 'bold',
+    color: '#fff', 
+     fontFamily: 'Audiowide_400Regular', fontWeight:400, textTransform:'uppercase',
   },
 });

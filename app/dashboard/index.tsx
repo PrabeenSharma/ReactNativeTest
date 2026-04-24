@@ -8,6 +8,7 @@ import SpaceHistory from '../../components/SpaceHistory';
 import SubmitStoryModal from '../../components/SubmitYoursForm';
 
 
+
 import {
   Image,
   ImageBackground,
@@ -18,8 +19,8 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
-  useWindowDimensions
+  useWindowDimensions,
+  View
 } from 'react-native';
 
 
@@ -421,7 +422,7 @@ export default function MissionPage() {
 
                   {submitted ? (
                   <Text style={[styles.optionText, { textAlign: 'center', marginTop: 10 }]}>
-                    🎉 Thank you! Submitted successfully
+                    Thank you! Submitted successfully
                   </Text>
                 ) : (
                   <TouchableOpacity onPress={() => setModalVisible(true)}>
@@ -453,28 +454,29 @@ export default function MissionPage() {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalBox}>
-            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
-              {page?.acf?.cap_heading}
+
+            <Text style={styles.mainHeadingBlack}>
+              {page?.acf?.cap_heading || 'Title'}
             </Text>
-
-
-            <ScrollView style={{ flex: 1 }}>
-
-               <Text> 
-
-                {page?.acf?.captains_message
-                ?.replace(/<br\s*\/?>/gi, '\n')
-                ?.replace(/<[^>]+>/g, '')}
-
-               </Text>
+           
+            <ScrollView
+              contentContainerStyle={{ paddingBottom: 20 }}
+            >
               
+             <Text style={styles.modalContent}> {page.acf.captains_message } </Text>
+             
+
+
             </ScrollView>
 
             <TouchableOpacity
               onPress={() => setVisible(false)}
               style={styles.closeBtn}
             >
-              <Text style={{ color: '#fff' }}>Close</Text>
+              <Image
+                source={require('../../assets/images/close.png')}
+                style={{ width: 14, height: 14 }}
+              />
             </TouchableOpacity>
 
           </View>
@@ -488,6 +490,8 @@ export default function MissionPage() {
       />
     
     </View>
+
+    
     
   </ScrollView>
 
@@ -496,40 +500,13 @@ export default function MissionPage() {
 }
 
 const styles = StyleSheet.create({
-  thereeColumns: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-    justifyContent: 'space-between',
-  },
-  mainContent: {
-    paddingHorizontal: 17,
-    paddingVertical: 17,
-    alignSelf:'center',
-    width:'100%',
-  },
-  mainHeading: {
-    fontSize: 16,
-    lineHeight: 31,
-    color: '#fff',
-    fontFamily: 'Audiowide_400Regular',
-    textTransform: 'uppercase',
-    marginBottom: 17,
-  },
-
- headingCenter: {
-    fontSize: 16,
-    lineHeight: 31,
-    color: '#fff',
-    fontFamily: 'Audiowide_400Regular',
-    textTransform: 'uppercase',
-    marginBottom: 17,
-    textAlign:'center',
-  },
-  
-  topContentHolder: {
-    marginBottom: 8,
-  },
+  thereeColumns: {  flexDirection: 'row',  flexWrap: 'wrap',   gap: 12,  justifyContent: 'space-between', },
+  mainContent: {  paddingHorizontal: 17,    paddingVertical: 17,    alignSelf:'center',    width:'100%',  },
+  mainHeading: {    fontSize: 16,    lineHeight: 31,  color: '#fff',  fontFamily: 'Audiowide_400Regular',  textTransform: 'uppercase',  marginBottom: 17,  },
+  mainHeadingBlack: {    fontSize: 16,    lineHeight: 31,  color: '#000',  fontFamily: 'Audiowide_400Regular',  textTransform: 'uppercase',  marginBottom: 17,  },
+  headingCenter: {  fontSize: 16,  lineHeight: 31,   color: '#fff',  fontFamily: 'Audiowide_400Regular',  textTransform: 'uppercase',  marginBottom: 17, textAlign:'center', },
+  topContentHolder: {  marginBottom: 8,},
+  modalContent:{ fontSize: 13, lineHeight: 20,  color: '#000',  fontFamily: 'Audiowide_400Regular',   marginBottom: 0, },
   topHeading: {
     fontSize: 9,
     color: '#fff',
@@ -605,13 +582,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 20,
     borderRadius: 12,
+    elevation: 5,
   },
   closeBtn: {
-    marginTop: 20,
     backgroundColor: '#004F99',
     padding: 10,
     borderRadius: 8,
     alignItems: 'center',
+    position:'absolute',
+    top:10,
+    right:10,
   },
   row: {
     flexDirection: 'row',
