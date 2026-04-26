@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "myApp",
-    "slug": "myApp",
+    "name": "Red Planet Recorts",
+    "slug": "Red-Planet-Recorts",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "redplanetrecorts",
     "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true,

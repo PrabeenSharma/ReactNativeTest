@@ -76,20 +76,17 @@ export default function MissionPage() {
     fetchData();
   }, [slug]);
 
-  if (loading) {
-
+if (loading) {
+  return (
     <View style={styles.loaderContainer}>
       <Image
         source={require('../../assets/images/loading.gif')}
-        style={styles.loading}
+        style={{ width: 150, height: 150 }}
         resizeMode="contain"
       />
     </View>
-
-
-    return 
-    
-  }
+  );
+}
 
   if (!page) {
     return <Text style={{ color: '#fff' }}>No data found</Text>;
@@ -251,7 +248,7 @@ export default function MissionPage() {
                       styles.linkStyle,
                       pressed && styles.pressed
                     ]}
-                    onPress={() => router.push('/dashboard/mission')}>
+                    onPress={() => router.push('/dashboard/DistanceProgressIndicator')}>
                     <LinearGradient
                       colors={[
                         'rgba(24,58,86,0.2)',
@@ -263,7 +260,7 @@ export default function MissionPage() {
                       end={{ x: 1, y: 0 }}  
                       style={styles.anchorBox}
                     >
-                    <Text style={{ color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize: 10, fontWeight: '400', textTransform: 'uppercase', marginBottom:0, textAlign: 'center' }}>Distance & Progress Indicators</Text>
+                    <Text style={{ color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize: 10, fontWeight: '400', textTransform: 'uppercase', marginBottom:0, textAlign: 'center' }}>Distance & Progress{'\n'}Indicators</Text>
                   </LinearGradient>
                 </Pressable>
               </View>
@@ -284,7 +281,7 @@ export default function MissionPage() {
                       end={{ x: 1, y: 0 }}  
                       style={styles.anchorBox}
                     >
-                    <Text style={{ color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize: 10, fontWeight: '400', textTransform: 'uppercase', marginBottom:0, textAlign: 'center' }}>Environmental \n Data</Text>
+                    <Text style={{ color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize: 10, fontWeight: '400', textTransform: 'uppercase', marginBottom:0, textAlign: 'center' }}>Environmental{'\n'}Data</Text>
                   </LinearGradient>
                 </Pressable>
               </View>
@@ -308,7 +305,7 @@ export default function MissionPage() {
                       end={{ x: 1, y: 0 }}  
                       style={styles.anchorBox}
                     >
-                    <Text style={{ color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize: 10, fontWeight: '400', textTransform: 'uppercase', marginBottom:0, textAlign: 'center' }}>Communication \n Metrics</Text>
+                    <Text style={{ color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize: 10, fontWeight: '400', textTransform: 'uppercase', marginBottom:0, textAlign: 'center' }}>Communication{'\n'}Metrics</Text>
                   </LinearGradient>
                 </Pressable>
               </View>
@@ -329,7 +326,7 @@ export default function MissionPage() {
                       end={{ x: 1, y: 0 }}  
                       style={styles.anchorBox}
                     >
-                    <Text style={{ color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize: 10, fontWeight: '400', textTransform: 'uppercase', marginBottom:0, textAlign: 'center' }}>Ship \n Tracker</Text>
+                    <Text style={{ color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize: 10, fontWeight: '400', textTransform: 'uppercase', marginBottom:0, textAlign: 'center' }}>Ship{'\n'}Tracker</Text>
                   </LinearGradient>
                 </Pressable>
               </View>
@@ -353,7 +350,7 @@ export default function MissionPage() {
                       end={{ x: 1, y: 0 }}  
                       style={styles.anchorBox}
                     >
-                    <Text style={{ color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize: 10, fontWeight: '400', textTransform: 'uppercase', marginBottom:0, textAlign: 'center' }}>Weekly Schedule Snapshot</Text>
+                    <Text style={{ color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize: 10, fontWeight: '400', textTransform: 'uppercase', marginBottom:0, textAlign: 'center' }}>Weekly Schedule{'\n'}Snapshot</Text>
                   </LinearGradient>
                 </Pressable>
               </View>
@@ -374,7 +371,7 @@ export default function MissionPage() {
                       end={{ x: 1, y: 0 }}  
                       style={styles.anchorBox}
                     >
-                    <Text style={{ color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize: 10, fontWeight: '400', textTransform: 'uppercase', marginBottom:0, textAlign: 'center' }}>Solar Data \n Graph</Text>
+                    <Text style={{ color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize: 10, fontWeight: '400', textTransform: 'uppercase', marginBottom:0, textAlign: 'center' }}>Solar Data{'\n'}Graph</Text>
                   </LinearGradient>
                 </Pressable>
               </View>

@@ -62,7 +62,12 @@ export default function Header() {
           onPress={() => router.replace('/dashboard')}
           style={styles.backButton}
         >
-          <Text style={styles.backText}>←</Text>
+          <View style={styles.backButtonArrow}>
+            <Image
+              source={require('./../assets/images/back.png')}
+              style={{ width: 18, height: 18 }}
+            />
+          </View>
         </TouchableOpacity>
       ) : (
         <View style={styles.leftPlaceholder} />
@@ -142,7 +147,7 @@ const styles = StyleSheet.create({
   backButton: {
     position: 'absolute',
     left: 15,
-    top: 20,
+    top: 30,
   },
 
   backText: {
@@ -206,4 +211,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#eee',
     marginHorizontal: 8,
   },
+  backButtonArrow:{ },
 });
