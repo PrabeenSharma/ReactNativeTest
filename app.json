@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Red Planet Recorts",
-    "slug": "Red-Planet-Recorts",
+    "slug": "myApp",
     "version": "1.0.0",
     "orientation": "default",
     "icon": "./assets/images/icon.png",
@@ -55,6 +55,7 @@
       "eas": {
         "projectId": "40dd223f-68bc-401a-842d-5aa28d988f27"
       }
-    }
+    },
+    "owner": "indranilkhara007"
   }
 }
