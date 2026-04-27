@@ -20,7 +20,6 @@ export default function MissionPage() {
   const [slug, setSlug] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Resolve slug (param → storage)
   useEffect(() => {
     let active = true;
 
@@ -40,7 +39,6 @@ export default function MissionPage() {
     };
   }, [slugParam]);
 
-  // ✅ Fetch API
   useEffect(() => {
     if (!slug) return;
 

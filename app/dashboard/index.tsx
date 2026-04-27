@@ -67,7 +67,7 @@ export default function MissionPage() {
         const data = await res.json();
         setPage(data?.[0] || null);
       } catch (err) {
-        console.log(err);
+        //console.log(err);
       } finally {
         setLoading(false);
       }
@@ -269,7 +269,7 @@ if (loading) {
                       styles.linkStyle,
                       pressed && styles.pressed
                     ]}
-                    onPress={() => router.push('/dashboard/mission')}>
+                    onPress={() => router.push('/dashboard/EnvironmentalData')}>
                     <LinearGradient
                       colors={[
                         'rgba(24,58,86,0.2)',
@@ -293,7 +293,7 @@ if (loading) {
                       styles.linkStyle,
                       pressed && styles.pressed
                     ]}
-                    onPress={() => router.push('/dashboard/mission')}>
+                    onPress={() => router.push('/dashboard/EnvironmentalData')}>
                     <LinearGradient
                       colors={[
                         'rgba(24,58,86,0.2)',
@@ -314,7 +314,7 @@ if (loading) {
                       styles.linkStyle,
                       pressed && styles.pressed
                     ]}
-                    onPress={() => router.push('/dashboard/mission')}>
+                    onPress={() => router.push('/dashboard/EnvironmentalData')}>
                     <LinearGradient
                       colors={[
                         'rgba(24,58,86,0.2)',
