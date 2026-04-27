@@ -1,13 +1,11 @@
 import { formatDate } from '@/utils/date';
-import { getScannedSlug } from '@/utils/storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
 
 import SpaceHistory from '../../components/SpaceHistory';
 import SubmitStoryModal from '../../components/SubmitYoursForm';
 
-
+import { useState } from 'react';
 
 import {
   Image,
@@ -23,58 +21,16 @@ import {
   View
 } from 'react-native';
 
+import useMissionPage from '@/hooks/useMissionPage';
 
 export default function MissionPage() {
   const router = useRouter();
+
+  const [visible, setVisible] = useState(false); const { width } = useWindowDimensions(); const [submitted, setSubmitted] = useState(false); const [modalVisible, setModalVisible] = useState(false);
+
+
   const { slug: slugParam } = useLocalSearchParams<{ slug?: string }>();
-
-  const [page, setPage] = useState<any>(null);
-  const [slug, setSlug] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [visible, setVisible] = useState(false); 
-  const { width } = useWindowDimensions();
-  const [submitted, setSubmitted] = useState(false);
-
-  const [modalVisible, setModalVisible] = useState(false);
-
-  useEffect(() => {
-    let active = true;
-
-    (async () => {
-      if (slugParam) {
-        if (active) setSlug(slugParam);
-        return;
-      }
-
-      const saved = await getScannedSlug();
-      if (active) setSlug(saved);
-    })();
-
-    return () => {
-      active = false;
-    };
-  }, [slugParam]);
-
-  useEffect(() => {
-    if (!slug) return;
-
-    const fetchData = async () => {
-      try {
-        const res = await fetch(
-          `https://dev4work.com/thefirstonmars/wp-json/wp/v2/pages?slug=${slug}`
-        );
-
-        const data = await res.json();
-        setPage(data?.[0] || null);
-      } catch (err) {
-        //console.log(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [slug]);
+  const { page, loading } = useMissionPage(slugParam);
 
 if (loading) {
   return (

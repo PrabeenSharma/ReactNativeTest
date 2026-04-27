@@ -5,11 +5,12 @@ import {
   Image,
   Modal,
   Platform,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 
 type Props = {
@@ -116,7 +117,15 @@ export default function SubmitStoryModal({ visible, onClose, onSuccess }: Props)
 
   return (
     <Modal visible={visible} transparent animationType="fade">
+      
       <View style={styles.overlay}>
+        <ScrollView
+          contentContainerStyle={{
+            flexGrow: 1,
+            justifyContent: 'center',
+          }}
+          showsVerticalScrollIndicator={false}
+        >
         <View style={styles.container}>
 
           <View style={styles.header}>
@@ -173,8 +182,9 @@ export default function SubmitStoryModal({ visible, onClose, onSuccess }: Props)
             </Text>
           </TouchableOpacity>
 
-        </View>
+        </View></ScrollView>
       </View>
+      
     </Modal>
   );
 }

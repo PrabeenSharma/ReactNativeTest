@@ -4,9 +4,8 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 export default function ButtonsGroup() {
   const router = useRouter();
-  const pathname = usePathname(); // 🔥 current route
+  const pathname = usePathname(); 
 
-  // 👉 helper function
   const isActive = (route: string) => pathname === route;
 
   const getColors = (route: string) =>
@@ -21,7 +20,6 @@ export default function ButtonsGroup() {
   return (
     <View>
       
-      {/* Row 1 */}
       <View style={styles.row}>
         <View style={styles.box}>
           <Pressable onPress={() => router.push('/dashboard/DistanceProgressIndicator')}>
@@ -50,7 +48,6 @@ export default function ButtonsGroup() {
         </View>
       </View>
 
-      {/* Row 2 */}
       <View style={styles.row}>
         <View style={styles.box}>
           <Pressable onPress={() => router.push('/dashboard/WeeklyScheduleSnapshot')}>
@@ -79,7 +76,6 @@ export default function ButtonsGroup() {
         </View>
       </View>
 
-      {/* Row 3 */}
       <View style={styles.row}>
         <View style={styles.box}>
           <Pressable onPress={() => router.push('/scanner')}>

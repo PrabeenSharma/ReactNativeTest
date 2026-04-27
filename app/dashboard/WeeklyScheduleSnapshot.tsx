@@ -1,7 +1,5 @@
-import { getScannedSlug } from '@/utils/storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams } from 'expo-router';
-import { useEffect, useState } from 'react';
 import {
   ImageBackground,
   ScrollView,
@@ -12,69 +10,12 @@ import {
 
 import ButtonsGroup from '../../components/ButtonsGroup';
 
+import useMissionPage from '@/hooks/useMissionPage';
+
 export default function MissionPage() {
-  const { slug: slugParam } = useLocalSearchParams<{ slug?: string }>();
-
-  const [page, setPage] = useState<any>(null);
-  const [slug, setSlug] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  // ✅ Resolve slug
-  useEffect(() => {
-    let active = true;
-
-    (async () => {
-      if (slugParam) {
-        if (active) setSlug(slugParam);
-        return;
-      }
-
-      const saved = await getScannedSlug();
-      if (active) setSlug(saved);
-    })();
-
-    return () => {
-      active = false;
-    };
-  }, [slugParam]);
-
-  // ✅ Fetch API
-  useEffect(() => {
-    if (!slug) return;
-
-    const fetchData = async () => {
-      try {
-        const res = await fetch(
-          `https://dev4work.com/thefirstonmars/wp-json/wp/v2/pages?slug=${slug}`
-        );
-
-        const data = await res.json();
-        setPage(data?.[0] || null);
-      } catch (err) {
-        console.log(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [slug]);
-
-  // ✅ SAFE HTML DECODE
-  const decodeHtml = (html: string) => {
-    if (!html) return '';
-    return html
-      .replace(/\\u003C/g, '<')
-      .replace(/\\u003E/g, '>')
-      .replace(/&amp;/g, '&');
-  };
-
-  const calendarHtml = decodeHtml(page?.calendar_code || '');
-
-  console.log("FULL PAGE:", page);
-
-  // ✅ Extract iframe src safely
-  const src = calendarHtml.match(/src="([^"]+)"/)?.[1] || null;
+  
+   const { slug: slugParam } = useLocalSearchParams<{ slug?: string }>();
+    const { page, loading } = useMissionPage(slugParam);
 
   return (
     <ScrollView style={{ flex: 1 }}>
