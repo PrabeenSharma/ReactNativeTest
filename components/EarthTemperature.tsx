@@ -66,13 +66,13 @@ export default function EarthWeather() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Earth Temperature (Houston)</Text>
+      
 
-      <Text style={styles.value}>
+      {/* <Text style={styles.value}>
         Avg: {weather.currentF.toFixed(1)}°F
-      </Text>
+      </Text> */}
 
-      <Text style={styles.value}>
+      <Text style={styles.valueBig}>
         {weather.minF.toFixed(1)} – {weather.maxF.toFixed(1)}°F
       </Text>
     </View>
@@ -80,19 +80,7 @@ export default function EarthWeather() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 10,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 5,
-  },
-  value: {
-    fontSize: 14,
-    marginBottom: 2,
-  },
-  text: {
-    fontSize: 14,
-  },
+  container: {  padding: 0, },
+  valueBig: { fontSize: 20, color:'#CCF6FF', textAlign:'center', fontFamily: 'Audiowide_400Regular',   },
+  text: {  fontSize: 14, color:'#CCF6FF', textAlign:'center', fontFamily: 'Audiowide_400Regular',},
 });

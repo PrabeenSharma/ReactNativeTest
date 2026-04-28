@@ -3,14 +3,13 @@ import { usePathname, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
   Image,
-  Linking,
   Modal,
   Pressable,
   StyleSheet,
   Switch,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 
 import {
@@ -73,16 +72,12 @@ export default function Header() {
         <View style={styles.leftPlaceholder} />
       )}
 
-      <TouchableOpacity style={styles.logo}
-        onPress={() =>
-          Linking.openURL('https://dev4work.com/thefirstonmars/')
-        }
-      >
+      <View style={styles.logo}>
         <Image
           source={require('./../assets/images/Logo.png')}
           style={styles.logo}
         />
-      </TouchableOpacity>
+      </View>
 
       {pathname.startsWith('/dashboard') ? (
         <TouchableOpacity
@@ -109,19 +104,32 @@ export default function Header() {
           onPress={() => setMenuOpen(false)}
         >
           <Pressable style={styles.menuSheet} onPress={() => {}}>
+
             <View style={[styles.menuItem, styles.menuItemRow]}>
+              <Image 
+                source={require('./../assets/images/topNotificationIcon.png' )}
+                style={{ width:11, height:13 }}
+              />
               <Text style={styles.menuItemText}>Notifications</Text>
-              <Switch value={notificationsOn} onValueChange={handleToggle} />
+              <Switch style={styles.swicthFunction} value={notificationsOn} onValueChange={handleToggle}  
+                trackColor={{ false: '#ccc', true: '#CCF6FF' }}  
+              thumbColor={notificationsOn ? '#fff' : '#f4f3f4'}
+              />
             </View>
 
             <View style={styles.menuDivider} />
 
             <TouchableOpacity
-              style={styles.menuItem}
+              style={styles.menuItemScan}
               onPress={handleNewScan}
             >
+              <Image 
+                source={require('./../assets/images/scanIcon.png' )}
+                style={{ width:14, height:14 }}
+              />
               <Text style={styles.menuItemText}>Scan a new ticket</Text>
             </TouchableOpacity>
+
           </Pressable>
         </Pressable>
       </Modal>
@@ -179,37 +187,47 @@ const styles = StyleSheet.create({
   },
 
   menuSheet: {
-    minWidth: 220,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    paddingVertical: 6,
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 6,
+    minWidth: 180,
+    backgroundColor: '#193553',
+    borderRadius: 6,
+    paddingHorizontal: 6,
+    elevation: 6, 
+
+
   },
 
   menuItem: {
     paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingHorizontal: 10,
   },
 
   menuItemRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    gap:10,
+  },
+
+  menuItemScan:{
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap:10,
+    paddingVertical:12,
+    paddingHorizontal:12,
+
   },
 
   menuItemText: {
-    fontSize: 16,
-    color: '#111',
+    fontSize: 12,
+    color: '#fff',
+     fontFamily: 'Audiowide_400Regular',
+
   },
 
   menuDivider: {
     height: 1,
-    backgroundColor: '#eee',
-    marginHorizontal: 8,
+    backgroundColor: '#658187',
+    marginHorizontal: 0,
   },
   backButtonArrow:{ },
+  swicthFunction: { marginLeft: 'auto' }
 });

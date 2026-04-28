@@ -63,11 +63,11 @@ export default function MarsWeather() {
   return (
     <View style={styles.container}>
 
-      <Text style={styles.value}>
+      <Text style={styles.valueBig}>
         {weather.minTempC}°C ({weather.minTempF.toFixed(2)}°F)
       </Text>
 
-      <Text style={styles.value}>
+      <Text style={styles.valueSmall}>
         {weather.maxTempC}°C ({weather.maxTempF.toFixed(2)}°F)
       </Text>
     </View>
@@ -75,19 +75,8 @@ export default function MarsWeather() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 10,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 5,
-  },
-  value: {
-    fontSize: 14,
-    marginBottom: 2,
-  },
-  text: {
-    fontSize: 14,
-  },
+  container: {  padding: 0,},
+  valueBig: { fontSize: 20, color:'#CCF6FF', textAlign:'center', fontFamily: 'Audiowide_400Regular',   },
+  valueSmall:{ fontSize: 14, color:'#CCF6FF', textAlign:'center', fontFamily: 'Audiowide_400Regular',},
+  text: {  fontSize: 14, color:'#CCF6FF', textAlign:'center', fontFamily: 'Audiowide_400Regular',},
 });

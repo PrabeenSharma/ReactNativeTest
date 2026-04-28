@@ -2,11 +2,12 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import {
+  Dimensions,
   Image,
   ScrollView,
   StyleSheet,
   Text,
-  View
+  View,
 } from 'react-native';
 
 import ButtonsGroup from '../../components/ButtonsGroup';
@@ -19,6 +20,9 @@ export default function MissionPage() {
 
   const { slug: slugParam } = useLocalSearchParams<{ slug?: string }>();
   const { page, loading } = useMissionPage(slugParam);
+
+  const screenWidth = Dimensions.get('window').width;
+  const imageHeight = screenWidth / 5.55;
 
 
   return (
@@ -104,11 +108,12 @@ export default function MissionPage() {
                       position: 'absolute',
                       bottom: 0,
                       width: '100%',
+                      height:'auto',
                       aspectRatio: 5.55,
                     }}
-                    resizeMode="cover"
+                    resizeMode="contain"
                   />
-                  
+                  <View style={{ height: imageHeight }} />
                 </LinearGradient>
             </View>
           </View>
@@ -121,7 +126,7 @@ export default function MissionPage() {
 const styles = StyleSheet.create({
   mainContent: {  paddingHorizontal: 10,    paddingVertical: 17,    alignSelf:'center',    width:'100%',  },
   pageContent:{ marginTop:20,  paddingHorizontal: 10, },
-  pageBox:{ padding:0, borderRadius:20, borderColor: 'rgba(101, 129, 135, 1)' , borderWidth:0.5,  overflow:'hidden',  paddingBottom:60,},
+  pageBox:{ padding:0, borderRadius:20, borderColor: 'rgba(101, 129, 135, 1)' , borderWidth:0.5,  overflow:'hidden',  paddingBottom:0,},
   mainInnerContent:{ paddingHorizontal:17, paddingBottom:60, paddingTop:17, flex:1,},
   pageInnerheading:{ textAlign:'center', paddingHorizontal:15, paddingVertical:10, color:'#CCF6FF', fontSize:13, fontFamily: 'Audiowide_400Regular',  textTransform: 'uppercase', borderRadius:10, borderWidth:0.5, borderColor:'rgba(101, 129, 135, 1)', shadowColor: '#000',  shadowOffset: { width: 0, height: 4 },  shadowOpacity: 0.2,  shadowRadius: 9.6, marginBottom:25,},
   sectionheading:{  fontSize: 13, textAlign:'center',   lineHeight: 20,  color: '#CCF6FF',  fontFamily: 'Audiowide_400Regular',  textTransform: 'uppercase', },

@@ -50,8 +50,8 @@ export default function ButtonsGroup() {
 
       <View style={styles.row}>
         <View style={styles.box}>
-          <Pressable onPress={() => router.push('/dashboard/WeeklyScheduleSnapshot')}>
-            <LinearGradient colors={getColors('/dashboard/WeeklyScheduleSnapshot') as any} 
+          <Pressable onPress={() => router.push('/dashboard/CommunicationMetrics')}>
+            <LinearGradient colors={getColors('/dashboard/CommunicationMetrics') as any} 
             start={{ x: 0.85, y: 0.15 }}
             end={{ x: 0.15, y: 0.85 }} 
             style={styles.anchorBox}>
@@ -63,8 +63,8 @@ export default function ButtonsGroup() {
         </View>
 
         <View style={styles.box}>
-          <Pressable onPress={() => router.push('/dashboard/mission')}>
-            <LinearGradient colors={getColors('/dashboard/mission') as any} 
+          <Pressable onPress={() => router.push('/dashboard/ShipsTracker')}>
+            <LinearGradient colors={getColors('/dashboard/ShipsTracker') as any} 
             start={{ x: 0.85, y: 0.15 }}
             end={{ x: 0.15, y: 0.85 }} 
             style={styles.anchorBox}>
@@ -78,8 +78,8 @@ export default function ButtonsGroup() {
 
       <View style={styles.row}>
         <View style={styles.box}>
-          <Pressable onPress={() => router.push('/scanner')}>
-            <LinearGradient colors={getColors('/scanner') as any} 
+          <Pressable onPress={() => router.push('/dashboard/WeeklyScheduleSnapshot')}>
+            <LinearGradient colors={getColors('/dashboard/WeeklyScheduleSnapshot') as any} 
             start={{ x: 0.85, y: 0.15 }}
             end={{ x: 0.15, y: 0.85 }} 
             style={styles.anchorBox}>
@@ -91,8 +91,8 @@ export default function ButtonsGroup() {
         </View>
 
         <View style={styles.box}>
-          <Pressable onPress={() => router.push('/scanner')}>
-            <LinearGradient colors={getColors('/scanner') as any} 
+          <Pressable onPress={() => router.push('/dashboard/SolarData')}>
+            <LinearGradient colors={getColors('/dashboard/SolarData') as any} 
             start={{ x: 0.85, y: 0.15 }}
             end={{ x: 0.15, y: 0.85 }} 
             style={styles.anchorBox}>

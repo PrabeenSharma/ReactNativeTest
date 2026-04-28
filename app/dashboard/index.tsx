@@ -249,7 +249,7 @@ if (loading) {
                       styles.linkStyle,
                       pressed && styles.pressed
                     ]}
-                    onPress={() => router.push('/dashboard/EnvironmentalData')}>
+                    onPress={() => router.push('/dashboard/CommunicationMetrics')}>
                     <LinearGradient
                       colors={[
                         'rgba(24,58,86,0.2)',
@@ -270,7 +270,7 @@ if (loading) {
                       styles.linkStyle,
                       pressed && styles.pressed
                     ]}
-                    onPress={() => router.push('/dashboard/EnvironmentalData')}>
+                    onPress={() => router.push('/dashboard/ShipsTracker')}>
                     <LinearGradient
                       colors={[
                         'rgba(24,58,86,0.2)',
@@ -294,7 +294,7 @@ if (loading) {
                       styles.linkStyle,
                       pressed && styles.pressed
                     ]}
-                    onPress={() => router.push('/scanner')}>
+                    onPress={() => router.push('/dashboard/WeeklyScheduleSnapshot')}>
                     <LinearGradient
                       colors={[
                         'rgba(24,58,86,0.2)',
@@ -315,7 +315,7 @@ if (loading) {
                       styles.linkStyle,
                       pressed && styles.pressed
                     ]}
-                    onPress={() => router.push('/scanner')}>
+                    onPress={() => router.push('/dashboard/SolarData')}>
                     <LinearGradient
                       colors={[
                         'rgba(24,58,86,0.2)',
