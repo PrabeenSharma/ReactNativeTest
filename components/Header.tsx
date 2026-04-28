@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.3)',
     alignItems: 'flex-end',
-    paddingTop: 100,
+    paddingTop: 80,
     paddingRight: 15,
   },
 
