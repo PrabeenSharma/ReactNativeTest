@@ -49,10 +49,10 @@ export default function MissionPage() {
                         end={{ x: 0.15, y: 0.85 }}
                         style={styles.pageInnerheading}
                         >
-                          <Text style={styles.sectionheading}>Communication Metrics</Text>
+                          <Text style={styles.sectionheading}>Ships tracker</Text>
                         </LinearGradient>
 
-                        
+                        <Text style={styles.contentHeadingMain}>Your Location </Text>
 
                         
 
