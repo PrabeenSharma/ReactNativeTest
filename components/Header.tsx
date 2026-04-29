@@ -86,7 +86,7 @@ export default function Header() {
         >
           <Image
             source={require('./../assets/images/settingIcon.png')}
-            style={{ width: 17, height: 17 }}
+            style={{ width: 20 , height: 20 }}
           />
         </TouchableOpacity>
       ) : (
@@ -175,14 +175,14 @@ const styles = StyleSheet.create({
   },
 
   menuButtonPlaceholder: {
-    width: 30,
+    
   },
 
   backdrop: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.3)',
     alignItems: 'flex-end',
-    paddingTop: 80,
+    paddingTop: 120,
     paddingRight: 15,
   },
 
