@@ -25,7 +25,7 @@ export default function RootLayout() {
  
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: 'transparent' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#000' }}>
       
       <ThemeProvider value={MyTheme}>
         <View style={{ flex: 1, backgroundColor:'#000' }}>
