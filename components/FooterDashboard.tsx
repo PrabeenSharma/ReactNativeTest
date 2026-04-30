@@ -23,7 +23,7 @@ export default function FooterDashboard() {
               pressed && styles.pressed
             ]}
             onPress={() =>
-              Linking.openURL('https://dev4work.com/thefirstonmars/')
+              Linking.openURL('#')
             }
           >
             <Text style={{ color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize: 12, fontWeight: '400', textTransform: 'uppercase', marginBottom:0, textAlign: 'center' }}>Discord</Text>
@@ -35,7 +35,7 @@ export default function FooterDashboard() {
               pressed && styles.pressed
             ]}
             onPress={() =>
-              Linking.openURL('https://dev4work.com/thefirstonmars/')
+              Linking.openURL('https://www.instagram.com/redplanetresorts/')
             }
           >
             
@@ -50,7 +50,7 @@ export default function FooterDashboard() {
               pressed && styles.pressed
             ]}
             onPress={() =>
-              Linking.openURL('https://dev4work.com/thefirstonmars/')
+              Linking.openURL('https://redplanetresorts.com/products/ticket-to-red-planet-resorts')
             }
           >
             <Text style={{ color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize: 12, fontWeight: '400', textTransform: 'uppercase', marginBottom:0, textAlign: 'center' }}>Store</Text>
