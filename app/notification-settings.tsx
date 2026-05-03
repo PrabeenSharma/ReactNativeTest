@@ -99,80 +99,15 @@ export default function NotificationSettings() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 24,
-    justifyContent: 'center',
-    backgroundColor: 'transparent',
-  },
-
-  iconWrapper: {
-    padding: 20,
-    width: 60,
-    height: 60,
-    borderRadius: 100,
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'center',
-  },
-
-  icon: {
-    width: 30,
-    height: 35,
-  },
-
-  description: {
-    fontSize: 23,
-    fontWeight: '400',
-    textAlign: 'center',
-    color: '#fff',
-    lineHeight: 32,
-    fontFamily: 'Audiowide_400Regular',
-    padding: 25,
-  },
-
-  optionsRow: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-    gap: 24,
-    marginBottom: 40,
-  },
-
-  option: {
-    borderRadius: 6,
-  },
-
-  optionGradient: {
-    height: 60,
-    borderRadius: 6,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
-  optionNo: {
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: 'rgba(126, 148, 181, 1)',
-    height: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
-  optionSelected: {
-    opacity: 0.8,
-  },
-
-  optionText: {
-    fontFamily: 'Audiowide_400Regular',
-    fontSize: 16,
-    textTransform: 'uppercase',
-    color: '#fff',
-  },
-
-  optionNoText: {
-    fontFamily: 'Audiowide_400Regular',
-    fontSize: 16,
-    textTransform: 'uppercase',
-    color: '#fff',
-  },
+  container: {  flex: 1,  padding: 24,  justifyContent: 'center',  backgroundColor: 'transparent', },
+  iconWrapper: { padding: 20, width: 60, height: 60, borderRadius: 100, justifyContent: 'center', alignItems: 'center', alignSelf: 'center',},
+  icon: { width: 30, height: 35,},
+  description: { fontSize: 23, fontWeight: '400',  textAlign: 'center', color: '#fff', lineHeight: 32, fontFamily: 'Audiowide_400Regular',  padding: 25,},
+  optionsRow: { flexDirection: 'column', justifyContent: 'center',  gap: 24,  marginBottom: 40, },
+  option: { borderRadius: 6, },
+  optionGradient: { height: 60, borderRadius: 6,  justifyContent: 'center', alignItems: 'center',},
+  optionNo: { borderRadius: 6,  borderWidth: 1, borderColor: 'rgba(126, 148, 181, 1)', height: 60, justifyContent: 'center', alignItems: 'center',},
+  optionSelected: { opacity: 0.8,},
+  optionText: { fontFamily: 'Audiowide_400Regular', fontSize: 16, textTransform: 'uppercase', color: '#fff', },
+  optionNoText: { fontFamily: 'Audiowide_400Regular', fontSize: 16, textTransform: 'uppercase', color: '#fff',  },
 });
