@@ -13,6 +13,9 @@ import ButtonsGroup from '../../components/ButtonsGroup';
 
 import useMissionPage from '@/hooks/useMissionPage';
 
+
+import RocketProgress from '../../components/RocketProgress';
+
 export default function MissionPage() {
 
   const { slug: slugParam } = useLocalSearchParams<{ slug?: string }>();
@@ -54,7 +57,11 @@ export default function MissionPage() {
 
                         <Text style={styles.contentHeadingMain}>Your Location </Text>
 
-                        
+                        <RocketProgress 
+                          startDate= { page?.acf?.tr_start_date }
+                          endDate={page?.acf?.tr_end_date}
+                          distance={page?.acf?.distance_km}
+                        />
 
                     </View>
                   <Image
