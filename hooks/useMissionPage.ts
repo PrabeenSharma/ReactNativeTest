@@ -50,7 +50,6 @@ export default function useMissionPage(slugParam?: string) {
         const data = await res.json();
         const result = data?.[0] || null;
 
-        // 🔥 3. CACHE SAVE
         pageCache[slug] = result;
 
         setPage(result);

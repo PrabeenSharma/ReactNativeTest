@@ -318,40 +318,11 @@ export default function Scanner() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 60,
-    alignItems: 'center',
-    backgroundColor: 'transparent',
-    justifyContent: 'center',
-  },
-  title: {
-    marginBottom: 20,
-    color: '#fff',
-    fontFamily: 'Audiowide_400Regular',
-    fontSize:24,
-  },
-  scannerBox: {
-    width: '90%',
-    height: '50%',
-    borderRadius: 12,
-    overflow: 'hidden',
-  },
-  controlRow: {
-    flexDirection: 'row',
-    marginTop: 10,
-  },
-  buttonText: {
-    color: '#fff',
-    fontFamily: 'Audiowide_400Regular',
-    fontSize:16,
-  },
-  optionGradient: {
-    borderRadius: 6,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-  },
+  container: {  flex: 1, paddingTop: 60,  alignItems: 'center',  backgroundColor: 'transparent', justifyContent: 'center',},
+  title: { marginBottom: 20,  color: '#fff',  fontFamily: 'Audiowide_400Regular', fontSize:24,},
+  scannerBox: { width: '90%', height: '50%', borderRadius: 12,  overflow: 'hidden', },
+  controlRow: {  flexDirection: 'row', marginTop: 10, },
+  buttonText: { color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize:16, },
+  optionGradient: { borderRadius: 6, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 12,},
   button:{},
 });

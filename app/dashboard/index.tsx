@@ -2,7 +2,9 @@ import { formatDate } from '@/utils/date';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
+import InstagramFeed from '../../components/InstagramFeed';
 import SpaceHistory from '../../components/SpaceHistory';
+import SpaceNews from '../../components/SpaceNews';
 import SubmitStoryModal from '../../components/SubmitYoursForm';
 
 import { useState } from 'react';
@@ -397,7 +399,13 @@ if (loading) {
       
       
             
-          </View>
+      </View>
+
+      <SpaceNews/>
+
+      <InstagramFeed/>
+
+
 
       <Modal
         visible={visible}
@@ -415,13 +423,8 @@ if (loading) {
             <ScrollView
               contentContainerStyle={{ paddingBottom: 20 }}
             >
-              
              <Text style={styles.modalContent}> {page.acf.captains_message } </Text>
-             
-
-
             </ScrollView>
-
             <TouchableOpacity
               onPress={() => setVisible(false)}
               style={styles.closeBtn}
@@ -455,121 +458,34 @@ if (loading) {
 const styles = StyleSheet.create({
   thereeColumns: {  flexDirection: 'row',  flexWrap: 'wrap',   gap: 12,  justifyContent: 'space-between', },
   mainContent: {  paddingHorizontal: 17,    paddingVertical: 17,    alignSelf:'center',    width:'100%',  },
-  mainHeading: {    fontSize: 16,    lineHeight: 31,  color: '#fff',  fontFamily: 'Audiowide_400Regular',  textTransform: 'uppercase',  marginBottom: 17,  },
-  mainHeadingBlack: {    fontSize: 16,    lineHeight: 31,  color: '#000',  fontFamily: 'Audiowide_400Regular',  textTransform: 'uppercase',  marginBottom: 17,  },
-  headingCenter: {  fontSize: 16,  lineHeight: 31,   color: '#fff',  fontFamily: 'Audiowide_400Regular',  textTransform: 'uppercase',  marginBottom: 17, textAlign:'center', },
+  mainHeading: {  fontSize: 16, lineHeight: 31,  color: '#fff', fontFamily: 'Audiowide_400Regular',  textTransform: 'uppercase',  marginBottom: 17,  },
+  mainHeadingBlack: { fontSize: 16, lineHeight: 31, color: '#000',  fontFamily: 'Audiowide_400Regular',  textTransform: 'uppercase',  marginBottom: 17,  },
+  headingCenter: {  fontSize: 16,  lineHeight: 31, color: '#fff',  fontFamily: 'Audiowide_400Regular',  textTransform: 'uppercase',  marginBottom: 17, textAlign:'center', },
   topContentHolder: {  marginBottom: 8,},
   modalContent:{ fontSize: 13, lineHeight: 20,  color: '#000',  fontFamily: 'Audiowide_400Regular',   marginBottom: 0, },
-  topHeading: {
-    fontSize: 9,
-    color: '#fff',
-    fontFamily: 'Audiowide_400Regular',
-    marginBottom: 5,
-    textTransform: 'uppercase',
+  topHeading: {  fontSize: 9, color: '#fff', fontFamily: 'Audiowide_400Regular',  marginBottom: 5, textTransform: 'uppercase',},
+  topContent: {  fontSize: 10,  color: 'rgba(0, 221, 241, 1)',   fontFamily: 'Audiowide_400Regular',  marginBottom: 5,  textTransform: 'uppercase',  },
+  captainLogs: {  fontSize: 31,  color: '#fff',  fontFamily: 'Audiowide_400Regular',  textAlign: 'center',  marginBottom: 15, textTransform: 'uppercase', },
+  information: {  color: '#fff',  fontFamily: 'Audiowide_400Regular',  fontSize: 10,  textAlign: 'center',  marginBottom: 12, lineHeight:10, textTransform: 'uppercase',},
+  informationHeading: { color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize: 15, textAlign: 'center',  marginBottom: 15, textTransform: 'uppercase',},
+  optionGradient: { height: 36,  borderRadius: 6, justifyContent: 'center', alignItems: 'center',},
+  optionGradient2: { height: 36,  borderRadius: 6, justifyContent: 'center', alignItems: 'center', flexDirection:'row',  gap:8,},
+  optionText: {  fontFamily: 'Audiowide_400Regular',  fontSize: 12,  textTransform: 'uppercase',  color: '#fff',},
+  modalOverlay: {  flex: 1,  backgroundColor: 'rgba(0,0,0,0.6)',  justifyContent: 'center',  alignItems: 'center',
   },
-  topContent: {
-    fontSize: 10,
-    color: 'rgba(0, 221, 241, 1)',
-    fontFamily: 'Audiowide_400Regular',
-    marginBottom: 5,
-    textTransform: 'uppercase',
-  },
-  captainLogs: {
-    fontSize: 31,
-    color: '#fff',
-    fontFamily: 'Audiowide_400Regular',
-    textAlign: 'center',
-    marginBottom: 15,
-    textTransform: 'uppercase',
-  },
-  information: {
-    color: '#fff',
-    fontFamily: 'Audiowide_400Regular',
-    fontSize: 10,
-    textAlign: 'center',
-    marginBottom: 12,
-    lineHeight:10,
-    textTransform: 'uppercase',
-  },
-  informationHeading: {
-    color: '#fff',
-    fontFamily: 'Audiowide_400Regular',
-    fontSize: 15,
-    textAlign: 'center',
-    marginBottom: 15,
-    textTransform: 'uppercase',
-  },
-  optionGradient: {
-    height: 36,
-    borderRadius: 6,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  optionGradient2: {
-    height: 36,
-    borderRadius: 6,
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection:'row',
-    gap:8,
-    
-  },
-
-
-
-  optionText: {
-    fontFamily: 'Audiowide_400Regular',
-    fontSize: 12,
-    textTransform: 'uppercase',
-    color: '#fff',
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.6)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalBox: {
-    width: '85%',
-    maxHeight: '80%',
-    backgroundColor: '#fff',
-    padding: 20,
-    borderRadius: 12,
-    elevation: 5,
-  },
-  closeBtn: {
-    backgroundColor: '#004F99',
-    padding: 10,
-    borderRadius: 8,
-    alignItems: 'center',
-    position:'absolute',
-    top:10,
-    right:10,
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 12,
-  },
-  box: {
-    width: '48%', 
-    alignItems: 'center',
-  },
-  linkStyle:{
-    width:'100%'
-  },
-  pressed: {
-    opacity: 0.6,
-  },
+  modalBox: {  width: '85%',  maxHeight: '80%', backgroundColor: '#fff',  padding: 20,  borderRadius: 12,  elevation: 5,},
+  closeBtn: { backgroundColor: '#004F99', padding: 10, borderRadius: 8, alignItems: 'center',  position:'absolute', top:10, right:10,},
+  row: {  flexDirection: 'row', justifyContent: 'space-between',  marginBottom: 12, },
+  box: {  width: '48%',  alignItems: 'center', },
+  linkStyle:{  width:'100%'},
+  pressed: { opacity: 0.6, },
   anchorBox:{ width:'100%', height:50, borderRadius:10, justifyContent:'center', alignItems:'center', borderColor:'rgba(101, 129, 135, 1)', borderWidth:1, borderStyle:'solid', paddingHorizontal:5, },
   hsitoryContainer:{},
   communityContainer:{ marginTop:15,} ,
   historyBox:{ borderStyle:'solid', borderWidth:1, borderColor:'rgba(101, 129, 135, 1)', borderRadius:10, paddingVertical:20, paddingHorizontal:20,},
   communityHeading:{ textAlign:'center', fontFamily: 'Audiowide_400Regular', fontWeight:400,  fontSize: 16,   textTransform: 'uppercase',  color: '#00DDF1', paddingTop:20, paddingBottom:15,},
   communityContent:{ textAlign:'center', fontFamily: 'Audiowide_400Regular', fontWeight:400,  fontSize: 12,   textTransform: 'uppercase',  color: '#CCF6FF', marginBottom:25,},
-
   loading:{ width:109, height:16,},
-
   loaderContainer:{  flex: 1,  justifyContent: 'center',  alignItems: 'center',  backgroundColor: '#000',}
 
 });

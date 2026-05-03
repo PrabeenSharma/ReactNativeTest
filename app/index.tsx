@@ -110,40 +110,11 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  loading: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  linkStyle: {
-    backgroundColor: 'rgba(217, 217, 217, 0.12)', paddingLeft:22, paddingRight:22, paddingTop:22, paddingBottom:22, borderRadius: 6, color:'#fff', textAlign: 'center', fontFamily: 'Audiowide_400Regular', fontSize:14, fontWeight: '400', textTransform: 'uppercase',
-  },
-  linkStyleRed: {
-    backgroundColor: 'red',
-    paddingLeft: 15,
-    paddingRight: 15,
-    paddingTop: 12,
-    paddingBottom: 12,
-    marginTop: 20,
-    color: '#fff',
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-  pressed: {
-    backgroundColor: 'rgba(0, 0, 0, 0.50)',
-    transform: [{ scale: 0.98 }],
-  },
+  loading: {justifyContent: 'center',  alignItems: 'center',},
+  linkStyle: {backgroundColor: 'rgba(217, 217, 217, 0.12)', paddingLeft:22, paddingRight:22, paddingTop:22, paddingBottom:22, borderRadius: 6, color:'#fff', textAlign: 'center', fontFamily: 'Audiowide_400Regular', fontSize:14, fontWeight: '400', textTransform: 'uppercase', },
+  linkStyleRed: {backgroundColor: 'red',  paddingLeft: 15,   paddingRight: 15,  paddingTop: 12, paddingBottom: 12, marginTop: 20, color: '#fff',},
+  titleContainer: {flexDirection: 'row',  alignItems: 'center', gap: 8,},
+  stepContainer: { gap: 8, marginBottom: 8,},
+  reactLogo: { height: 178, width: 290, bottom: 0, left: 0, position: 'absolute',},
+  pressed: { backgroundColor: 'rgba(0, 0, 0, 0.50)', transform: [{ scale: 0.98 }],},
 });

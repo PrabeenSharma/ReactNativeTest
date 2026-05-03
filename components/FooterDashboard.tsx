@@ -50,7 +50,7 @@ export default function FooterDashboard() {
               pressed && styles.pressed
             ]}
             onPress={() =>
-              Linking.openURL('https://redplanetresorts.com/products/ticket-to-red-planet-resorts')
+              Linking.openURL('https://redplanetresorts.com/collections')
             }
           >
             <Text style={{ color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize: 12, fontWeight: '400', textTransform: 'uppercase', marginBottom:0, textAlign: 'center' }}>Store</Text>
