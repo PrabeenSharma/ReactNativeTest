@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "Red Planet Recorts",
-    "slug": "myApp",
+    "name": "Red Planet Resorts",
+    "slug": "redplanetResorts",
     "version": "1.0.0",
     "orientation": "default",
     "icon": "./assets/images/icon.png",
-    "scheme": "redplanetrecorts",
+    "scheme": "redplanetresorts",
     "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true,

@@ -14,7 +14,8 @@ import ButtonsGroup from '../../components/ButtonsGroup';
 import useMissionPage from '@/hooks/useMissionPage';
 
 
-import RocketProgress from '../../components/RocketProgress';
+import RocketWebView from '../../components/RocketProgress';
+import ShipsTracker from '../../components/ShipsTracker';
 
 export default function MissionPage() {
 
@@ -23,6 +24,33 @@ export default function MissionPage() {
 
   const screenWidth = Dimensions.get('window').width;
   const imageHeight = screenWidth / 3.14;
+
+  const formatDate = (dateStr?: string, addMonth = false) => {
+    if (!dateStr || dateStr.length !== 8) return '';
+
+    const year = Number(dateStr.substring(0, 4));
+    const month = Number(dateStr.substring(4, 6)) - 1;
+    const day = Number(dateStr.substring(6, 8));
+
+    const date = new Date(year, month, day);
+
+    if (addMonth) {
+      date.setMonth(date.getMonth() + 1);
+    }
+
+    const m = String(date.getMonth() + 1);
+    const d = String(date.getDate());
+    const y = String(date.getFullYear()).slice(-2);
+
+    return `${m}-${d}-${y}`;
+  };
+
+
+
+ const mission = page?.acf?.list_of_missions?.[0];
+
+  const heading = page?.acf?.ships_tracker_heading ?? '';
+  const missions = page?.acf?.list_of_missions ?? [];
 
   return (
     
@@ -57,11 +85,22 @@ export default function MissionPage() {
 
                         <Text style={styles.contentHeadingMain}>Your Location </Text>
 
-                        <RocketProgress 
-                          startDate= { page?.acf?.tr_start_date }
-                          endDate={page?.acf?.tr_end_date}
-                          distance={page?.acf?.distance_km}
+                        <View style={{ flex: 1, marginBottom:20, }}>
+                          <RocketWebView
+                            startDate={formatDate(page?.acf?.launch_date)}
+                            endDate={formatDate(page?.acf?.di_arrival_date)}
+                            distance={page?.mission_calculation?.distance_km || "214386792"}
+                          />
+                        </View>
+
+                        
+
+                        <ShipsTracker
+                          heading={heading}
+                          missions={missions}
                         />
+
+
 
                     </View>
                   <Image
@@ -96,7 +135,12 @@ const styles = StyleSheet.create({
   pageInnerheading:{ textAlign:'center', paddingHorizontal:15, paddingVertical:10, color:'#CCF6FF', fontSize:13, fontFamily: 'Audiowide_400Regular',  textTransform: 'uppercase', borderRadius:10, borderWidth:0.5, borderColor:'rgba(101, 129, 135, 1)', shadowColor: '#000',  shadowOffset: { width: 0, height: 4 },  shadowOpacity: 0.2,  shadowRadius: 9.6, marginBottom:25,},
   sectionheading:{  fontSize: 13, textAlign:'center', lineHeight: 20,  color: '#CCF6FF',  fontFamily: 'Audiowide_400Regular',  textTransform: 'uppercase', },
   contentHeading:{  fontSize: 11, textAlign:'center', lineHeight: 20, color: '#CCF6FF',  fontFamily: 'Audiowide_400Regular',  textTransform: 'uppercase', marginBottom:10,},
-  contentHeadingMain:{  fontSize: 20, textAlign:'center', lineHeight: 22, color: '#CCF6FF',  fontFamily: 'Audiowide_400Regular', marginBottom:10,},
+  contentHeadingMain:{  fontSize: 20, textAlign:'center', lineHeight: 22, color: '#CCF6FF',  fontFamily: 'Audiowide_400Regular', marginBottom:20,},
   temLocationHeading:{fontSize: 11, textAlign:'center', lineHeight: 14, color: '#CCF6FF',  fontFamily: 'Audiowide_400Regular', marginBottom:10, fontWeight:400, textTransform:'uppercase'},
   temBox:{ borderColor:'#658187' , borderWidth:1, borderRadius:10, paddingVertical:15, paddingHorizontal:30, marginBottom:15, marginTop:10,},
+
+  shipTrackerSection:{ marginTop:20,},
+  shipTrackBox:{ backgroundColor:'rgba(217,217,217,0.12)', padding:15, borderRadius:6, marginBottom:13,}
+
+
 });
