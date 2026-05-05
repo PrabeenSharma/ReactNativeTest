@@ -85,7 +85,7 @@ export default function MissionPage() {
 
                         <Text style={styles.contentHeadingMain}>Your Location </Text>
 
-                        <View style={{ flex: 1, marginBottom:20, }}>
+                        <View style={{  marginBottom:20, }}>
                           <RocketWebView
                             startDate={formatDate(page?.acf?.launch_date)}
                             endDate={formatDate(page?.acf?.di_arrival_date)}
@@ -130,7 +130,7 @@ export default function MissionPage() {
 const styles = StyleSheet.create({
   mainContent: {  paddingHorizontal: 10,    paddingVertical: 17,    alignSelf:'center',    width:'100%',  },
   pageContent:{ marginTop:20,  paddingHorizontal: 10, },
-  pageBox:{ padding:0, borderRadius:20, borderColor: 'rgba(101, 129, 135, 1)' , borderWidth:0.5,  overflow:'hidden', paddingBottom:120,},
+  pageBox:{ padding:0, borderRadius:20, borderColor: 'rgba(101, 129, 135, 1)' , borderWidth:0.5,  overflow:'hidden', paddingBottom:0,},
   mainInnerContent:{ paddingHorizontal:17, paddingBottom:60, paddingTop:17,},
   pageInnerheading:{ textAlign:'center', paddingHorizontal:15, paddingVertical:10, color:'#CCF6FF', fontSize:13, fontFamily: 'Audiowide_400Regular',  textTransform: 'uppercase', borderRadius:10, borderWidth:0.5, borderColor:'rgba(101, 129, 135, 1)', shadowColor: '#000',  shadowOffset: { width: 0, height: 4 },  shadowOpacity: 0.2,  shadowRadius: 9.6, marginBottom:25,},
   sectionheading:{  fontSize: 13, textAlign:'center', lineHeight: 20,  color: '#CCF6FF',  fontFamily: 'Audiowide_400Regular',  textTransform: 'uppercase', },

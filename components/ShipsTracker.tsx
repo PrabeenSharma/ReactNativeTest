@@ -1,16 +1,23 @@
 import React from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 
 /* ================= CONSTANT ================= */
+
 const TOTAL_DISTANCE = 225000000;
 
 /* ================= TYPES ================= */
+
 export interface MissionItem {
   tr_mission_name: string;
   tr_mission_code: string;
   tr_start_date: string;
   tr_end_date: string;
-  misson_type?: string;
+  misson_type?: string[] | string;
 }
 
 interface Props {
@@ -19,11 +26,16 @@ interface Props {
 }
 
 /* ================= DATE HELPER ================= */
-const formatDate = (dateStr?: string): Date => {
+
+const formatDate = (
+  dateStr?: string,
+): Date => {
   if (!dateStr) return new Date();
 
   const parts = dateStr.split('-');
-  if (parts.length !== 3) return new Date();
+
+  if (parts.length !== 3)
+    return new Date();
 
   const [m, d, y] = parts;
 
@@ -31,145 +43,285 @@ const formatDate = (dateStr?: string): Date => {
 };
 
 /* ================= COMPONENT ================= */
-const ShipsTracker: React.FC<Props> = ({ heading, missions }) => {
+
+const ShipsTracker: React.FC<Props> = ({
+  heading,
+  missions,
+}) => {
   const today = new Date();
 
   return (
     <View style={styles.container}>
-      <Text style={styles.contentHeadingMain}>{heading}</Text>
+      <Text style={styles.contentHeadingMain}>
+        {heading}
+      </Text>
 
-      {/* MISSIONS LIST */}
       {missions.map((item, index) => {
-        const startDate = formatDate(item.tr_start_date);
-        const endDate = formatDate(item.tr_end_date);
+        const startDate = formatDate(
+          item.tr_start_date,
+        );
+
+        const endDate = formatDate(
+          item.tr_end_date,
+        );
+
+        /* ================= DAYS ================= */
 
         const totalDays =
-          (endDate.getTime() - startDate.getTime()) /
+          (endDate.getTime() -
+            startDate.getTime()) /
           (1000 * 60 * 60 * 24);
 
         const currentDays =
-          (today.getTime() - startDate.getTime()) /
+          (today.getTime() -
+            startDate.getTime()) /
           (1000 * 60 * 60 * 24);
 
-        const safeTotalDays = totalDays > 0 ? totalDays : 1;
+        const safeTotalDays =
+          totalDays > 0 ? totalDays : 1;
+
+        /* ================= RETURN ================= */
+
+        // ["Yes"] = Mars → Earth
+        const isReturn =
+          Array.isArray(
+            item.misson_type,
+          ) &&
+          item.misson_type.includes(
+            'Yes',
+          );
+
+        /* ================= DISTANCE ================= */
 
         let distanceTo =
-          (TOTAL_DISTANCE / safeTotalDays) * currentDays;
+          (TOTAL_DISTANCE /
+            safeTotalDays) *
+          currentDays;
 
-        let distanceFrm =
-          (TOTAL_DISTANCE / safeTotalDays) *
-          (safeTotalDays - currentDays);
+        if (distanceTo < 0)
+          distanceTo = 0;
 
-        let progress =
-          (distanceTo / TOTAL_DISTANCE) * 100;
-
-        if (today > endDate) {
+        if (
+          distanceTo > TOTAL_DISTANCE
+        ) {
           distanceTo = TOTAL_DISTANCE;
-          distanceFrm = 0;
-          progress = 100;
         }
 
-        const isReturn = !!item.misson_type;
+        // PHP Equivalent
+        const distanceFromMars =
+          TOTAL_DISTANCE -
+          distanceTo;
+
+        /* ================= PROGRESS ================= */
+
+        let progress =
+          (distanceTo /
+            TOTAL_DISTANCE) *
+          100;
+
+        if (progress < 0)
+          progress = 0;
+
+        if (progress > 100)
+          progress = 100;
+
+        /* ================= DISPLAY DISTANCE ================= */
+
+        const displayDistance =
+          isReturn
+            ? distanceFromMars
+            : distanceTo;
 
         return (
-          <View key={index} style={styles.card}>
-            
+          <View
+            key={index}
+            style={styles.card}
+          >
+            {/* TITLE */}
+
             <Text style={styles.title}>
-                {item.tr_mission_name}
+              {item.tr_mission_name}
             </Text>
-            <View >
-              
 
-              <View style={styles.trackRow}>
-                
-                <View style={styles.trackRowAfter}>
+            {/* TRACK */}
+
+            <View
+              style={styles.trackWrapper}
+            >
+              {/* EARTH */}
+
+              <Image
+                source={require('../assets/images/sidebarEarth.png')}
+                style={styles.planet}
+              />
+
+
+              <View style={styles.leftDot}>
                   <Image
-                  source={require('../assets/images/afterBeforeImage.png')}
-                  style={styles.beforeAfterImage}
-                />
-                </View>
-                <View style={styles.trackRowbefore}>
-                  <Image
-                  source={require('../assets/images/afterBeforeImage.png')}
-                  style={styles.beforeAfterImage}
-                />
+                    source={require('../assets/images/afterBeforeImage.png')}
+                    style={{
+                      width: 10,
+                      height:10,
+                    }}
+                  />
                 </View>
                 
 
-                <Image
-                  source={require('../assets/images/sidebarEarth.png')}
-                  style={styles.icon}
-                />
+                {/* RIGHT DOT */}
 
-                <View style={styles.bar}>
-                  <View
+                <View style={styles.rightDot}>
+                    <Image
+                    source={require('../assets/images/afterBeforeImage.png')}
+                    style={{
+                      width: 10,
+                      height:10,
+                    }}
+                  />
+                </View>
+
+
+
+              {/* BAR */}
+
+              <View style={styles.bar}>
+                {/* PROGRESS */}
+
+               <View
+                style={[
+                  styles.progress,
+
+                  isReturn
+                    ? {
+                        width: `${
+                          progress
+                        }%`,
+                        right: 0,
+                      }
+                    : {
+                        width: `${
+                          progress
+                        }%`,
+                        left: 0,
+                      },
+                ]}
+              />
+
+                
+                <View
+                  style={[
+                    styles.rocket,
+
+                    {
+                      left: `${
+                        isReturn
+                          ? (distanceFromMars /
+                              TOTAL_DISTANCE) *
+                            100
+                          : progress
+                      }%`,
+
+                      transform: [
+                        {
+                          translateX:
+                            0,
+                        },
+                      ],
+                    },
+                  ]}
+                >
+                  <Image
+                    source={require('../assets/images/rocket2.png')}
                     style={[
-                      styles.progress,
-                      { width: `${progress}%` },
+                      styles.rocketImg,
+
+                      // RETURN FACE
+                      !isReturn &&
+                        styles.rocketReverse,
                     ]}
                   />
-
-                  <View
-                    style={[
-                      styles.rocket,
-                      isReturn
-                        ? { right: `${progress}%` }
-                        : { left: `${progress}%` },
-                    ]}
-                  >
-                    <Image
-                      source={require('../assets/images/rocket2.png')}
-                      style={styles.rocketImg}
-                    />
-                  </View>
                 </View>
-
-                
-                <Image
-                  source={require('../assets/images/sidebarMars.png')}
-                  style={styles.icon}
-                />
               </View>
 
+              {/* MARS */}
 
+              <Image
+                source={require('../assets/images/sidebarMars.png')}
+                style={styles.planet}
+              />
             </View>
 
+            {/* INFO */}
 
-            {/* MID SECTION */}
-            <View style={styles.mid}>
-              <Text style={styles.label}>
-                Mission Aboard
-              </Text>
-              <Text style={styles.code}>
-                {item.tr_mission_code}
-              </Text>
+            <View
+              style={styles.infoWrapper}
+            >
+              {/* LEFT */}
 
-              <Text style={styles.label}>
-                Distance from Earth
-              </Text>
+              <View style={styles.mid}>
+                <Text
+                  style={styles.label}
+                >
+                  Mission Aboard
+                </Text>
 
-              <Text style={styles.value}>
-                {(isReturn
-                  ? distanceFrm / 1000000
-                  : distanceTo / 1000000
-                ).toFixed(4)}{' '}
-                MILLION KM
-              </Text>
+                <Text
+                  style={styles.code}
+                >
+                  {
+                    item.tr_mission_code
+                  }
+                </Text>
+
+                <Text
+                  style={styles.label}
+                >
+                  Distance from Earth
+                </Text>
+
+                <Text
+                  style={styles.code}
+                >
+                  {(
+                    displayDistance /
+                    1000000
+                  ).toFixed(4)}{' '}
+                  MILLION KM
+                </Text>
+              </View>
+
+              {/* RIGHT */}
+
+              <View
+                style={styles.right}
+              >
+                <Text
+                  style={styles.labelRight}
+                >
+                  Departure
+                </Text>
+
+                <Text
+                  style={styles.date}
+                >
+                  {
+                    item.tr_start_date
+                  }
+                </Text>
+
+                <Text
+                  style={styles.labelRight}
+                >
+                  Arrival
+                </Text>
+
+                <Text
+                  style={styles.date}
+                >
+                  {item.tr_end_date}
+                </Text>
+              </View>
+
             </View>
-
-            {/* RIGHT SECTION */}
-            <View style={styles.right}>
-              <Text style={styles.label}>Departure</Text>
-              <Text style={styles.date}>
-                {item.tr_start_date}
-              </Text>
-
-              <Text style={styles.label}>Arrival</Text>
-              <Text style={styles.date}>
-                {item.tr_end_date}
-              </Text>
-            </View>
-
           </View>
         );
       })}
@@ -180,46 +332,174 @@ const ShipsTracker: React.FC<Props> = ({ heading, missions }) => {
 export default ShipsTracker;
 
 /* ================= STYLES ================= */
+
 const styles = StyleSheet.create({
-  container: { flex: 1,  padding: 16,},
+  container: {
+    flex: 1,
+    padding: 0,
+  },
 
-  contentHeadingMain:{  fontSize: 20, textAlign:'center', lineHeight: 22, color: '#CCF6FF',  fontFamily: 'Audiowide_400Regular', marginBottom:20,},
+  contentHeadingMain: {
+    fontSize: 20,
+    textAlign: 'center',
+    lineHeight: 22,
+    color: '#CCF6FF',
+    fontFamily:
+      'Audiowide_400Regular',
+    marginBottom: 20,
+    marginTop:10,
+  },
 
-  card: {  flexDirection: 'column',  backgroundColor:'rgba(217,217,217,0.12)', padding:15, borderRadius:6, marginBottom:13, },
+  card: {
+    backgroundColor:
+      'rgba(217,217,217,0.12)',
+    padding: 15,
+    borderRadius: 6,
+    marginBottom: 13,
+  },
 
+  title: {
+    fontSize: 17,
+    color: '#CCF6FF',
+    fontFamily:
+      'Audiowide_400Regular',
+    marginBottom: 18,
+    textTransform: 'uppercase',
 
-  mid: { flex: 1, paddingHorizontal: 10,},
+  },
 
-  right: { flex: 1,},
+  /* TRACK */
 
-  title: {  fontSize: 17, textAlign:'left', lineHeight: 22, color: '#CCF6FF',  fontFamily: 'Audiowide_400Regular', marginBottom:20, textTransform:'uppercase', },
+  trackWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
 
-  trackRow: { flexDirection: 'row', alignItems: 'center',gap:0, },
+  planet: {
+    width: 28,
+    height: 28,
+  },
 
-  icon: { width: 28, height: 28,  zIndex:-1},
+  bar: {
+    flex: 1,
+    height: 2,
+    backgroundColor: '#fff',
+    marginHorizontal: 10,
+    position: 'relative',
+    borderRadius: 2,
+    overflow:'visible',
+    
+  },
 
-  bar: { flex: 1, position: 'relative', backgroundColor: '#fff', height: 2, borderRadius: 2,},
+  progress: {
+  height: 2,
+  backgroundColor: '#00DDF1',
+  borderRadius: 2,
+  position: 'absolute',
+},
 
-  progress: { height: 2, backgroundColor: '#00DDF1',  borderRadius: 2,},
+  rocket: {
+    position: 'absolute',
+    top: -9,
+    zIndex: 99,
+  },
 
-  rocket: { position: 'absolute',  top: -9, zIndex:9},
+  rocketImg: {
+    width: 24,
+    height: 19,
+    resizeMode: 'contain',
+  },
 
-  rocketImg: { width: 24, height: 19, },
+  /* RETURN FACE */
 
-  label: { color: '#aaa', fontSize: 11, marginTop: 4, },
+  rocketReverse: {
+    transform: [
+      { rotate: '180deg' },
+      { translateX: 20 },
+    ],
+  },
 
-  code: { color: '#fff',fontWeight: '600',},
+  /* DOTS */
 
-  value: { color: '#fff', fontWeight: '600', marginTop: 4,},
+  leftDot: {
+    position: 'absolute',
+    top: 9,
+    left: 34,
+    width: 10,
+    height: 10,
 
-  date: { color: '#fff', fontSize: 12, },
+  },
 
+  rightDot: {
+    position: 'absolute',
+    top: 9,
+    right: 34,
+    width: 10,
+    height: 10,
+  },
 
-trackRowAfter: { position:'absolute', left:35, top:9, zIndex:1},
+  /* INFO */
 
-trackRowbefore: { position:'absolute', right:35, top:9, zIndex:1},
+  infoWrapper: {
+    flexDirection: 'row',
+    marginTop: 22,
+  },
 
-beforeAfterImage:{ width:10, height:10,},  
+  mid: {
+    width:'65%',
+  },
 
+  right: {
+    width:'35%',
+  },
 
+  label: {
+    color: '#fff',
+    fontSize: 9,
+    marginTop: 4,
+    fontFamily: 'Audiowide_400Regular',
+    lineHeight:14,
+    textTransform:'uppercase',
+    letterSpacing:1
+
+  },
+
+  labelRight: {
+    color: '#fff',
+    fontSize: 9,
+    marginTop: 4,
+    fontFamily: 'Audiowide_400Regular',
+    lineHeight:14,
+    textTransform:'uppercase',
+    letterSpacing:1,
+    textAlign:'right',
+  },  
+
+  code: {
+    color: '#00DDF1',
+    fontWeight: '400',
+    marginTop: 5,
+    fontFamily: 'Audiowide_400Regular',
+    fontSize: 12,
+    lineHeight:14,
+    textTransform:'uppercase',
+    marginBottom:10,
+  },
+
+  value: {
+    color: '#fff',
+    fontWeight: '600',
+    marginTop: 4,
+  },
+
+  date: {
+    color: '#00DDF1',
+    fontSize: 16,
+    marginTop: 5,
+    fontFamily: 'Audiowide_400Regular',
+    lineHeight:14,
+    textTransform:'uppercase',
+    textAlign:'right',
+    marginBottom:5,
+  },
 });
