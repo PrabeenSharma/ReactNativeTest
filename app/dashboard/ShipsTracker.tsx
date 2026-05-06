@@ -1,6 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams } from 'expo-router';
 import {
+  ActivityIndicator,
   Dimensions,
   Image,
   ScrollView,
@@ -9,16 +10,12 @@ import {
   View,
 } from 'react-native';
 
-import ButtonsGroup from '../../components/ButtonsGroup';
-
 import useMissionPage from '@/hooks/useMissionPage';
-
-
+import ButtonsGroup from '../../components/ButtonsGroup';
 import RocketWebView from '../../components/RocketProgress';
 import ShipsTracker from '../../components/ShipsTracker';
 
 export default function MissionPage() {
-
   const { slug: slugParam } = useLocalSearchParams<{ slug?: string }>();
   const { page, loading } = useMissionPage(slugParam);
 
@@ -45,86 +42,86 @@ export default function MissionPage() {
     return `${m}-${d}-${y}`;
   };
 
-
-
- const mission = page?.acf?.list_of_missions?.[0];
-
   const heading = page?.acf?.ships_tracker_heading ?? '';
   const missions = page?.acf?.list_of_missions ?? [];
 
+  // ✅ SAFE LOADING GUARD (IMPORTANT FIX)
+  if (loading || !page) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#60d3f6" />
+      </View>
+    );
+  }
+
   return (
-    
     <ScrollView style={{ flex: 1 }}>
-          <View style={styles.mainContent}>
-            <ButtonsGroup/>
-            <View style={styles.pageContent}>
+      <View style={styles.mainContent}>
+        <ButtonsGroup />
+
+        <View style={styles.pageContent}>
+          <LinearGradient
+            colors={['#071737', '#0C285D', '#0C285D', '#071737']}
+            locations={[0.0438, 0.3991, 0.549, 0.8476]}
+            start={{ x: 0, y: 0.5 }}
+            end={{ x: 1, y: 0.5 }}
+            style={styles.pageBox}
+          >
+            <View style={styles.mainInnerContent}>
               <LinearGradient
-                  colors={[
-                    '#071737',
-                    '#0C285D',
-                    '#0C285D',
-                    '#071737',
-                  ]}
-                  locations={[0.0438, 0.3991, 0.549, 0.8476]}
-                  start={{ x: 0, y: 0.5 }}
-                  end={{ x: 1, y: 0.5 }}
-                  style={styles.pageBox}
-                >
-                  
-                  
-                    <View style={styles.mainInnerContent}>
-                       <LinearGradient
-                        colors={['#0C2046', '#004F99']}
-                        locations={[0.1633, 0.8162]}
-                        start={{ x: 0.85, y: 0.15 }}
-                        end={{ x: 0.15, y: 0.85 }}
-                        style={styles.pageInnerheading}
-                        >
-                          <Text style={styles.sectionheading}>Ships tracker</Text>
-                        </LinearGradient>
+                colors={['#0C2046', '#004F99']}
+                locations={[0.1633, 0.8162]}
+                start={{ x: 0.85, y: 0.15 }}
+                end={{ x: 0.15, y: 0.85 }}
+                style={styles.pageInnerheading}
+              >
+                <Text style={styles.sectionheading}>Ships tracker</Text>
+              </LinearGradient>
 
-                        <Text style={styles.contentHeadingMain}>Your Location </Text>
+              <Text style={styles.contentHeadingMain}>Your Location</Text>
 
-                        <View style={{  marginBottom:20, }}>
-                          <RocketWebView
-                              key={`${page?.acf?.launch_date}-${page?.acf?.di_arrival_date}-${page?.mission_calculation?.distance_km}`}
-                              startDate={formatDate(page?.acf?.launch_date)}
-                              endDate={formatDate(page?.acf?.di_arrival_date)}
-                              distance={page?.mission_calculation?.distance_km || "214386792"}
-                            />
-                        </View>
+              <View style={{ marginBottom: 20 }}>
+                <RocketWebView
+                  key={`${page?.acf?.launch_date}-${page?.acf?.di_arrival_date}-${page?.mission_calculation?.distance_km}`}
+                  startDate={
+                    page?.acf?.launch_date
+                      ? formatDate(page.acf.launch_date)
+                      : ''
+                  }
+                  endDate={
+                    page?.acf?.di_arrival_date
+                      ? formatDate(page.acf.di_arrival_date)
+                      : ''
+                  }
+                  distance={
+                    page?.mission_calculation?.distance_km ||
+                    '214386792'
+                  }
+                  mission_status={
+                    page?.acf?.mission_status || 'default'
+                  }
+                />
+              </View>
 
-                        
-
-                        <ShipsTracker
-                          heading={heading}
-                          missions={missions}
-                        />
-
-
-
-                    </View>
-                  <Image
-                    source={require('../../assets/images/solarTrackerBg.png')}
-                    style={{
-                      position: 'absolute',
-                      bottom: 0,
-                      width: '100%',
-                      height:'auto',
-                      aspectRatio: 3.14,
-                    }}
-                    resizeMode="contain"
-                  />
-
-
-                  <View style={{ height: imageHeight }} />
-                  
-                </LinearGradient>
+              <ShipsTracker heading={heading} missions={missions} />
             </View>
-          </View>
-    </ScrollView>  
 
-          
+            <Image
+              source={require('../../assets/images/solarTrackerBg.png')}
+              style={{
+                position: 'absolute',
+                bottom: 0,
+                width: '100%',
+                aspectRatio: 3.14,
+              }}
+              resizeMode="contain"
+            />
+
+            <View style={{ height: imageHeight }} />
+          </LinearGradient>
+        </View>
+      </View>
+    </ScrollView>
   );
 }
 

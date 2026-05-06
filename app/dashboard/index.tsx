@@ -2,6 +2,9 @@ import { formatDate } from '@/utils/date';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
+import { useWindowDimensions } from 'react-native';
+import RenderHTML from 'react-native-render-html';
+
 import InstagramFeed from '../../components/InstagramFeed';
 import SpaceHistory from '../../components/SpaceHistory';
 import SpaceNews from '../../components/SpaceNews';
@@ -16,10 +19,10 @@ import {
   Modal,
   Pressable,
   ScrollView,
+  Share,
   StyleSheet,
   Text,
   TouchableOpacity,
-  useWindowDimensions,
   View
 } from 'react-native';
 
@@ -33,6 +36,28 @@ export default function MissionPage() {
 
   const { slug: slugParam } = useLocalSearchParams<{ slug?: string }>();
   const { page, loading } = useMissionPage(slugParam);
+
+  
+
+
+
+const handleRefer = async () => {
+  const message = `Join this mission! Buy your ticket here: https://dev4work.com/thefirstonmars/`;
+
+  try {
+    await Share.share(
+      {
+        message,
+      },
+      {
+        dialogTitle: 'Invite your friends',
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 
 if (loading) {
   return (
@@ -104,6 +129,30 @@ if (loading) {
             </View>
           </View>
         </View>
+
+        {page?.acf?.mission_status?.trim().toLowerCase() === 'resupply' && (   
+          <View style={styles.resupplyBox}>
+            <Text style={styles.resupplyText}>
+              Trip complete. Buy new ticket and refer a friend 🚀
+            </Text>
+
+            <View style={{ flexDirection: 'row', gap: 10, marginTop: 10 }}>
+              <TouchableOpacity
+                style={styles.resupplyBtn}
+                onPress={() => Linking.openURL('https://dev4work.com/thefirstonmars/')}
+              >
+                <Text style={styles.resupplyBtnText}>Buy Ticket</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.resupplyBtn}
+                 onPress={handleRefer}
+              >
+                <Text style={styles.resupplyBtnText}>Refer Friend</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
 
         <View
           style={{
@@ -423,7 +472,10 @@ if (loading) {
             <ScrollView
               contentContainerStyle={{ paddingBottom: 20 }}
             >
-             <Text style={styles.modalContent}> {page.acf.captains_message.replace(/<br\s*\/?>/gi, '\n')} </Text>
+             <RenderHTML
+                contentWidth={width}
+                source={{ html: page?.acf?.captains_message || '' }}
+              />
             </ScrollView>
             <TouchableOpacity
               onPress={() => setVisible(false)}
@@ -486,6 +538,39 @@ const styles = StyleSheet.create({
   communityHeading:{ textAlign:'center', fontFamily: 'Audiowide_400Regular', fontWeight:400,  fontSize: 16,   textTransform: 'uppercase',  color: '#00DDF1', paddingTop:20, paddingBottom:15,},
   communityContent:{ textAlign:'center', fontFamily: 'Audiowide_400Regular', fontWeight:400,  fontSize: 12,   textTransform: 'uppercase',  color: '#CCF6FF', marginBottom:25,},
   loading:{ width:109, height:16,},
-  loaderContainer:{  flex: 1,  justifyContent: 'center',  alignItems: 'center',  backgroundColor: '#000',}
+  loaderContainer:{  flex: 1,  justifyContent: 'center',  alignItems: 'center',  backgroundColor: '#000',},
+
+  resupplyBox: {
+  marginTop: 20,
+  padding: 15,
+  borderRadius: 10,
+  borderWidth: 1,
+  borderColor: '#00DDF1',
+  backgroundColor: 'rgba(0, 221, 241, 0.1)',
+},
+
+resupplyText: {
+  color: '#fff',
+  fontSize: 12,
+  textAlign: 'center',
+  fontFamily: 'Audiowide_400Regular',
+  textTransform: 'uppercase',
+},
+
+resupplyBtn: {
+  flex: 1,
+  height: 36,
+  borderRadius: 6,
+  backgroundColor: '#004F99',
+  justifyContent: 'center',
+  alignItems: 'center',
+},
+
+resupplyBtnText: {
+  color: '#fff',
+  fontSize: 11,
+  fontFamily: 'Audiowide_400Regular',
+  textTransform: 'uppercase',
+},
 
 });
