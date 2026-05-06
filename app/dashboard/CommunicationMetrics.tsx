@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
   pageContent:{ marginTop:20,  paddingHorizontal: 10, },
   pageBox:{ padding:0, borderRadius:20, borderColor: 'rgba(101, 129, 135, 1)' , borderWidth:0.5,  overflow:'hidden', paddingBottom:0,},
   mainInnerContent:{ paddingHorizontal:17, paddingBottom:20, paddingTop:17,},
-  pageInnerheading:{ textAlign:'center', paddingHorizontal:15, paddingVertical:10, color:'#CCF6FF', fontSize:13, fontFamily: 'Audiowide_400Regular',  textTransform: 'uppercase', borderRadius:10, borderWidth:0.5, borderColor:'rgba(101, 129, 135, 1)', boxShadow: '0px 4px 9.6px rgba(0,0,0,0.2)', marginBottom:25,},
+  pageInnerheading:{ textAlign:'center', paddingHorizontal:15, paddingVertical:10, color:'#CCF6FF', fontSize:13, fontFamily: 'Audiowide_400Regular',  textTransform: 'uppercase', borderRadius:10, borderWidth:0.5, borderColor:'rgba(101, 129, 135, 1)',  boxShadow: '0px 4px 9.6px rgba(0,0,0,0.2)', marginBottom:25,},
   sectionheading:{  fontSize: 13, textAlign:'center', lineHeight: 20,  color: '#CCF6FF',  fontFamily: 'Audiowide_400Regular',  textTransform: 'uppercase', },
   contentHeading:{  fontSize: 11, textAlign:'center', lineHeight: 20, color: '#CCF6FF',  fontFamily: 'Audiowide_400Regular',  textTransform: 'uppercase', marginBottom:10,},
   contentHeadingMain:{  fontSize: 20, textAlign:'center', lineHeight: 22, color: '#CCF6FF',  fontFamily: 'Audiowide_400Regular', marginBottom:10,},

@@ -133,7 +133,11 @@ if (loading) {
         {page?.acf?.mission_status?.trim().toLowerCase() === 'resupply' && (   
           <View style={styles.resupplyBox}>
             <Text style={styles.resupplyText}>
-              Trip complete. Buy new ticket and refer a friend 🚀
+              Thanks for being part of the mission {'\n'}
+            </Text>
+            <Text style={styles.journeyCom}>Your journey is now complete.</Text>
+            <Text style={styles.referText}>
+              Book your next ticket and refer a friend to join the experience.
             </Text>
 
             <View style={{ flexDirection: 'row', gap: 10, marginTop: 10 }}>
@@ -194,7 +198,7 @@ if (loading) {
           </ImageBackground>
         </View>
         <View style={{ flexDirection:'row', gap:11,marginVertical:15,}}>
-          <TouchableOpacity onPress={() => Linking.openURL('https://stellarium-web.org/')} style={{ flexGrow:1}}>
+          <TouchableOpacity onPress={() => Linking.openURL(page?.acf?.earth_view)} style={{ flexGrow:1}}>
             <LinearGradient
               colors={['#0C2046', '#004F99']}
               locations={[0.1624, 0.816]}
@@ -215,7 +219,7 @@ if (loading) {
                 />
             </LinearGradient>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => Linking.openURL('https://eyes.nasa.gov/apps/solar-system/#/home')} style={{ flexGrow:1}}>
+          <TouchableOpacity onPress={() => Linking.openURL(page?.acf?.space_map) } style={{ flexGrow:1}}>
             <LinearGradient
               colors={['#0C2046', '#004F99']}
               locations={[0.1624, 0.816]}
@@ -473,9 +477,42 @@ if (loading) {
               contentContainerStyle={{ paddingBottom: 20 }}
             >
              <RenderHTML
-                contentWidth={width}
-                source={{ html: page?.acf?.captains_message || '' }}
-              />
+              contentWidth={width} 
+              source={{
+                html:
+                  page?.acf
+                    ?.captains_message || '',
+              }}
+               systemFonts={[
+                  'Audiowide_400Regular',
+                ]}
+
+              tagsStyles={{
+                body:{
+                  fontSize: 12, lineHeight:20,  color: '#000',   fontFamily: 'Audiowide_400Regular',  marginBottom: 5,  
+                },
+
+                p: {
+                  fontSize: 12, lineHeight:20,  color: '#000',   fontFamily: 'Audiowide_400Regular',  marginBottom: 5, 
+                },
+
+                ul: {
+                  margin:0,
+                  marginTop: 10,
+                  marginBottom: 10,
+                  padding:0,
+                  paddingLeft: 10,
+                },
+
+                li: {
+                  fontSize: 12, lineHeight:20,  color: '#000',   fontFamily: 'Audiowide_400Regular',  marginBottom: 10, 
+                },
+
+                strong: {
+                  color: '#00DDF1',
+                },
+              }}
+            />
             </ScrollView>
             <TouchableOpacity
               onPress={() => setVisible(false)}
@@ -542,21 +579,41 @@ const styles = StyleSheet.create({
 
   resupplyBox: {
   marginTop: 20,
-  padding: 15,
+  padding: 32,
   borderRadius: 10,
   borderWidth: 1,
   borderColor: '#00DDF1',
-  backgroundColor: 'rgba(0, 221, 241, 0.1)',
+  backgroundColor: '#000',
 },
 
 resupplyText: {
-  color: '#fff',
-  fontSize: 12,
+  color: '#00ddf1',
+  fontSize: 16,
+  lineHeight:20,
   textAlign: 'center',
   fontFamily: 'Audiowide_400Regular',
   textTransform: 'uppercase',
+  marginBottom:5,
 },
 
+referText:{ color: '#fff',
+  fontSize: 11,
+  lineHeight:20,
+  textAlign: 'center',
+  fontFamily: 'Audiowide_400Regular',
+  textTransform: 'uppercase',
+  marginBottom:10,},
+
+
+journeyCom:{ color: '#a8d7ff',
+  fontSize: 12,
+  lineHeight:20,
+  textAlign: 'center',
+  fontFamily: 'Audiowide_400Regular',
+  textTransform: 'uppercase',
+  marginBottom:10,},
+
+  
 resupplyBtn: {
   flex: 1,
   height: 36,

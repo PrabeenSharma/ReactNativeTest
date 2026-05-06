@@ -1,5 +1,11 @@
-import React from 'react';
+import React, {
+  useEffect,
+  useRef,
+} from 'react';
+
 import {
+  Animated,
+  Easing,
   Image,
   StyleSheet,
   Text,
@@ -42,6 +48,80 @@ const formatDate = (
   return new Date(`20${y}-${m}-${d}`);
 };
 
+/* ================= ROCKET COMPONENT ================= */
+
+interface RocketProps {
+  isReturn: boolean;
+  progress: number;
+  distanceFromMars: number;
+}
+
+const RocketAnimation: React.FC<
+  RocketProps
+> = ({
+  isReturn,
+  progress,
+  distanceFromMars,
+}) => {
+  const animatedPosition =
+    useRef(
+      new Animated.Value(0),
+    ).current;
+
+  const targetPosition =
+    isReturn
+      ? (distanceFromMars /
+          TOTAL_DISTANCE) *
+        100
+      : progress;
+
+  useEffect(() => {
+    Animated.timing(
+      animatedPosition,
+      {
+        toValue: targetPosition,
+        duration: 2200,
+        easing: Easing.out(
+          Easing.exp,
+        ),
+        useNativeDriver: false,
+      },
+    ).start();
+  }, []);
+
+  return (
+    <Animated.View
+      style={[
+        styles.rocket,
+        {
+          left:
+            animatedPosition.interpolate(
+              {
+                inputRange: [
+                  0, 100,
+                ],
+                outputRange: [
+                  '0%',
+                  '100%',
+                ],
+              },
+            ),
+        },
+      ]}
+    >
+      <Image
+        source={require('../assets/images/rocket2.png')}
+        style={[
+          styles.rocketImg,
+
+          !isReturn &&
+            styles.rocketReverse,
+        ]}
+      />
+    </Animated.View>
+  );
+};
+
 /* ================= COMPONENT ================= */
 
 const ShipsTracker: React.FC<Props> = ({
@@ -52,37 +132,50 @@ const ShipsTracker: React.FC<Props> = ({
 
   return (
     <View style={styles.container}>
-      <Text style={styles.contentHeadingMain}>
+      <Text
+        style={
+          styles.contentHeadingMain
+        }
+      >
         {heading}
       </Text>
 
       {missions.map((item, index) => {
-        const startDate = formatDate(
-          item.tr_start_date,
-        );
+        const startDate =
+          formatDate(
+            item.tr_start_date,
+          );
 
-        const endDate = formatDate(
-          item.tr_end_date,
-        );
+        const endDate =
+          formatDate(
+            item.tr_end_date,
+          );
 
         /* ================= DAYS ================= */
 
         const totalDays =
           (endDate.getTime() -
             startDate.getTime()) /
-          (1000 * 60 * 60 * 24);
+          (1000 *
+            60 *
+            60 *
+            24);
 
         const currentDays =
           (today.getTime() -
             startDate.getTime()) /
-          (1000 * 60 * 60 * 24);
+          (1000 *
+            60 *
+            60 *
+            24);
 
         const safeTotalDays =
-          totalDays > 0 ? totalDays : 1;
+          totalDays > 0
+            ? totalDays
+            : 1;
 
         /* ================= RETURN ================= */
 
-        // ["Yes"] = Mars → Earth
         const isReturn =
           Array.isArray(
             item.misson_type,
@@ -102,12 +195,13 @@ const ShipsTracker: React.FC<Props> = ({
           distanceTo = 0;
 
         if (
-          distanceTo > TOTAL_DISTANCE
+          distanceTo >
+          TOTAL_DISTANCE
         ) {
-          distanceTo = TOTAL_DISTANCE;
+          distanceTo =
+            TOTAL_DISTANCE;
         }
 
-        // PHP Equivalent
         const distanceFromMars =
           TOTAL_DISTANCE -
           distanceTo;
@@ -139,133 +233,134 @@ const ShipsTracker: React.FC<Props> = ({
           >
             {/* TITLE */}
 
-            <Text style={styles.title}>
-              {item.tr_mission_name}
+            <Text
+              style={styles.title}
+            >
+              {
+                item.tr_mission_name
+              }
             </Text>
 
             {/* TRACK */}
 
             <View
-              style={styles.trackWrapper}
+              style={
+                styles.trackWrapper
+              }
             >
               {/* EARTH */}
 
               <Image
                 source={require('../assets/images/sidebarEarth.png')}
-                style={styles.planet}
+                style={
+                  styles.planet
+                }
               />
 
+              {/* LEFT DOT */}
 
-              <View style={styles.leftDot}>
-                  <Image
-                    source={require('../assets/images/afterBeforeImage.png')}
-                    style={{
-                      width: 10,
-                      height:10,
-                    }}
-                  />
-                </View>
-                
+              <View
+                style={
+                  styles.leftDot
+                }
+              >
+                <Image
+                  source={require('../assets/images/afterBeforeImage.png')}
+                  style={{
+                    width: 10,
+                    height: 10,
+                  }}
+                />
+              </View>
 
-                {/* RIGHT DOT */}
+              {/* RIGHT DOT */}
 
-                <View style={styles.rightDot}>
-                    <Image
-                    source={require('../assets/images/afterBeforeImage.png')}
-                    style={{
-                      width: 10,
-                      height:10,
-                    }}
-                  />
-                </View>
-
-
+              <View
+                style={
+                  styles.rightDot
+                }
+              >
+                <Image
+                  source={require('../assets/images/afterBeforeImage.png')}
+                  style={{
+                    width: 10,
+                    height: 10,
+                  }}
+                />
+              </View>
 
               {/* BAR */}
 
-              <View style={styles.bar}>
+              <View
+                style={styles.bar}
+              >
                 {/* PROGRESS */}
 
-               <View
-                style={[
-                  styles.progress,
-
-                  isReturn
-                    ? {
-                        width: `${
-                          progress
-                        }%`,
-                        right: 0,
-                      }
-                    : {
-                        width: `${
-                          progress
-                        }%`,
-                        left: 0,
-                      },
-                ]}
-              />
-
-                
                 <View
                   style={[
-                    styles.rocket,
+                    styles.progress,
 
-                    {
-                      left: `${
-                        isReturn
-                          ? (distanceFromMars /
-                              TOTAL_DISTANCE) *
-                            100
-                          : progress
-                      }%`,
-
-                      transform: [
-                        {
-                          translateX:
-                            0,
+                    isReturn
+                      ? {
+                          width: `${progress}%`,
+                          right: 0,
+                        }
+                      : {
+                          width: `${progress}%`,
+                          left: 0,
                         },
-                      ],
-                    },
                   ]}
-                >
-                  <Image
-                    source={require('../assets/images/rocket2.png')}
-                    style={[
-                      styles.rocketImg,
+                />
 
-                      // RETURN FACE
-                      !isReturn &&
-                        styles.rocketReverse,
-                    ]}
-                  />
-                </View>
+                {/* ROCKET */}
+
+                <RocketAnimation
+                  isReturn={
+                    isReturn
+                  }
+                  progress={
+                    progress
+                  }
+                  distanceFromMars={
+                    distanceFromMars
+                  }
+                />
               </View>
 
               {/* MARS */}
 
               <Image
                 source={require('../assets/images/sidebarMars.png')}
-                style={styles.planet}
+                style={
+                  styles.planet
+                }
               />
             </View>
 
             {/* INFO */}
 
             <View
-              style={styles.infoWrapper}
+              style={
+                styles.infoWrapper
+              }
             >
               {/* LEFT */}
 
-              <View style={styles.mid}>
+              <View
+                style={styles.mid}
+              >
                 <Text
-                  style={styles.label}
+                  style={
+                    styles.label
+                  }
                 >
                   Mission Aboard
                 </Text>
 
                 <Text
-                  style={styles.code}
+                  style={
+                    styles.code
+                  }
                 >
                   {
                     item.tr_mission_code
@@ -273,13 +368,18 @@ const ShipsTracker: React.FC<Props> = ({
                 </Text>
 
                 <Text
-                  style={styles.label}
+                  style={
+                    styles.label
+                  }
                 >
-                  Distance from Earth
+                  Distance from
+                  Earth
                 </Text>
 
                 <Text
-                  style={styles.code}
+                  style={
+                    styles.code
+                  }
                 >
                   {(
                     displayDistance /
@@ -292,16 +392,22 @@ const ShipsTracker: React.FC<Props> = ({
               {/* RIGHT */}
 
               <View
-                style={styles.right}
+                style={
+                  styles.right
+                }
               >
                 <Text
-                  style={styles.labelRight}
+                  style={
+                    styles.labelRight
+                  }
                 >
                   Departure
                 </Text>
 
                 <Text
-                  style={styles.date}
+                  style={
+                    styles.date
+                  }
                 >
                   {
                     item.tr_start_date
@@ -309,18 +415,23 @@ const ShipsTracker: React.FC<Props> = ({
                 </Text>
 
                 <Text
-                  style={styles.labelRight}
+                  style={
+                    styles.labelRight
+                  }
                 >
                   Arrival
                 </Text>
 
                 <Text
-                  style={styles.date}
+                  style={
+                    styles.date
+                  }
                 >
-                  {item.tr_end_date}
+                  {
+                    item.tr_end_date
+                  }
                 </Text>
               </View>
-
             </View>
           </View>
         );
@@ -347,7 +458,7 @@ const styles = StyleSheet.create({
     fontFamily:
       'Audiowide_400Regular',
     marginBottom: 20,
-    marginTop:10,
+    marginTop: 10,
   },
 
   card: {
@@ -364,8 +475,8 @@ const styles = StyleSheet.create({
     fontFamily:
       'Audiowide_400Regular',
     marginBottom: 18,
-    textTransform: 'uppercase',
-
+    textTransform:
+      'uppercase',
   },
 
   /* TRACK */
@@ -387,16 +498,16 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     position: 'relative',
     borderRadius: 2,
-    overflow:'visible',
-    
+    overflow: 'visible',
   },
 
   progress: {
-  height: 2,
-  backgroundColor: '#00DDF1',
-  borderRadius: 2,
-  position: 'absolute',
-},
+    height: 2,
+    backgroundColor:
+      '#00DDF1',
+    borderRadius: 2,
+    position: 'absolute',
+  },
 
   rocket: {
     position: 'absolute',
@@ -427,7 +538,6 @@ const styles = StyleSheet.create({
     left: 34,
     width: 10,
     height: 10,
-
   },
 
   rightDot: {
@@ -446,44 +556,49 @@ const styles = StyleSheet.create({
   },
 
   mid: {
-    width:'65%',
+    width: '65%',
   },
 
   right: {
-    width:'35%',
+    width: '35%',
   },
 
   label: {
     color: '#fff',
     fontSize: 9,
     marginTop: 4,
-    fontFamily: 'Audiowide_400Regular',
-    lineHeight:14,
-    textTransform:'uppercase',
-    letterSpacing:1
-
+    fontFamily:
+      'Audiowide_400Regular',
+    lineHeight: 14,
+    textTransform:
+      'uppercase',
+    letterSpacing: 1,
   },
 
   labelRight: {
     color: '#fff',
     fontSize: 9,
     marginTop: 4,
-    fontFamily: 'Audiowide_400Regular',
-    lineHeight:14,
-    textTransform:'uppercase',
-    letterSpacing:1,
-    textAlign:'right',
-  },  
+    fontFamily:
+      'Audiowide_400Regular',
+    lineHeight: 14,
+    textTransform:
+      'uppercase',
+    letterSpacing: 1,
+    textAlign: 'right',
+  },
 
   code: {
     color: '#00DDF1',
     fontWeight: '400',
     marginTop: 5,
-    fontFamily: 'Audiowide_400Regular',
+    fontFamily:
+      'Audiowide_400Regular',
     fontSize: 12,
-    lineHeight:14,
-    textTransform:'uppercase',
-    marginBottom:10,
+    lineHeight: 14,
+    textTransform:
+      'uppercase',
+    marginBottom: 10,
   },
 
   value: {
@@ -496,10 +611,12 @@ const styles = StyleSheet.create({
     color: '#00DDF1',
     fontSize: 16,
     marginTop: 5,
-    fontFamily: 'Audiowide_400Regular',
-    lineHeight:14,
-    textTransform:'uppercase',
-    textAlign:'right',
-    marginBottom:5,
+    fontFamily:
+      'Audiowide_400Regular',
+    lineHeight: 14,
+    textTransform:
+      'uppercase',
+    textAlign: 'right',
+    marginBottom: 5,
   },
 });

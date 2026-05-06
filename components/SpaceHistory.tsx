@@ -86,8 +86,8 @@ const styles = StyleSheet.create({
   },
   desc: {
     color: '#CCF6FF',
-    fontSize: 16,
-    lineHeight: 25,
+    fontSize: 15,
+    lineHeight: 22,
     fontWeight: '400',
     fontFamily: 'Audiowide_400Regular',
     textTransform: 'uppercase',

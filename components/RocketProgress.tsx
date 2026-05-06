@@ -28,8 +28,8 @@ const RocketWebView: React.FC<Props> = ({
   const isResupply =
   mission_status?.toLowerCase() === 'resupply';
 
-  const finalMarsImg = isResupply ? marsImgReverse : marsImg;
-  const finalEarthImg = isResupply ? earthImgReverse : earthImg;
+  const finalMarsImg = isResupply ?  earthImgReverse : marsImg;
+  const finalEarthImg = isResupply ? marsImgReverse  : earthImg ;
 
   const htmlContent = `
 <!DOCTYPE html>
