@@ -87,10 +87,11 @@ export default function MissionPage() {
 
                         <View style={{  marginBottom:20, }}>
                           <RocketWebView
-                            startDate={formatDate(page?.acf?.launch_date)}
-                            endDate={formatDate(page?.acf?.di_arrival_date)}
-                            distance={page?.mission_calculation?.distance_km || "214386792"}
-                          />
+                              key={`${page?.acf?.launch_date}-${page?.acf?.di_arrival_date}-${page?.mission_calculation?.distance_km}`}
+                              startDate={formatDate(page?.acf?.launch_date)}
+                              endDate={formatDate(page?.acf?.di_arrival_date)}
+                              distance={page?.mission_calculation?.distance_km || "214386792"}
+                            />
                         </View>
 
                         

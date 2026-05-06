@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Red Planet Resorts",
-    "slug": "redplanetResorts",
+    "slug": "myApp",
     "version": "1.0.0",
     "orientation": "default",
     "icon": "./assets/images/icon.png",

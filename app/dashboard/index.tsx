@@ -119,7 +119,7 @@ if (loading) {
             style={{  backgroundPosition:'center', width:'100%', backgroundSize:'cover' , backgroundRepeat:'no-repeat', height:243}}
             resizeMode="cover"
           >
-            <View style={{ paddingTop: 60, paddingHorizontal: 17 }}>
+            <View style={{ paddingTop: 17, paddingHorizontal: 17, position:'absolute', width:'100%', bottom:15,  }}>
               <Text style={styles.captainLogs}>Captain's Log</Text>
               <Text style={styles.informationHeading}>
                 Mission Status
@@ -128,7 +128,7 @@ if (loading) {
                 {page?.acf?.information}
               </Text>
 
-              <TouchableOpacity onPress={() => setVisible(true)}>
+              <TouchableOpacity style={{ alignSelf:'center',  }} onPress={() => setVisible(true)}>
                 <LinearGradient
                   colors={['#0C2046', '#004F99']}
                   locations={[0.1624, 0.816]}
@@ -423,7 +423,7 @@ if (loading) {
             <ScrollView
               contentContainerStyle={{ paddingBottom: 20 }}
             >
-             <Text style={styles.modalContent}> {page.acf.captains_message } </Text>
+             <Text style={styles.modalContent}> {page.acf.captains_message.replace(/<br\s*\/?>/gi, '\n')} </Text>
             </ScrollView>
             <TouchableOpacity
               onPress={() => setVisible(false)}
@@ -466,9 +466,9 @@ const styles = StyleSheet.create({
   topHeading: {  fontSize: 9, color: '#fff', fontFamily: 'Audiowide_400Regular',  marginBottom: 5, textTransform: 'uppercase',},
   topContent: {  fontSize: 10,  color: 'rgba(0, 221, 241, 1)',   fontFamily: 'Audiowide_400Regular',  marginBottom: 5,  textTransform: 'uppercase',  },
   captainLogs: {  fontSize: 31,  color: '#fff',  fontFamily: 'Audiowide_400Regular',  textAlign: 'center',  marginBottom: 15, textTransform: 'uppercase', },
-  information: {  color: '#fff',  fontFamily: 'Audiowide_400Regular',  fontSize: 10,  textAlign: 'center',  marginBottom: 12, lineHeight:10, textTransform: 'uppercase',},
+  information: {  color: '#fff',  fontFamily: 'Audiowide_400Regular',  fontSize: 10,  textAlign: 'center',  marginBottom: 12, lineHeight:15, textTransform: 'uppercase',},
   informationHeading: { color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize: 15, textAlign: 'center',  marginBottom: 15, textTransform: 'uppercase',},
-  optionGradient: { height: 36,  borderRadius: 6, justifyContent: 'center', alignItems: 'center',},
+  optionGradient: { height: 36,  borderRadius: 6, justifyContent: 'center', alignItems: 'center', paddingHorizontal:15,},
   optionGradient2: { height: 36,  borderRadius: 6, justifyContent: 'center', alignItems: 'center', flexDirection:'row',  gap:8,},
   optionText: {  fontFamily: 'Audiowide_400Regular',  fontSize: 12,  textTransform: 'uppercase',  color: '#fff',},
   modalOverlay: {  flex: 1,  backgroundColor: 'rgba(0,0,0,0.6)',  justifyContent: 'center',  alignItems: 'center',

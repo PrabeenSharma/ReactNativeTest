@@ -245,7 +245,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 8,
     backgroundColor:'#004f99',
-    padding:15, fontSize: 14, lineHeight: 20, 
+    padding:15, fontSize: 14, lineHeight: 20, alignSelf:'center', 
 
   },
   submitText: {
