@@ -38,8 +38,36 @@ export default function MissionPage() {
   const { page, loading } = useMissionPage(slugParam);
 
   
+const rawMessage: string = page?.acf?.captains_message || '';
+
+const htmlMessage =
+  rawMessage.includes('<')
+    ? rawMessage
+    : rawMessage
+        .split(/\r\n\r\n/)
+        .map((item: string) => `<p>${item.trim()}</p>`)
+        .join('');
 
 
+ const buttonText =
+  page?.template === 'page-templates/tpl-mission.php'
+    ? "Read Captain’s Message"
+    : page?.template === 'page-templates/tpl-resort-update.php'
+    ? 'READ WEEKLY BRIEFING'
+    : page?.template === 'page-templates/tpl-mission-return.php'
+    ? 'Read Captain’s Message'
+    : '';    
+    
+  const topHeading =
+  page?.template === 'page-templates/tpl-mission.php'
+    ? "Captain's Log"
+    : page?.template === 'page-templates/tpl-resort-update.php'
+    ? 'RESORT UPDATE'
+    : page?.template === 'page-templates/tpl-mission-return.php'
+    ? 'Captain\'s Log'
+    : '';      
+  
+  
 
 const handleRefer = async () => {
   const message = `Join this mission! Buy your ticket here: https://dev4work.com/thefirstonmars/`;
@@ -173,7 +201,7 @@ if (loading) {
             resizeMode="cover"
           >
             <View style={{ paddingTop: 17, paddingHorizontal: 17, position:'absolute', width:'100%', bottom:15,  }}>
-              <Text style={styles.captainLogs}>Captain's Log</Text>
+              <Text style={styles.captainLogs}>{topHeading}</Text>
               <Text style={styles.informationHeading}>
                 Mission Status
               </Text>
@@ -190,7 +218,7 @@ if (loading) {
                   style={styles.optionGradient}
                 >
                   <Text style={styles.optionText}>
-                    Read Captain’s Message
+                    {buttonText}
                   </Text>
                 </LinearGradient>
               </TouchableOpacity>
@@ -476,43 +504,58 @@ if (loading) {
             <ScrollView
               contentContainerStyle={{ paddingBottom: 20 }}
             >
-             <RenderHTML
-              contentWidth={width} 
-              source={{
-                html:
-                  page?.acf
-                    ?.captains_message || '',
-              }}
-               systemFonts={[
-                  'Audiowide_400Regular',
-                ]}
+              <RenderHTML
+  contentWidth={width}
+  source={{
+    html: htmlMessage,
+  }}
 
-              tagsStyles={{
-                body:{
-                  fontSize: 12, lineHeight:20,  color: '#000',   fontFamily: 'Audiowide_400Regular',  marginBottom: 5,  
-                },
+  systemFonts={[
+    'Audiowide_400Regular',
+  ]}
 
-                p: {
-                  fontSize: 12, lineHeight:20,  color: '#000',   fontFamily: 'Audiowide_400Regular',  marginBottom: 5, 
-                },
+  baseStyle={{
+    fontFamily: 'Audiowide_400Regular',
+    fontSize: 12,
+    lineHeight: 20,
+    color: '#000',
+  }}
 
-                ul: {
-                  margin:0,
-                  marginTop: 10,
-                  marginBottom: 10,
-                  padding:0,
-                  paddingLeft: 10,
-                },
 
-                li: {
-                  fontSize: 12, lineHeight:20,  color: '#000',   fontFamily: 'Audiowide_400Regular',  marginBottom: 10, 
-                },
+  tagsStyles={{
+    
+    body: {
+      fontSize: 12,
+      lineHeight: 20,
+      marginBottom: 10,
+      color: '#000',
+      fontFamily: 'Audiowide_400Regular',
+    },
+    p: {
+      fontSize: 12,
+      lineHeight: 20,
+      marginBottom: 10,
+      color: '#000',
+      fontFamily: 'Audiowide_400Regular',
+    },
 
-                strong: {
-                  color: '#00DDF1',
-                },
-              }}
-            />
+    ul: {
+      paddingLeft: 10,
+      marginTop: 10,
+      marginBottom: 10,
+    },
+
+    li: {
+      fontSize: 12,
+      lineHeight: 20,
+      marginBottom: 10,
+      color: '#000',
+      fontFamily: 'Audiowide_400Regular',
+    },
+  }}
+/>
+
+
             </ScrollView>
             <TouchableOpacity
               onPress={() => setVisible(false)}

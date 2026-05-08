@@ -45,7 +45,7 @@ export default function MissionPage() {
 
   // PDF VIEWER URL
   const pdfViewerUrl = pdfUrl
-    ? `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(
+    ? `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(
         pdfUrl
       )}`
     : null;
@@ -187,6 +187,29 @@ export default function MissionPage() {
                   javaScriptEnabled
                   domStorageEnabled
                   startInLoadingState
+                  cacheEnabled={false}
+                  incognito={true}
+                  allowsInlineMediaPlayback
+                  setSupportMultipleWindows={false}
+                  renderLoading={() => (
+                    <View
+                      style={{
+                        flex: 1,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        backgroundColor: '#313131',
+                      }}
+                    >
+                      <Text
+                        style={{
+                          color: '#fff',
+                          fontSize: 14,
+                        }}
+                      >
+                        Loading PDF...
+                      </Text>
+                    </View>
+                  )}
                 />
               </View>
             )}

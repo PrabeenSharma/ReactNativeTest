@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Red Planet Resorts",
-    "slug": "myApp",
+    "slug": "red-planet-resorts",
     "version": "1.0.0",
     "orientation": "default",
     "icon": "./assets/images/icon.png",
@@ -9,7 +9,7 @@
     "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.indranilkhara007.myApp",
+      "bundleIdentifier": "com.redplanetresorts.redplanetresorts",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
@@ -22,7 +22,7 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.indranilkhara007.myApp"
+      "package": "com.redplanetresorts.redplanetresorts"
     },
     "web": {
       "output": "static",
@@ -53,9 +53,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "40dd223f-68bc-401a-842d-5aa28d988f27"
+        "projectId": "04cfa4ab-7aff-4884-bf4e-8cdac57c4a0f"
       }
     },
-    "owner": "indranilkhara007"
+    "owner": "virginworkzteam"
   }
 }
