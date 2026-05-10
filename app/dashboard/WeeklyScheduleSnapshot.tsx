@@ -40,15 +40,14 @@ export default function MissionPage() {
     setPdfModalVisible,
   ] = useState(false);
 
-  const pdfUrl =
-    page?.acf?.view_class_syllabus_url;
+const pdfUrl =
+  page?.acf?.view_class_syllabus_url;
 
-  // PDF VIEWER URL
-  const pdfViewerUrl = pdfUrl
-    ? `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(
-        pdfUrl
-      )}`
-    : null;
+const pdfViewerUrl = pdfUrl
+  ? `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(
+      pdfUrl
+    )}`
+  : null;
 
   return (
     <>
@@ -91,25 +90,25 @@ export default function MissionPage() {
                   {page?.acf?.upcoming_events}
                 </Text>
 
-                <Pressable
-                  onPress={() =>
-                    setPdfModalVisible( true)
+                   {
+                    pdfViewerUrl && (
+                      <Pressable
+                        onPress={() =>
+                          setPdfModalVisible(true)
+                        }
+                        style={({ pressed }) => [
+                          styles.pdfButton,
+                          {
+                            opacity: pressed ? 0.6 : 1,
+                          },
+                        ]}
+                      >
+                        <Text style={styles.pdfButtonText}>
+                          View Class Syllabus
+                        </Text>
+                      </Pressable>
+                    )
                   }
-                  style={({
-                    pressed,
-                  }) => [
-                    styles.pdfButton,
-                    {
-                      opacity: pressed
-                        ? 0.6
-                        : 1,
-                    },
-                  ]}
-                >
-                  <Text style={ styles.pdfButtonText}>
-                    View Class Syllabus
-                  </Text>
-                </Pressable>
 
                 <WebView
                   source={{
@@ -177,7 +176,7 @@ export default function MissionPage() {
               </Text>
             </View>
             {pdfViewerUrl && (
-              <View style={{ paddingVertical:10, flex:1, backgroundColor:'#313131',}}>
+              <View style={{ paddingVertical:0, flex:1, backgroundColor:'#313131',}}>
                 <WebView
                   source={{
                     uri: pdfViewerUrl,

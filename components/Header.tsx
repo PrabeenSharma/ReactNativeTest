@@ -64,7 +64,7 @@ export default function Header() {
           <View style={styles.backButtonArrow}>
             <Image
               source={require('./../assets/images/back.png')}
-              style={{ width: 18, height: 18 }}
+              style={{ width: 20, height: 20 }}
             />
           </View>
         </TouchableOpacity>
@@ -108,7 +108,7 @@ export default function Header() {
             <View style={[styles.menuItem, styles.menuItemRow]}>
               <Image 
                 source={require('./../assets/images/topNotificationIcon.png' )}
-                style={{ width:11, height:13 }}
+                style={{ width:14, height:17, flexShrink:0, }}
               />
               <Text style={styles.menuItemText}>Notifications</Text>
               <Switch style={styles.swicthFunction} value={notificationsOn} onValueChange={handleToggle}  
@@ -125,7 +125,7 @@ export default function Header() {
             >
               <Image 
                 source={require('./../assets/images/scanIcon.png' )}
-                style={{ width:14, height:14 }}
+                style={{ width:14, height:14, flexShrink:0, }}
               />
               <Text style={styles.menuItemText}>Scan a new ticket</Text>
             </TouchableOpacity>
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
   },
 
   menuSheet: {
-    minWidth: 180,
+    minWidth: 190,
     backgroundColor: '#193553',
     borderRadius: 6,
     paddingHorizontal: 6,

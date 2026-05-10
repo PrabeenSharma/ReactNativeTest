@@ -158,33 +158,56 @@ if (loading) {
           </View>
         </View>
 
-        {page?.acf?.mission_status?.trim().toLowerCase() === 'resupply' && (   
-          <View style={styles.resupplyBox}>
-            <Text style={styles.resupplyText}>
-              Thanks for being part of the mission {'\n'}
-            </Text>
-            <Text style={styles.journeyCom}>Your journey is now complete.</Text>
-            <Text style={styles.referText}>
-              Book your next ticket and refer a friend to join the experience.
-            </Text>
+        {(() => {
+        const rtn = page?.acf?.rtn_date;
 
-            <View style={{ flexDirection: 'row', gap: 10, marginTop: 10 }}>
-              <TouchableOpacity
-                style={styles.resupplyBtn}
-                onPress={() => Linking.openURL('https://dev4work.com/thefirstonmars/')}
-              >
-                <Text style={styles.resupplyBtnText}>Buy Ticket</Text>
-              </TouchableOpacity>
+        if (!rtn) return false;
 
-              <TouchableOpacity
-                style={styles.resupplyBtn}
-                 onPress={handleRefer}
-              >
-                <Text style={styles.resupplyBtnText}>Refer Friend</Text>
-              </TouchableOpacity>
-            </View>
+        // YYYYMMDD -> YYYY-MM-DD
+        const formatted =
+          rtn.slice(0, 4) + '-' +
+          rtn.slice(4, 6) + '-' +
+          rtn.slice(6, 8);
+
+        const rtnDate = new Date(formatted);
+        const today = new Date();
+
+        today.setHours(0, 0, 0, 0);
+
+        return rtnDate < today;
+      })() && (
+        <View style={styles.resupplyBox}>
+          <Text style={styles.resupplyText}>
+            Thanks for being part of the mission {'\n'}
+          </Text>
+
+          <Text style={styles.journeyCom}>
+            Your journey is now complete.
+          </Text>
+
+          <Text style={styles.referText}>
+            Book your next ticket and refer a friend to join the experience.
+          </Text>
+
+          <View style={{ flexDirection: 'row', gap: 10, marginTop: 10 }}>
+            <TouchableOpacity
+              style={styles.resupplyBtn}
+              onPress={() =>
+                Linking.openURL('https://dev4work.com/thefirstonmars/')
+              }
+            >
+              <Text style={styles.resupplyBtnText}>Buy Ticket</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.resupplyBtn}
+              onPress={handleRefer}
+            >
+              <Text style={styles.resupplyBtnText}>Refer Friend</Text>
+            </TouchableOpacity>
           </View>
-        )}
+        </View>
+      )}
 
         <View
           style={{
@@ -196,10 +219,17 @@ if (loading) {
           }}
         >
           <ImageBackground
-            source={require('../../assets/images/captainImage.jpg')}
-            style={{  backgroundPosition:'center', width:'100%', backgroundSize:'cover' , backgroundRepeat:'no-repeat', height:243}}
-            resizeMode="cover"
-          >
+              source={
+                page?.template === 'page-templates/tpl-resort-update.php'
+                  ? require('../../assets/images/resort.jpg')
+                  : require('../../assets/images/captainImage.jpg')
+              }
+              style={{
+                width: '100%',
+                height: 243, 
+              }}
+              resizeMode="cover"
+            >
             <View style={{ paddingTop: 17, paddingHorizontal: 17, position:'absolute', width:'100%', bottom:15,  }}>
               <Text style={styles.captainLogs}>{topHeading}</Text>
               <Text style={styles.informationHeading}>

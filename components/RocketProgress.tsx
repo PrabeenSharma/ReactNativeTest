@@ -31,6 +31,9 @@ const RocketWebView: React.FC<Props> = ({
   const finalMarsImg = isResupply ?  earthImgReverse : marsImg;
   const finalEarthImg = isResupply ? marsImgReverse  : earthImg ;
 
+  const isOnMars =  mission_status?.toLowerCase() === 'on mars';
+  const showRocket = !isOnMars;
+
   const htmlContent = `
 <!DOCTYPE html>
 <html>
@@ -199,11 +202,13 @@ body { margin:0; padding:0; }
 
     <div class="yourLocationRocketPath"></div>
 
-    <div class="yourLocationRocketArea" id="rocket">
-      <div class="yourLocationRocket">
-        <img src="${rocketImg}" />
-      </div>
-    </div>
+    ${showRocket ? `
+<div class="yourLocationRocketArea" id="rocket">
+  <div class="yourLocationRocket">
+    <img src="${rocketImg}" />
+  </div>
+</div>
+` : ''}
 
   </div>
 </aside>

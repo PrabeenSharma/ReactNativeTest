@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "990553984739",
+    "project_id": "red-planer-resort",
+    "storage_bucket": "red-planer-resort.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:990553984739:android:9c8d2e4ccef77170dfbfd6",
+        "android_client_info": {
+          "package_name": "com.redplanetresorts.redplanetresorts"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOisaBshHuGgaaSGqj7YQBPxgeqjtSSdQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

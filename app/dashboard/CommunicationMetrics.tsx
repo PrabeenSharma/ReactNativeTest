@@ -52,63 +52,341 @@ export default function MissionPage() {
                           <Text style={styles.sectionheading}>Communication Metrics</Text>
                         </LinearGradient>
 
-                        {page?.communication_delay?.length > 0 ? (
-                          page.communication_delay.map((item: any, index: number) => (
-                            <View style={styles.temBox} key={index}>
-                              
-                              <View style={styles.topIconHeadingHolder}>
-                                <Image
-                                  source={require('../../assets/images/earthIcon.png')}
-                                  style={{ width: 28, height: 28 }}
-                                />
+                        {
+  page?.template === 'page-templates/tpl-resort-update.php' ? (
 
-                                <Text style={styles.topIconHeading}>
-                                  {item.heading}
-                                </Text>
+    <>
+      {/* ================= COMMUNICATION ITEMS ================= */}
 
-                                <Image
-                                  source={require('../../assets/images/satteliteIcon.png')}
-                                  style={{ width: 28, height: 28 }}
-                                />
-                              </View>
+      {
+        page?.mission_communication_delay?.communication_items?.length > 0 ? (
 
-                              <View style={styles.communicationData}>
-                                <Text style={styles.leftData}>{item.seconds}</Text>
-                                <Text style={styles.leftData}>=</Text>
+          page.mission_communication_delay.communication_items.map(
+            (item: any, index: number) => (
 
-                                <View style={styles.dataCalculation}>
-                                  <Text style={styles.leftData}>{item.minutes}Min</Text>
-                                  <Text style={styles.leftData}> | </Text>
-                                  <Text style={styles.leftData}>{item.remaining_seconds}Sec</Text>
-                                </View>
-                              </View>
+              <View style={styles.temBox} key={index}>
 
-                            </View>
-                          ))
-                        ) : (
-                          <Text>No Data</Text>
-                        )}
+                <View style={styles.topIconHeadingHolder}>
 
-                        
-                        <View style={styles.temBox}>
-                          <View style={styles.topIconHeadingHolder}>
-                            <Image
-                              source={require('../../assets/images/earthIcon.png')}
-                              style={{ width:28, height:28}}
-                            />
-                            <Text style={styles.topIconHeading}>{page?.custom_distance?.distance_row_1}</Text>
-                            <Image
-                              source={require('../../assets/images/satteliteIcon.png')}
-                              style={{ width:28, height:28}}
-                            />
-                          </View>
-                          <View style={styles.communicationData}>
-                            
-                            <View style={styles.dataCalculation}>
-                              <Text style={ styles.leftData}>{ page?.mission_calculation?.distance_km } KM</Text>
-                            </View>
-                          </View>
-                        </View>
+                  <Image
+                    source={require('../../assets/images/earthIcon.png')}
+                    style={{ width: 28, height: 28 }}
+                  />
+
+                  <Text style={styles.topIconHeading}>
+                    {item.heading}
+                  </Text>
+
+                  <Image
+                    source={require('../../assets/images/satteliteIcon.png')}
+                    style={{ width: 28, height: 28 }}
+                  />
+
+                </View>
+
+                <View style={styles.communicationData}>
+
+                  <Text style={styles.leftData}>
+                    {item.total_seconds}
+                  </Text>
+
+                  <Text style={styles.leftData}>=</Text>
+
+                  <View style={styles.dataCalculation}>
+
+                    <Text style={styles.leftData}>
+                      {item.minutes}Min
+                    </Text>
+
+                    <Text style={styles.leftData}> | </Text>
+
+                    <Text style={styles.leftData}>
+                      {item.seconds}Sec
+                    </Text>
+
+                  </View>
+
+                </View>
+
+              </View>
+            )
+          )
+
+        ) : (
+          <Text>No Data</Text>
+        )
+      }
+
+      {/* ================= DISTANCE ITEM ================= */}
+
+      {
+        page?.mission_communication_delay?.distance_items?.length > 0 && (
+
+          <View style={styles.temBox}>
+
+            <View style={styles.topIconHeadingHolder}>
+
+              <Image
+                source={require('../../assets/images/earthIcon.png')}
+                style={{ width: 28, height: 28 }}
+              />
+
+              <Text style={styles.topIconHeading}>
+                {
+                  page.mission_communication_delay
+                    .distance_items[0]?.heading
+                }
+              </Text>
+
+              <Image
+                source={require('../../assets/images/satteliteIcon.png')}
+                style={{ width: 28, height: 28 }}
+              />
+
+            </View>
+
+            <View style={styles.communicationData}>
+
+              <View style={styles.dataCalculation}>
+
+                <Text style={styles.leftData}>
+                  {
+                    page.mission_communication_delay
+                      .distance_items[0]?.distance_km
+                  } KM
+                </Text>
+
+              </View>
+
+            </View>
+
+          </View>
+        )
+      }
+
+    </>
+
+  )
+  
+: page?.template === 'page-templates/tpl-mission-return.php' ? (
+
+  <>
+    {/* ================= MISSION RETURN TEMPLATE ================= */}
+
+    {
+      page?.communication_delay_return?.communication?.length > 0 ? (
+
+        page.communication_delay_return.communication.map(
+          (item: any, index: number) => (
+
+            <View style={styles.temBox} key={index}>
+
+              <View style={styles.topIconHeadingHolder}>
+
+                <Image
+                  source={require('../../assets/images/earthIcon.png')}
+                  style={{ width: 28, height: 28 }}
+                />
+
+                <Text style={styles.topIconHeading}>
+                  {item.heading}
+                </Text>
+
+                <Image
+                  source={require('../../assets/images/satteliteIcon.png')}
+                  style={{ width: 28, height: 28 }}
+                />
+
+              </View>
+
+              <View style={styles.communicationData}>
+
+                <Text style={styles.leftData}>
+                  {item.seconds} Sec
+                </Text>
+
+                <Text style={styles.leftData}>=</Text>
+
+                <View style={styles.dataCalculation}>
+
+                  <Text style={styles.leftData}>
+                    {item.minutes}Min
+                  </Text>
+
+                  <Text style={styles.leftData}> | </Text>
+
+                  <Text style={styles.leftData}>
+                    {item.remaining_seconds}Sec
+                  </Text>
+
+                </View>
+
+              </View>
+
+            </View>
+          )
+        )
+
+      ) : (
+        <Text>No Data</Text>
+      )
+    }
+
+    {/* ================= RETURN DISTANCE ================= */}
+
+    {
+      page?.communication_delay_return?.distance?.length > 0 && (
+
+        <View style={styles.temBox}>
+
+          <View style={styles.topIconHeadingHolder}>
+
+            <Image
+              source={require('../../assets/images/earthIcon.png')}
+              style={{ width: 28, height: 28 }}
+            />
+
+            <Text style={styles.topIconHeading}>
+              {
+                page.communication_delay_return
+                  .distance[0]?.heading
+              }
+            </Text>
+
+            <Image
+              source={require('../../assets/images/satteliteIcon.png')}
+              style={{ width: 28, height: 28 }}
+            />
+
+          </View>
+
+          <View style={styles.communicationData}>
+
+            <View style={styles.dataCalculation}>
+
+              <Text style={styles.leftData}>
+                {
+                  page.communication_delay_return
+                    .distance[0]?.distance_km
+                } KM
+              </Text>
+
+            </View>
+
+          </View>
+
+        </View>
+      )
+    }
+
+  </>
+
+)
+  
+  : (
+
+    <>
+      {/* ================= OLD TEMPLATE ================= */}
+
+      {
+        page?.communication_delay?.length > 0 ? (
+
+          page.communication_delay.map(
+            (item: any, index: number) => (
+
+              <View style={styles.temBox} key={index}>
+
+                <View style={styles.topIconHeadingHolder}>
+
+                  <Image
+                    source={require('../../assets/images/earthIcon.png')}
+                    style={{ width: 28, height: 28 }}
+                  />
+
+                  <Text style={styles.topIconHeading}>
+                    {item.heading}
+                  </Text>
+
+                  <Image
+                    source={require('../../assets/images/satteliteIcon.png')}
+                    style={{ width: 28, height: 28 }}
+                  />
+
+                </View>
+
+                <View style={styles.communicationData}>
+
+                  <Text style={styles.leftData}>
+                    {item.seconds}
+                  </Text>
+
+                  <Text style={styles.leftData}>=</Text>
+
+                  <View style={styles.dataCalculation}>
+
+                    <Text style={styles.leftData}>
+                      {item.minutes}Min
+                    </Text>
+
+                    <Text style={styles.leftData}> | </Text>
+
+                    <Text style={styles.leftData}>
+                      {item.remaining_seconds}Sec
+                    </Text>
+
+                  </View>
+
+                </View>
+
+              </View>
+            )
+          )
+
+        ) : (
+          <Text>No Data</Text>
+        )
+      }
+
+      {/* ================= OLD DISTANCE ================= */}
+
+      <View style={styles.temBox}>
+
+        <View style={styles.topIconHeadingHolder}>
+
+          <Image
+            source={require('../../assets/images/earthIcon.png')}
+            style={{ width: 28, height: 28 }}
+          />
+
+          <Text style={styles.topIconHeading}>
+            {page?.custom_distance?.distance_row_1}
+          </Text>
+
+          <Image
+            source={require('../../assets/images/satteliteIcon.png')}
+            style={{ width: 28, height: 28 }}
+          />
+
+        </View>
+
+        <View style={styles.communicationData}>
+
+          <View style={styles.dataCalculation}>
+
+            <Text style={styles.leftData}>
+              {page?.mission_calculation?.distance_km} KM
+            </Text>
+
+          </View>
+
+        </View>
+
+      </View>
+
+    </>
+
+  )
+}
 
                         
 

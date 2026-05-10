@@ -57,7 +57,13 @@ export default function MissionPage() {
                         </LinearGradient>
 
                         <Text style={styles.contentHeading}>Distance Traveled from Earth</Text>
-                        <Text style={styles.contentHeadingMain}>{page?.mission_calculation?.distance_million_km} </Text>
+                        <Text style={styles.contentHeadingMain}>
+                           {
+                              page?.template === 'page-templates/tpl-resort-update.php'
+                                ? page?.acf?.di_distance_traveled_from_earth
+                                : page?.mission_calculation?.distance_million_km
+                            }
+                        </Text>
                         <Text style={styles.contentHeading}>Million KM</Text>
                         <View
                           style={{
