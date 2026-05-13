@@ -2,6 +2,7 @@ import { CommonActions } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { useState } from 'react';
+
 import {
   ActivityIndicator,
   Image,
@@ -11,8 +12,10 @@ import {
   View,
 } from 'react-native';
 
+import * as Notifications from 'expo-notifications';
 
 import { registerForPushNotificationsAsync } from '@/utils/notifications';
+
 import {
   saveNotificationsEnabled,
   saveScannedSlug,
@@ -22,11 +25,19 @@ import Footer from '@/components/Footer';
 
 export default function NotificationSettings() {
 
-  const { slug } = useLocalSearchParams<{ slug?: string }>();
+  const { slug } =
+    useLocalSearchParams<{ slug?: string }>();
+
   const navigation = useNavigation();
 
-  const [enabled, setEnabled] = useState<boolean | null>(null);
-  const [saving, setSaving] = useState(false);
+  const [enabled, setEnabled] =
+    useState<boolean | null>(null);
+
+  const [saving, setSaving] =
+    useState(false);
+
+  const [debugMessage, setDebugMessage] =
+    useState('');
 
   const goDashboard = () => {
 
@@ -43,82 +54,123 @@ export default function NotificationSettings() {
     );
   };
 
-  const [debugMessage, setDebugMessage] = useState('');
+  const handleSelection = async (
+    value: boolean
+  ) => {
 
- const handleSelection = async (value: boolean) => {
+    if (saving) return;
 
-  if (saving) return;
+    setEnabled(value);
+    setSaving(true);
 
-  setEnabled(value);
-  setSaving(true);
+    try {
 
-  try {
-
-    setDebugMessage('Starting setup...');
-
-    if (slug) {
-      await saveScannedSlug(slug);
-    }
-
-    await saveNotificationsEnabled(value);
-
-    if (value === true) {
-
-      setDebugMessage('Getting push token...');
-
-      const token = await registerForPushNotificationsAsync();
-
-      setDebugMessage(`TOKEN: ${token}`);
-
-      if (token && slug) {
-
-        setDebugMessage('Saving token to server...');
-
-        const response = await fetch(
-          'https://dev4work.com/thefirstonmars/wp-json/custom/v1/save-token/',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              slug,
-              token,
-            }),
-          }
-        );
-
-        const data = await response.json();
-
-        setDebugMessage(
-          `SERVER RESPONSE: ${JSON.stringify(data)}`
-        );
-      }
-    }
-
-    setTimeout(() => {
-
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [
-            {
-              name: 'dashboard',
-              params: slug ? { slug } : undefined,
-            },
-          ],
-        }),
+      setDebugMessage(
+        'Starting notification setup...'
       );
 
-    }, 4000);
+      if (slug) {
 
-  } catch (error: any) {
+        await saveScannedSlug(slug);
 
-    setDebugMessage(
-      `ERROR: ${error?.message || 'Unknown error'}`
-    );
-  }
-};
+        setDebugMessage(
+          `Slug saved: ${slug}`
+        );
+      }
+
+      await saveNotificationsEnabled(value);
+
+      if (value === true) {
+
+        setDebugMessage(
+          'Requesting notification permission...'
+        );
+
+        // GET FCM TOKEN
+        const token =
+          await registerForPushNotificationsAsync();
+
+        console.log('FCM TOKEN:', token);
+
+        if (token && slug) {
+
+          setDebugMessage(
+            `FCM TOKEN:\n\n${token}`
+          );
+
+          const response = await fetch(
+            'https://dev4work.com/thefirstonmars/wp-json/custom/v1/save-token/',
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                slug,
+                token,
+              }),
+            }
+          );
+
+          const data = await response.json();
+
+          setDebugMessage(
+            `FCM TOKEN:\n\n${token}\n\nSERVER RESPONSE:\n${JSON.stringify(
+              data,
+              null,
+              2
+            )}`
+          );
+        }
+
+        // TEST LOCAL NOTIFICATION
+        await Notifications.scheduleNotificationAsync({
+          content: {
+            title: 'Notifications Enabled 🚀',
+            body: 'Push notification setup completed successfully.',
+            sound: true,
+          },
+          trigger: null,
+        });
+
+      } else {
+
+        setDebugMessage(
+          'Notifications disabled'
+        );
+      }
+
+      setTimeout(() => {
+
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [
+              {
+                name: 'dashboard',
+                params: slug
+                  ? { slug }
+                  : undefined,
+              },
+            ],
+          }),
+        );
+
+      }, 4000);
+
+    } catch (error: any) {
+
+      console.log(error);
+
+      setDebugMessage(
+        `ERROR:\n${
+          error?.message || 'Unknown error'
+        }`
+      );
+
+      setSaving(false);
+    }
+  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -144,17 +196,9 @@ export default function NotificationSettings() {
           Would you like to receive mission updates?
         </Text>
 
-
-        <Text
-  style={{
-    color: '#fff',
-    textAlign: 'center',
-    marginTop: 20,
-    fontSize: 12,
-  }}
->
-  {debugMessage}
-</Text>
+        <Text style={styles.debugText}>
+          {debugMessage}
+        </Text>
 
         <View style={styles.optionsRow}>
 
@@ -165,9 +209,11 @@ export default function NotificationSettings() {
             style={[
               styles.option,
               enabled === true &&
-              styles.optionSelected,
+                styles.optionSelected,
             ]}
-            onPress={() => handleSelection(true)}
+            onPress={() =>
+              handleSelection(true)
+            }
           >
 
             <LinearGradient
@@ -193,9 +239,11 @@ export default function NotificationSettings() {
             style={[
               styles.optionNo,
               enabled === false &&
-              styles.optionSelected,
+                styles.optionSelected,
             ]}
-            onPress={() => handleSelection(false)}
+            onPress={() =>
+              handleSelection(false)
+            }
           >
 
             <Text style={styles.optionNoText}>
@@ -207,15 +255,20 @@ export default function NotificationSettings() {
         </View>
 
         {saving && (
+
           <View style={styles.loadingBox}>
 
-            <ActivityIndicator size="small" color="#fff" />
+            <ActivityIndicator
+              size="small"
+              color="#fff"
+            />
 
             <Text style={styles.loadingText}>
               Saving your preference...
             </Text>
 
           </View>
+
         )}
 
       </View>
@@ -258,6 +311,15 @@ const styles = StyleSheet.create({
     lineHeight: 32,
     fontFamily: 'Audiowide_400Regular',
     padding: 25,
+  },
+
+  debugText: {
+    color: '#fff',
+    textAlign: 'center',
+    marginTop: 20,
+    marginBottom: 20,
+    fontSize: 12,
+    lineHeight: 18,
   },
 
   optionsRow: {
@@ -315,4 +377,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 14,
   },
+
 });

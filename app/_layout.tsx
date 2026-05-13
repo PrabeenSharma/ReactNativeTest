@@ -1,5 +1,6 @@
 import { DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
+
 import {
   ImageBackground,
   View
@@ -7,7 +8,7 @@ import {
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-
+import * as Notifications from 'expo-notifications';
 
 import Header from '@/components/Header';
 
@@ -15,6 +16,16 @@ import {
   Audiowide_400Regular,
   useFonts,
 } from '@expo-google-fonts/audiowide';
+
+
+// NOTIFICATION HANDLER
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 
 const MyTheme = {
   ...DefaultTheme,
@@ -25,8 +36,6 @@ const MyTheme = {
 };
 
 export default function RootLayout() {
-
-
 
   const [fontsLoaded] = useFonts({
     Audiowide_400Regular,
@@ -64,8 +73,6 @@ export default function RootLayout() {
 
             <Header />
 
-        
-            
             <Stack
               screenOptions={{
                 headerShown: false,

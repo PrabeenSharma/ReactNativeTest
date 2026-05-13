@@ -1,10 +1,10 @@
-import Constants from 'expo-constants';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
+import { Platform } from 'react-native';
 
 export async function registerForPushNotificationsAsync() {
+
   if (!Device.isDevice) {
-    alert('Must use physical device');
     return null;
   }
 
@@ -14,6 +14,7 @@ export async function registerForPushNotificationsAsync() {
   let finalStatus = existingStatus;
 
   if (existingStatus !== 'granted') {
+
     const { status } =
       await Notifications.requestPermissionsAsync();
 
@@ -21,20 +22,23 @@ export async function registerForPushNotificationsAsync() {
   }
 
   if (finalStatus !== 'granted') {
-    alert('Permission not granted');
     return null;
   }
 
-  const projectId =
-    Constants?.expoConfig?.extra?.eas?.projectId;
+  if (Platform.OS === 'android') {
 
-  const token = (
-    await Notifications.getExpoPushTokenAsync({
-      projectId,
-    })
-  ).data;
+    await Notifications.setNotificationChannelAsync(
+      'default',
+      {
+        name: 'default',
+        importance: Notifications.AndroidImportance.MAX,
+      }
+    );
+  }
 
-  console.log('EXPO TOKEN:', token);
+  // DIRECT FCM TOKEN
+  const tokenData =
+    await Notifications.getDevicePushTokenAsync();
 
-  return token;
+  return tokenData.data;
 }
