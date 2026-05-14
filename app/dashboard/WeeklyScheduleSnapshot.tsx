@@ -16,6 +16,8 @@ import {
 
 import { WebView } from 'react-native-webview';
 
+import Pdf from 'react-native-pdf';
+
 import ButtonsGroup from '../../components/ButtonsGroup';
 
 import useMissionPage from '@/hooks/useMissionPage';
@@ -43,11 +45,7 @@ export default function MissionPage() {
 const pdfUrl =
   page?.acf?.view_class_syllabus_url;
 
-const pdfViewerUrl = pdfUrl
-  ? `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(
-      pdfUrl
-    )}`
-  : null;
+
 
   return (
     <>
@@ -90,25 +88,23 @@ const pdfViewerUrl = pdfUrl
                   {page?.acf?.upcoming_events}
                 </Text>
 
-                   {
-                    pdfViewerUrl && (
-                      <Pressable
-                        onPress={() =>
-                          setPdfModalVisible(true)
-                        }
-                        style={({ pressed }) => [
-                          styles.pdfButton,
-                          {
-                            opacity: pressed ? 0.6 : 1,
-                          },
-                        ]}
-                      >
-                        <Text style={styles.pdfButtonText}>
-                          View Class Syllabus
-                        </Text>
-                      </Pressable>
-                    )
-                  }
+                  {pdfUrl && (
+                    <Pressable
+                      onPress={() =>
+                        setPdfModalVisible(true)
+                      }
+                      style={({ pressed }) => [
+                        styles.pdfButton,
+                        {
+                          opacity: pressed ? 0.6 : 1,
+                        },
+                      ]}
+                    >
+                      <Text style={styles.pdfButtonText}>
+                        View Class Syllabus
+                      </Text>
+                    </Pressable>
+                  )}
 
                 <WebView
                   source={{
@@ -175,43 +171,28 @@ const pdfViewerUrl = pdfUrl
                 Class Syllabus
               </Text>
             </View>
-            {pdfViewerUrl && (
-              <View style={{ paddingVertical:0, flex:1, backgroundColor:'#313131',}}>
-                <WebView
-                  source={{
-                    uri: pdfViewerUrl,
-                  }}
-                  style={styles.pdfView}
-                  originWhitelist={['*']}
-                  javaScriptEnabled
-                  domStorageEnabled
-                  startInLoadingState
-                  cacheEnabled={false}
-                  incognito={true}
-                  allowsInlineMediaPlayback
-                  setSupportMultipleWindows={false}
-                  renderLoading={() => (
-                    <View
-                      style={{
-                        flex: 1,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        backgroundColor: '#313131',
-                      }}
-                    >
-                      <Text
-                        style={{
-                          color: '#fff',
-                          fontSize: 14,
-                        }}
-                      >
-                        Loading PDF...
-                      </Text>
-                    </View>
-                  )}
-                />
-              </View>
-            )}
+           {pdfUrl && (
+            <View
+              style={{
+                paddingVertical: 0,
+                flex: 1,
+                backgroundColor: '#313131',
+              }}
+            >
+              <Pdf
+                source={{
+                  uri: pdfUrl,
+                  cache: true,
+                }}
+                style={{
+                  flex: 1,
+                  width: '100%',
+                  height: '100%',
+                }}
+                trustAllCerts={false}
+              />
+            </View>
+          )}
 
           </View>
         </View>
