@@ -12,7 +12,6 @@ import {
   View,
 } from 'react-native';
 
-import * as Notifications from 'expo-notifications';
 
 import { registerForPushNotificationsAsync } from '@/utils/notifications';
 
@@ -123,22 +122,9 @@ export default function NotificationSettings() {
           );
         }
 
-        // TEST LOCAL NOTIFICATION
-        await Notifications.scheduleNotificationAsync({
-          content: {
-            title: 'Notifications Enabled 🚀',
-            body: 'Push notification setup completed successfully.',
-            sound: true,
-          },
-          trigger: null,
-        });
+       
 
-      } else {
-
-        setDebugMessage(
-          'Notifications disabled'
-        );
-      }
+      } 
 
       setTimeout(() => {
 
@@ -196,10 +182,7 @@ export default function NotificationSettings() {
           Would you like to receive mission updates?
         </Text>
 
-        <Text style={styles.debugText}>
-          {debugMessage}
-        </Text>
-
+        
         <View style={styles.optionsRow}>
 
           {/* YES */}
@@ -376,6 +359,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     textAlign: 'center',
     fontSize: 14,
+    fontFamily: 'Audiowide_400Regular',
   },
 
 });

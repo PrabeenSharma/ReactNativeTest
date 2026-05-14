@@ -8,7 +8,6 @@ import {
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import * as Notifications from 'expo-notifications';
 
 import Header from '@/components/Header';
 
@@ -17,15 +16,17 @@ import {
   useFonts,
 } from '@expo-google-fonts/audiowide';
 
+import * as Notifications from 'expo-notifications';
 
-// NOTIFICATION HANDLER
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
-    shouldShowAlert: true,
+    shouldShowBanner: true,
+    shouldShowList: true,
     shouldPlaySound: true,
-    shouldSetBadge: false,
+    shouldSetBadge: true,
   }),
 });
+
 
 const MyTheme = {
   ...DefaultTheme,
