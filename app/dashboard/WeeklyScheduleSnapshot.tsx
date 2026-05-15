@@ -108,8 +108,11 @@ const pdfUrl =
 
                 <WebView
                   source={{
-                    uri: 'https://calendar.google.com/calendar/embed?height=450&wkst=1&ctz=America%2FNew_York&showPrint=0&src=MjM5ODEwMTg1ZmRlOTM3ZWU1ODNlZDdlMmIyNGQ3MzE2OGI3M2FiOWVhNWMyZGQxZTQxMGU3NDRkYjYxYTU0MUBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&src=Yjc0NDI4NDJiNjZlNjIwMjQwMjE4YWE0M2I4YjQzMzdhMWUyNWFhN2M4NmMyMDI5NTY4YWEyOTY1M2I4ZGMyYkBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&color=%23e4c441&color=%237cb342',
+                    uri: 'https://calendar.google.com/calendar/embed?height=450&wkst=1&ctz=America%2FNew_York&showPrint=0&src=Y180MDE4ZDhiMGUwYjhiMGZmYWQzZTQ3YmRjNGY5NjEyZTg4NjEwZTExZDhmZWYyZGVhMTM1MGYxYTE5NDJhYTU5QGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20&src=ZW4udXNhI2hvbGlkYXlAZ3JvdXAudi5jYWxlbmRhci5nb29nbGUuY29t&color=%23b39ddb&color=%230b8043',
                   }}
+                  javaScriptEnabled
+                  domStorageEnabled
+                  originWhitelist={['*']}
                   style={{
                     width:'100%',
                     height: 450,

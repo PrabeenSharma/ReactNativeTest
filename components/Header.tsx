@@ -74,6 +74,32 @@ export default function Header() {
 
   /*
   |--------------------------------------------------------------------------
+  | GET FCM TOKEN
+  |--------------------------------------------------------------------------
+  */
+
+  const getFCMToken = async () => {
+
+    try {
+
+      const tokenData =
+        await Notifications.getDevicePushTokenAsync();
+
+      return tokenData?.data || '';
+
+    } catch (error) {
+
+      console.log(
+        'FCM TOKEN ERROR:',
+        error
+      );
+
+      return '';
+    }
+  };
+
+  /*
+  |--------------------------------------------------------------------------
   | TOGGLE NOTIFICATION
   |--------------------------------------------------------------------------
   */
@@ -104,6 +130,28 @@ export default function Header() {
       if (!slug) {
 
         console.log('Slug not found');
+
+        return;
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | GET FCM TOKEN
+      |--------------------------------------------------------------------------
+      */
+
+      const token =
+        await getFCMToken();
+
+      /*
+      |--------------------------------------------------------------------------
+      | TOKEN NOT FOUND
+      |--------------------------------------------------------------------------
+      */
+
+      if (!token) {
+
+        console.log('FCM token not found');
 
         return;
       }
@@ -144,18 +192,10 @@ export default function Header() {
           return;
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | GET DEVICE TOKEN
-        |--------------------------------------------------------------------------
-        */
-
-        const tokenData =
-          await Notifications.getDevicePushTokenAsync();
-
-        const token = tokenData.data;
-
-        console.log('FCM TOKEN:', token);
+        console.log(
+          'FCM TOKEN:',
+          token
+        );
 
         /*
         |--------------------------------------------------------------------------
@@ -166,6 +206,7 @@ export default function Header() {
         const response = await fetch(
           'https://dev4work.com/thefirstonmars/wp-json/custom/v1/save-token/',
           {
+
             method: 'POST',
 
             headers: {
@@ -216,6 +257,7 @@ export default function Header() {
         const response = await fetch(
           'https://dev4work.com/thefirstonmars/wp-json/custom/v1/save-token/',
           {
+
             method: 'POST',
 
             headers: {
@@ -225,6 +267,7 @@ export default function Header() {
             body: JSON.stringify({
 
               slug,
+              token,
               remove: true,
 
             }),
@@ -255,80 +298,91 @@ export default function Header() {
   |--------------------------------------------------------------------------
   */
 
-const handleNewScan = async () => {
+  const handleNewScan = async () => {
 
-  try {
+    try {
 
-    setMenuOpen(false);
+      setMenuOpen(false);
 
-    /*
-    |--------------------------------------------------------------------------
-    | GET CURRENT SLUG
-    |--------------------------------------------------------------------------
-    */
+      /*
+      |--------------------------------------------------------------------------
+      | GET CURRENT SLUG
+      |--------------------------------------------------------------------------
+      */
 
-    const slug =
-      await getScannedSlug();
+      const slug =
+        await getScannedSlug();
 
-    /*
-    |--------------------------------------------------------------------------
-    | REMOVE TOKEN FROM SERVER
-    |--------------------------------------------------------------------------
-    */
+      /*
+      |--------------------------------------------------------------------------
+      | GET FCM TOKEN
+      |--------------------------------------------------------------------------
+      */
 
-    if (slug) {
+      const token =
+        await getFCMToken();
 
-      await fetch(
-        'https://dev4work.com/thefirstonmars/wp-json/custom/v1/save-token/',
-        {
-          method: 'POST',
+      /*
+      |--------------------------------------------------------------------------
+      | REMOVE TOKEN FROM SERVER
+      |--------------------------------------------------------------------------
+      */
 
-          headers: {
-            'Content-Type': 'application/json',
-          },
+      if (slug && token) {
 
-          body: JSON.stringify({
+        await fetch(
+          'https://dev4work.com/thefirstonmars/wp-json/custom/v1/save-token/',
+          {
 
-            slug,
-            remove: true,
+            method: 'POST',
 
-          }),
-        }
+            headers: {
+              'Content-Type': 'application/json',
+            },
+
+            body: JSON.stringify({
+
+              slug,
+              token,
+              remove: true,
+
+            }),
+          }
+        );
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | CLEAR LOCAL STORAGE
+      |--------------------------------------------------------------------------
+      */
+
+      await clearAllScanData();
+
+      /*
+      |--------------------------------------------------------------------------
+      | CLEAR LOCAL NOTIFICATIONS
+      |--------------------------------------------------------------------------
+      */
+
+      await Notifications.dismissAllNotificationsAsync();
+
+      /*
+      |--------------------------------------------------------------------------
+      | RELOAD APP
+      |--------------------------------------------------------------------------
+      */
+
+      await Updates.reloadAsync();
+
+    } catch (error) {
+
+      console.log(
+        'NEW SCAN ERROR:',
+        error
       );
     }
-
-    /*
-    |--------------------------------------------------------------------------
-    | CLEAR LOCAL STORAGE
-    |--------------------------------------------------------------------------
-    */
-
-    await clearAllScanData();
-
-    /*
-    |--------------------------------------------------------------------------
-    | CLEAR LOCAL NOTIFICATIONS
-    |--------------------------------------------------------------------------
-    */
-
-    await Notifications.dismissAllNotificationsAsync();
-
-    /*
-    |--------------------------------------------------------------------------
-    | RELOAD APP
-    |--------------------------------------------------------------------------
-    */
-
-    await Updates.reloadAsync();
-
-  } catch (error) {
-
-    console.log(
-      'NEW SCAN ERROR:',
-      error
-    );
-  }
-};
+  };
 
   return (
 
