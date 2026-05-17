@@ -100,6 +100,7 @@ export default function MissionPage() {
                   mission_status={
                     page?.acf?.mission_status || 'default'
                   }
+                   template={page?.template}
                 />
               </View>
 

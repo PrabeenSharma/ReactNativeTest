@@ -46,6 +46,13 @@ const pdfUrl =
   page?.acf?.view_class_syllabus_url;
 
 
+const calendarIframe = page?.acf?.calendar_code || '';
+
+const match = calendarIframe.match(/src="([^"]+)"/);
+
+const calendarUrl = match?.[1] || '';
+
+
 
   return (
     <>
@@ -105,10 +112,10 @@ const pdfUrl =
                       </Text>
                     </Pressable>
                   )}
-
+                {calendarUrl ? (
                 <WebView
                   source={{
-                    uri: 'https://calendar.google.com/calendar/embed?height=450&wkst=1&ctz=America%2FNew_York&showPrint=0&src=Y180MDE4ZDhiMGUwYjhiMGZmYWQzZTQ3YmRjNGY5NjEyZTg4NjEwZTExZDhmZWYyZGVhMTM1MGYxYTE5NDJhYTU5QGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20&src=ZW4udXNhI2hvbGlkYXlAZ3JvdXAudi5jYWxlbmRhci5nb29nbGUuY29t&color=%23b39ddb&color=%230b8043',
+                    uri: calendarUrl,
                   }}
                   javaScriptEnabled
                   domStorageEnabled
@@ -119,6 +126,7 @@ const pdfUrl =
                     marginVertical: 25,
                   }}
                 />
+                ) : null}
               </View>
 
               <Image

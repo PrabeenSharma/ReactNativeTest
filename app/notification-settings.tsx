@@ -98,7 +98,7 @@ export default function NotificationSettings() {
           );
 
           const response = await fetch(
-            'https://dev4work.com/thefirstonmars/wp-json/custom/v1/save-token/',
+            'https://trip.redplanetresorts.com/wp-json/custom/v1/save-token/',
             {
               method: 'POST',
               headers: {

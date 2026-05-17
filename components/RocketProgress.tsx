@@ -7,32 +7,66 @@ type Props = {
   endDate: string;
   distance: string | number;
   mission_status: string;
+  template?: string;
 };
 
-const bgImg = 'https://dev4work.com/thefirstonmars/wp-content/themes/red-planet-resort/assets/images/locationbg.jpg';
-const marsImg = 'https://dev4work.com/thefirstonmars/wp-content/themes/red-planet-resort/assets/images/locationMars.png';
-const earthImg = 'https://dev4work.com/thefirstonmars/wp-content/themes/red-planet-resort/assets/images/locationEarth.png';
-const rocketImg = 'https://dev4work.com/thefirstonmars/wp-content/themes/red-planet-resort/assets/images/rocket.png';
+const bgImg = 'https://trip.redplanetresorts.com/wp-content/themes/red-planet-resort/assets/images/locationbg.jpg';
+const marsImg = 'https://trip.redplanetresorts.com/wp-content/themes/red-planet-resort/assets/images/locationMars.png';
+const earthImg = 'https://trip.redplanetresorts.com/wp-content/themes/red-planet-resort/assets/images/locationEarth.png';
+const rocketImg = 'https://trip.redplanetresorts.com/wp-content/themes/red-planet-resort/assets/images/rocket.png';
 
-const marsImgReverse = 'https://dev4work.com/thefirstonmars/wp-content/themes/red-planet-resort/assets/images/marsreturn.png';
-const earthImgReverse = 'https://dev4work.com/thefirstonmars/wp-content/themes/red-planet-resort/assets/images/earthreturn.png';
+const marsImgReverse = 'https://trip.redplanetresorts.com/wp-content/themes/red-planet-resort/assets/images/marsreturn.png';
+const earthImgReverse = 'https://trip.redplanetresorts.com/wp-content/themes/red-planet-resort/assets/images/earthreturn.png';
 
 const RocketWebView: React.FC<Props> = ({
   startDate,
   endDate,
   distance,
   mission_status,
+  template,
+  
+  
+
 }) => {
 
   // ✅ IMAGE SWAP LOGIC
-  const isResupply =
-  mission_status?.toLowerCase() === 'resupply';
+  // const isResupply =
+  // mission_status?.toLowerCase() === 'resupply';
 
-  const finalMarsImg = isResupply ?  earthImgReverse : marsImg;
-  const finalEarthImg = isResupply ? marsImgReverse  : earthImg ;
+  // const finalMarsImg = isResupply ?  earthImgReverse : marsImg;
+  // const finalEarthImg = isResupply ? marsImgReverse  : earthImg ;
 
-  const isOnMars =  mission_status?.toLowerCase() === 'on mars';
-  const showRocket = !isOnMars;
+  // const isOnMars =  mission_status?.toLowerCase() === 'on mars';
+  // const showRocket = !isOnMars;
+
+const missionStatus =
+  mission_status?.toLowerCase();
+
+const templateName =
+  template?.toLowerCase();
+
+// ✅ return mission conditions
+const isReturnMission =
+  missionStatus === 'resupply' ||
+  missionStatus === 'enroute to earth' ||
+  templateName ===
+    'page-templates/tpl-mission-return.php';
+
+// ✅ IMAGE SWAP
+const finalMarsImg = isReturnMission
+  ? earthImgReverse
+  : marsImg;
+
+const finalEarthImg = isReturnMission
+  ? marsImgReverse
+  : earthImg;
+
+// ✅ ROCKET
+const isOnMars =
+  missionStatus === 'on mars';
+
+const showRocket = !isOnMars;
+
 
   const htmlContent = `
 <!DOCTYPE html>

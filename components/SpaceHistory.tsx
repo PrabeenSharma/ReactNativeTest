@@ -21,7 +21,7 @@ const SpaceHistory = () => {
     });
 
     fetch(
-      'https://dev4work.com/thefirstonmars/wp-content/themes/red-planet-resort/assets/data/space_history.json'
+      'https://trip.redplanetresorts.com/wp-content/themes/red-planet-resort/assets/data/space_history.json'
     )
       .then(res => res.json())
       .then(data => {

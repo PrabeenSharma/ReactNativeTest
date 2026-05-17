@@ -16,7 +16,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 const QR_API_URL = 'https://api.qrserver.com/v1/read-qr-code/';
 
 // 🔥 👉 CHANGE THIS
-const CHECK_API = 'https://dev4work.com/thefirstonmars/wp-json/wp/v2/pages?slug=';
+const CHECK_API = 'https://trip.redplanetresorts.com/wp-json/wp/v2/pages?slug=';
 
 export default function Scanner() {
   const [permission, requestPermission] = useCameraPermissions();
@@ -72,37 +72,43 @@ export default function Scanner() {
   };
 
   // ✅ VALIDATION FUNCTION
-  const validateAndNavigate = async (slug: string) => {
-    try {
-      setProcessing(true);
+const validateAndNavigate = async (slug: string) => {
+  try {
+    setProcessing(true);
 
-      const res = await fetch(`${CHECK_API}${slug}`);
-      const data = await res.json();
+    // ✅ API URL
+    const apiUrl = `${CHECK_API}${slug}`;
 
-      console.log('Validation API:', data);
+    // ✅ Console log
+    console.log('API URL:', apiUrl);
 
-      const page = data?.[0];
+    const res = await fetch(apiUrl);
 
-      if (!page) {
-        alert('Invalid Ticket ❌');
-        return;
-      }
+    const data = await res.json();
 
-      if (!page?.acf?.mission_code) {
-        alert('Invalid Ticket ❌');
-        return;
-      }
+    console.log('Validation API:', data);
 
-      // ✅ success
-      goToNotificationSettings(slug);
+    const page = data?.[0];
 
-    } catch (err) {
-      console.log('Validation error:', err);
-      alert('Something went wrong');
-    } finally {
-      setProcessing(false);
+    if (!page) {
+      alert('Invalid Ticket ❌');
+      return;
     }
-  };
+
+    if (!page?.acf?.mission_code) {
+      alert('Invalid Ticket ❌');
+      return;
+    }
+
+    goToNotificationSettings(slug);
+
+  } catch (err) {
+    console.log('Validation error:', err);
+    alert('Something went wrong');
+  } finally {
+    setProcessing(false);
+  }
+};
 
   // 📷 Camera scan
   const handleScan = ({ data }: { data: string }) => {

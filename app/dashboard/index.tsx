@@ -70,7 +70,7 @@ const htmlMessage =
   
 
 const handleRefer = async () => {
-  const message = `Join this mission! Buy your ticket here: https://dev4work.com/thefirstonmars/`;
+  const message = `Join this mission! Buy your ticket here: https://trip.redplanetresorts.com/`;
 
   try {
     await Share.share(
@@ -193,7 +193,7 @@ if (loading) {
             <TouchableOpacity
               style={styles.resupplyBtn}
               onPress={() =>
-                Linking.openURL('https://dev4work.com/thefirstonmars/')
+                Linking.openURL('https://trip.redplanetresorts.com/')
               }
             >
               <Text style={styles.resupplyBtnText}>Buy Ticket</Text>

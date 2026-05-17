@@ -77,7 +77,7 @@ export default function SubmitStoryModal({ visible, onClose, onSuccess }: Props)
       }
 
       const res = await fetch(
-        'https://dev4work.com/thefirstonmars/wp-json/custom/v1/submit-story',
+        'https://trip.redplanetresorts.com/wp-json/custom/v1/submit-story',
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

@@ -204,7 +204,7 @@ export default function Header() {
         */
 
         const response = await fetch(
-          'https://dev4work.com/thefirstonmars/wp-json/custom/v1/save-token/',
+          'https://trip.redplanetresorts.com/wp-json/custom/v1/save-token/',
           {
 
             method: 'POST',
@@ -255,7 +255,7 @@ export default function Header() {
         */
 
         const response = await fetch(
-          'https://dev4work.com/thefirstonmars/wp-json/custom/v1/save-token/',
+          'https://trip.redplanetresorts.com/wp-json/custom/v1/save-token/',
           {
 
             method: 'POST',
@@ -331,7 +331,7 @@ export default function Header() {
       if (slug && token) {
 
         await fetch(
-          'https://dev4work.com/thefirstonmars/wp-json/custom/v1/save-token/',
+          'https://trip.redplanetresorts.com/wp-json/custom/v1/save-token/',
           {
 
             method: 'POST',
