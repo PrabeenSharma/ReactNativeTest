@@ -595,7 +595,7 @@ const styles = StyleSheet.create({
     fontFamily:
       'Audiowide_400Regular',
     fontSize: 12,
-    lineHeight: 14,
+    lineHeight: 16,
     textTransform:
       'uppercase',
     marginBottom: 10,
@@ -613,7 +613,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     fontFamily:
       'Audiowide_400Regular',
-    lineHeight: 14,
+    lineHeight: 20,
     textTransform:
       'uppercase',
     textAlign: 'right',
