@@ -29,7 +29,8 @@ export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] =
+    useState(false);
 
   const [notificationsOn, setNotificationsOn] =
     useState(false);
@@ -49,7 +50,10 @@ export default function Header() {
 
   useEffect(() => {
 
-    if (!isDashboardRoot && !isDashboardSubPage) {
+    if (
+      !isDashboardRoot &&
+      !isDashboardSubPage
+    ) {
       return;
     }
 
@@ -74,23 +78,28 @@ export default function Header() {
 
   /*
   |--------------------------------------------------------------------------
-  | GET FCM TOKEN
+  | GET EXPO PUSH TOKEN
   |--------------------------------------------------------------------------
   */
 
-  const getFCMToken = async () => {
+  const getExpoPushToken = async () => {
 
     try {
 
       const tokenData =
-        await Notifications.getDevicePushTokenAsync();
+        await Notifications.getExpoPushTokenAsync({
+
+          projectId:
+            '04cfa4ab-7aff-4884-bf4e-8cdac57c4a0f',
+
+        });
 
       return tokenData?.data || '';
 
     } catch (error) {
 
       console.log(
-        'FCM TOKEN ERROR:',
+        'EXPO PUSH TOKEN ERROR:',
         error
       );
 
@@ -104,7 +113,9 @@ export default function Header() {
   |--------------------------------------------------------------------------
   */
 
-  const handleToggle = async (next: boolean) => {
+  const handleToggle = async (
+    next: boolean
+  ) => {
 
     try {
 
@@ -136,12 +147,47 @@ export default function Header() {
 
       /*
       |--------------------------------------------------------------------------
-      | GET FCM TOKEN
+      | ASK PERMISSION
+      |--------------------------------------------------------------------------
+      */
+
+      const {
+        status: existingStatus
+      } =
+        await Notifications.getPermissionsAsync();
+
+      let finalStatus =
+        existingStatus;
+
+      if (
+        existingStatus !== 'granted'
+      ) {
+
+        const { status } =
+          await Notifications.requestPermissionsAsync();
+
+        finalStatus = status;
+      }
+
+      if (
+        finalStatus !== 'granted'
+      ) {
+
+        console.log(
+          'Notification permission denied'
+        );
+
+        return;
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | GET EXPO PUSH TOKEN
       |--------------------------------------------------------------------------
       */
 
       const token =
-        await getFCMToken();
+        await getExpoPushToken();
 
       /*
       |--------------------------------------------------------------------------
@@ -151,10 +197,17 @@ export default function Header() {
 
       if (!token) {
 
-        console.log('FCM token not found');
+        console.log(
+          'Expo push token not found'
+        );
 
         return;
       }
+
+      console.log(
+        'EXPO PUSH TOKEN:',
+        token
+      );
 
       /*
       |--------------------------------------------------------------------------
@@ -166,62 +219,31 @@ export default function Header() {
 
         /*
         |--------------------------------------------------------------------------
-        | ASK PERMISSION
-        |--------------------------------------------------------------------------
-        */
-
-        const { status: existingStatus } =
-          await Notifications.getPermissionsAsync();
-
-        let finalStatus = existingStatus;
-
-        if (existingStatus !== 'granted') {
-
-          const { status } =
-            await Notifications.requestPermissionsAsync();
-
-          finalStatus = status;
-        }
-
-        if (finalStatus !== 'granted') {
-
-          console.log(
-            'Notification permission denied'
-          );
-
-          return;
-        }
-
-        console.log(
-          'FCM TOKEN:',
-          token
-        );
-
-        /*
-        |--------------------------------------------------------------------------
         | SAVE TOKEN TO WORDPRESS
         |--------------------------------------------------------------------------
         */
 
-        const response = await fetch(
-          'https://trip.redplanetresorts.com/wp-json/custom/v1/save-token/',
-          {
+        const response =
+          await fetch(
+            'https://trip.redplanetresorts.com/wp-json/custom/v1/save-token/',
+            {
 
-            method: 'POST',
+              method: 'POST',
 
-            headers: {
-              'Content-Type': 'application/json',
-            },
+              headers: {
+                'Content-Type':
+                  'application/json',
+              },
 
-            body: JSON.stringify({
+              body: JSON.stringify({
 
-              slug,
-              token,
-              remove: false,
+                slug,
+                token,
+                remove: false,
 
-            }),
-          }
-        );
+              }),
+            }
+          );
 
         const result =
           await response.json();
@@ -254,25 +276,27 @@ export default function Header() {
         |--------------------------------------------------------------------------
         */
 
-        const response = await fetch(
-          'https://trip.redplanetresorts.com/wp-json/custom/v1/save-token/',
-          {
+        const response =
+          await fetch(
+            'https://trip.redplanetresorts.com/wp-json/custom/v1/save-token/',
+            {
 
-            method: 'POST',
+              method: 'POST',
 
-            headers: {
-              'Content-Type': 'application/json',
-            },
+              headers: {
+                'Content-Type':
+                  'application/json',
+              },
 
-            body: JSON.stringify({
+              body: JSON.stringify({
 
-              slug,
-              token,
-              remove: true,
+                slug,
+                token,
+                remove: true,
 
-            }),
-          }
-        );
+              }),
+            }
+          );
 
         const result =
           await response.json();
@@ -315,12 +339,12 @@ export default function Header() {
 
       /*
       |--------------------------------------------------------------------------
-      | GET FCM TOKEN
+      | GET EXPO PUSH TOKEN
       |--------------------------------------------------------------------------
       */
 
       const token =
-        await getFCMToken();
+        await getExpoPushToken();
 
       /*
       |--------------------------------------------------------------------------
@@ -337,7 +361,8 @@ export default function Header() {
             method: 'POST',
 
             headers: {
-              'Content-Type': 'application/json',
+              'Content-Type':
+                'application/json',
             },
 
             body: JSON.stringify({
@@ -403,7 +428,7 @@ export default function Header() {
               source={require('./../assets/images/back.png')}
               style={{
                 width: 20,
-                height: 20
+                height: 20,
               }}
             />
 
@@ -429,7 +454,9 @@ export default function Header() {
       {pathname.startsWith('/dashboard') ? (
 
         <TouchableOpacity
-          onPress={() => setMenuOpen(true)}
+          onPress={() =>
+            setMenuOpen(true)
+          }
           style={styles.menuButton}
         >
 
@@ -437,7 +464,7 @@ export default function Header() {
             source={require('./../assets/images/settingIcon.png')}
             style={{
               width: 20,
-              height: 20
+              height: 20,
             }}
           />
 
@@ -445,7 +472,11 @@ export default function Header() {
 
       ) : (
 
-        <View style={styles.menuButtonPlaceholder} />
+        <View
+          style={
+            styles.menuButtonPlaceholder
+          }
+        />
 
       )}
 
@@ -473,7 +504,7 @@ export default function Header() {
             <View
               style={[
                 styles.menuItem,
-                styles.menuItemRow
+                styles.menuItemRow,
               ]}
             >
 
@@ -486,17 +517,23 @@ export default function Header() {
                 }}
               />
 
-              <Text style={styles.menuItemText}>
+              <Text
+                style={styles.menuItemText}
+              >
                 Notifications
               </Text>
 
               <Switch
-                style={styles.swicthFunction}
+                style={
+                  styles.swicthFunction
+                }
                 value={notificationsOn}
-                onValueChange={handleToggle}
+                onValueChange={
+                  handleToggle
+                }
                 trackColor={{
                   false: '#ccc',
-                  true: '#CCF6FF'
+                  true: '#CCF6FF',
                 }}
                 thumbColor={
                   notificationsOn
@@ -507,7 +544,9 @@ export default function Header() {
 
             </View>
 
-            <View style={styles.menuDivider} />
+            <View
+              style={styles.menuDivider}
+            />
 
             <TouchableOpacity
               style={styles.menuItemScan}
@@ -523,7 +562,9 @@ export default function Header() {
                 }}
               />
 
-              <Text style={styles.menuItemText}>
+              <Text
+                style={styles.menuItemText}
+              >
                 Scan a new ticket
               </Text>
 
@@ -596,7 +637,8 @@ const styles = StyleSheet.create({
 
     flex: 1,
 
-    backgroundColor: 'rgba(0,0,0,0.3)',
+    backgroundColor:
+      'rgba(0,0,0,0.3)',
 
     alignItems: 'flex-end',
 
@@ -652,7 +694,8 @@ const styles = StyleSheet.create({
 
     color: '#fff',
 
-    fontFamily: 'Audiowide_400Regular',
+    fontFamily:
+      'Audiowide_400Regular',
   },
 
   menuDivider: {
@@ -667,7 +710,7 @@ const styles = StyleSheet.create({
   backButtonArrow: {},
 
   swicthFunction: {
-    marginLeft: 'auto'
-  }
+    marginLeft: 'auto',
+  },
 
 });

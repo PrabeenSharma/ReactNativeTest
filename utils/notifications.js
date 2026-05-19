@@ -1,44 +1,114 @@
+import Constants from 'expo-constants';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
+
 import { Platform } from 'react-native';
 
 export async function registerForPushNotificationsAsync() {
 
-  if (!Device.isDevice) {
-    return null;
-  }
+  try {
 
-  const { status: existingStatus } =
-    await Notifications.getPermissionsAsync();
+    /*
+    |--------------------------------------------------------------------------
+    | REAL DEVICE CHECK
+    |--------------------------------------------------------------------------
+    */
 
-  let finalStatus = existingStatus;
+    if (!Device.isDevice) {
 
-  if (existingStatus !== 'granted') {
+      console.log('Must use physical device');
 
-    const { status } =
-      await Notifications.requestPermissionsAsync();
+      return null;
+    }
 
-    finalStatus = status;
-  }
+    /*
+    |--------------------------------------------------------------------------
+    | NOTIFICATION PERMISSION
+    |--------------------------------------------------------------------------
+    */
 
-  if (finalStatus !== 'granted') {
-    return null;
-  }
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
 
-  if (Platform.OS === 'android') {
+    let finalStatus = existingStatus;
 
-    await Notifications.setNotificationChannelAsync(
-      'default',
-      {
-        name: 'default',
-        importance: Notifications.AndroidImportance.MAX,
-      }
+    if (existingStatus !== 'granted') {
+
+      const { status } =
+        await Notifications.requestPermissionsAsync();
+
+      finalStatus = status;
+    }
+
+    if (finalStatus !== 'granted') {
+
+      console.log('Notification permission denied');
+
+      return null;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | ANDROID CHANNEL
+    |--------------------------------------------------------------------------
+    */
+
+    if (Platform.OS === 'android') {
+
+      await Notifications.setNotificationChannelAsync(
+        'default',
+        {
+          name: 'default',
+          importance:
+            Notifications.AndroidImportance.MAX,
+        }
+      );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | EXPO PROJECT ID
+    |--------------------------------------------------------------------------
+    */
+
+    const projectId =
+      Constants?.expoConfig?.extra?.eas?.projectId ??
+      Constants?.easConfig?.projectId;
+
+    if (!projectId) {
+
+      console.log('Project ID not found');
+
+      return null;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | EXPO PUSH TOKEN
+    |--------------------------------------------------------------------------
+    */
+
+    const tokenData =
+      await Notifications.getExpoPushTokenAsync({
+
+        projectId,
+
+      });
+
+    console.log(
+      'EXPO PUSH TOKEN:',
+      tokenData.data
     );
+
+    return tokenData.data;
+
+  } catch (error) {
+
+    console.log(
+      'REGISTER PUSH ERROR:',
+      error
+    );
+
+    return null;
   }
-
-  // DIRECT FCM TOKEN
-  const tokenData =
-    await Notifications.getDevicePushTokenAsync();
-
-  return tokenData.data;
 }
