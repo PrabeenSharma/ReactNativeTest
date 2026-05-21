@@ -23,7 +23,7 @@ export default function FooterDashboard() {
               pressed && styles.pressed
             ]}
             onPress={() =>
-              Linking.openURL('#')
+              Linking.openURL('https://discord.gg/QHzYhzJ7C7')
             }
           >
             <Text style={{ color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize: 12, fontWeight: '400', textTransform: 'uppercase', marginBottom:0, textAlign: 'center' }}>Discord</Text>
