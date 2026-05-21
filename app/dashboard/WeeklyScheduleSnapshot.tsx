@@ -16,7 +16,6 @@ import {
 
 import { WebView } from 'react-native-webview';
 
-import Pdf from 'react-native-pdf';
 
 import ButtonsGroup from '../../components/ButtonsGroup';
 
@@ -182,28 +181,16 @@ const calendarUrl = match?.[1] || '';
                 Class Syllabus
               </Text>
             </View>
-           {pdfUrl && (
-            <View
-              style={{
-                paddingVertical: 0,
-                flex: 1,
-                backgroundColor: '#313131',
-              }}
-            >
-              <Pdf
-                source={{
-                  uri: pdfUrl,
-                  cache: true,
-                }}
-                style={{
-                  flex: 1,
-                  width: '100%',
-                  height: '100%',
-                }}
-                trustAllCerts={false}
-              />
-            </View>
-          )}
+
+                    {pdfUrl && (
+                      <WebView
+                        source={{
+                          uri: `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(pdfUrl)}`,
+                        }}
+                        style={{ flex: 1 }}
+                        originWhitelist={['*']}
+                      />
+                    )}
 
           </View>
         </View>
