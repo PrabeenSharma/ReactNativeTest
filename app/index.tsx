@@ -92,7 +92,7 @@ export default function HomeScreen() {
                   pressed && styles.pressed
                 ]}
                 onPress={() =>
-                  Linking.openURL('https://trip.redplanetresorts.com/')
+                  Linking.openURL('https://redplanetresorts.com/pages/plan-your-trip')
                 }
               >
                 <Text style={{ color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize: 14, fontWeight: '400', textTransform: 'uppercase', marginBottom:14, textAlign: 'center' }}>Buy Ticket</Text>

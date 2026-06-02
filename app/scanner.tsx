@@ -1,7 +1,7 @@
 import { CameraType, CameraView, useCameraPermissions } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   Platform,
   StyleSheet,
@@ -29,13 +29,9 @@ export default function Scanner() {
 
   const router = useRouter();
 
-  useEffect(() => {
-    if (Platform.OS !== 'web') {
-      ImagePicker.requestMediaLibraryPermissionsAsync();
-    }
-  }, []);
 
-  // 🔍 Extract slug
+
+
   const extractSlug = (data: string) => {
     const raw = (data || '').trim();
 
@@ -225,27 +221,43 @@ const validateAndNavigate = async (slug: string) => {
       return (
         <View style={{ flex: 1 }}>
           <View style={styles.container}>
-            <Text style={{ color: '#fff', marginBottom: 10 , fontFamily: 'Audiowide_400Regular', fontSize:16}}>
-              No camera access
+            <Text
+              style={{
+                color: '#fff',
+                marginBottom: 20,
+                textAlign: 'center',
+                fontFamily: 'Audiowide_400Regular',
+                fontSize: 16,
+              }}
+            >
+              Scan your ticket QR code using the camera, or upload a QR image from your photo library.
             </Text>
 
-            <TouchableOpacity style={styles.button} onPress={requestPermission}>
-              <LinearGradient
-                colors={['#0C2046', '#004F99']}
-                style={styles.optionGradient}
+            <TouchableOpacity
+                style={styles.button}
+                onPress={requestPermission}
               >
-                <Text style={styles.buttonText}>Allow Camera</Text>
-              </LinearGradient>
-            </TouchableOpacity>
+                <LinearGradient
+                  colors={['#0C2046', '#004F99']}
+                  style={styles.optionGradient}
+                >
+                  <Text style={styles.buttonText}>Continue</Text>
+                </LinearGradient>
+              </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.button, { marginTop: 20 }]}
-              onPress={handleUploadPress}
-            >
-              <Text style={styles.buttonText}>
-                Upload QR Image
-              </Text>
-            </TouchableOpacity>
+                style={[styles.button, { marginTop: 20 }]}
+                onPress={handleUploadPress}
+              >
+                <LinearGradient
+                  colors={['#0C2046', '#004F99']}
+                  style={styles.optionGradient}
+                >
+                  <Text style={styles.buttonText}>
+                    Upload QR Image
+                  </Text>
+                </LinearGradient>
+              </TouchableOpacity>
           </View>
           <Footer/>
         </View>
