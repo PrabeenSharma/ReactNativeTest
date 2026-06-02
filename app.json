@@ -13,7 +13,9 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.redplanetresorts.redplanetresorts",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSCameraUsageDescription": "Red Planet Resorts uses your camera to scan ticket QR codes for entry verification and booking validation.",
+        "NSPhotoLibraryUsageDescription": "This app uses your photo library so you can upload QR Code image, trip photos and share resort experiences.",
       }
       
     },
