@@ -2,6 +2,9 @@ import { formatDate } from '@/utils/date';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
+import { useWindowDimensions } from 'react-native';
+import RenderHTML from 'react-native-render-html';
+
 import InstagramFeed from '../../components/InstagramFeed';
 import SpaceHistory from '../../components/SpaceHistory';
 import SpaceNews from '../../components/SpaceNews';
@@ -16,10 +19,10 @@ import {
   Modal,
   Pressable,
   ScrollView,
+  Share,
   StyleSheet,
   Text,
   TouchableOpacity,
-  useWindowDimensions,
   View
 } from 'react-native';
 
@@ -33,6 +36,56 @@ export default function MissionPage() {
 
   const { slug: slugParam } = useLocalSearchParams<{ slug?: string }>();
   const { page, loading } = useMissionPage(slugParam);
+
+  
+const rawMessage: string = page?.acf?.captains_message || '';
+
+const htmlMessage =
+  rawMessage.includes('<')
+    ? rawMessage
+    : rawMessage
+        .split(/\r\n\r\n/)
+        .map((item: string) => `<p>${item.trim()}</p>`)
+        .join('');
+
+
+ const buttonText =
+  page?.template === 'page-templates/tpl-mission.php'
+    ? "Read Captain’s Message"
+    : page?.template === 'page-templates/tpl-resort-update.php'
+    ? 'READ WEEKLY BRIEFING'
+    : page?.template === 'page-templates/tpl-mission-return.php'
+    ? 'Read Captain’s Message'
+    : '';    
+    
+  const topHeading =
+  page?.template === 'page-templates/tpl-mission.php'
+    ? "Captain's Log"
+    : page?.template === 'page-templates/tpl-resort-update.php'
+    ? 'RESORT UPDATE'
+    : page?.template === 'page-templates/tpl-mission-return.php'
+    ? 'Captain\'s Log'
+    : '';      
+  
+  
+
+const handleRefer = async () => {
+  const message = `Join this mission! Buy your ticket here: https://trip.redplanetresorts.com/`;
+
+  try {
+    await Share.share(
+      {
+        message,
+      },
+      {
+        dialogTitle: 'Invite your friends',
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 
 if (loading) {
   return (
@@ -105,6 +158,57 @@ if (loading) {
           </View>
         </View>
 
+        {(() => {
+        const rtn = page?.acf?.rtn_date;
+
+        if (!rtn) return false;
+
+        // YYYYMMDD -> YYYY-MM-DD
+        const formatted =
+          rtn.slice(0, 4) + '-' +
+          rtn.slice(4, 6) + '-' +
+          rtn.slice(6, 8);
+
+        const rtnDate = new Date(formatted);
+        const today = new Date();
+
+        today.setHours(0, 0, 0, 0);
+
+        return rtnDate < today;
+      })() && (
+        <View style={styles.resupplyBox}>
+          <Text style={styles.resupplyText}>
+            Thanks for being part of the mission {'\n'}
+          </Text>
+
+          <Text style={styles.journeyCom}>
+            Your journey is now complete.
+          </Text>
+
+          <Text style={styles.referText}>
+            Book your next ticket and refer a friend to join the experience.
+          </Text>
+
+          <View style={{ flexDirection: 'row', gap: 10, marginTop: 10 }}>
+            <TouchableOpacity
+              style={styles.resupplyBtn}
+              onPress={() =>
+                Linking.openURL('https://trip.redplanetresorts.com/')
+              }
+            >
+              <Text style={styles.resupplyBtnText}>Buy Ticket</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.resupplyBtn}
+              onPress={handleRefer}
+            >
+              <Text style={styles.resupplyBtnText}>Refer Friend</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+
         <View
           style={{
             backgroundColor: '#000f1e',
@@ -115,12 +219,19 @@ if (loading) {
           }}
         >
           <ImageBackground
-            source={require('../../assets/images/captainImage.jpg')}
-            style={{  backgroundPosition:'center', width:'100%', backgroundSize:'cover' , backgroundRepeat:'no-repeat', height:243}}
-            resizeMode="cover"
-          >
-            <View style={{ paddingTop: 60, paddingHorizontal: 17 }}>
-              <Text style={styles.captainLogs}>Captain's Log</Text>
+              source={
+                page?.template === 'page-templates/tpl-resort-update.php'
+                  ? require('../../assets/images/resort.jpg')
+                  : require('../../assets/images/captainImage.jpg')
+              }
+              style={{
+                width: '100%',
+                height: 243, 
+              }}
+              resizeMode="cover"
+            >
+            <View style={{ paddingTop: 17, paddingHorizontal: 17, position:'absolute', width:'100%', bottom:15,  }}>
+              <Text style={styles.captainLogs}>{topHeading}</Text>
               <Text style={styles.informationHeading}>
                 Mission Status
               </Text>
@@ -128,7 +239,7 @@ if (loading) {
                 {page?.acf?.information}
               </Text>
 
-              <TouchableOpacity onPress={() => setVisible(true)}>
+              <TouchableOpacity style={{ alignSelf:'center',  }} onPress={() => setVisible(true)}>
                 <LinearGradient
                   colors={['#0C2046', '#004F99']}
                   locations={[0.1624, 0.816]}
@@ -137,7 +248,7 @@ if (loading) {
                   style={styles.optionGradient}
                 >
                   <Text style={styles.optionText}>
-                    Read Captain’s Message
+                    {buttonText}
                   </Text>
                 </LinearGradient>
               </TouchableOpacity>
@@ -145,7 +256,7 @@ if (loading) {
           </ImageBackground>
         </View>
         <View style={{ flexDirection:'row', gap:11,marginVertical:15,}}>
-          <TouchableOpacity onPress={() => Linking.openURL('https://stellarium-web.org/')} style={{ flexGrow:1}}>
+          <TouchableOpacity onPress={() => Linking.openURL(page?.acf?.earth_view)} style={{ flexGrow:1}}>
             <LinearGradient
               colors={['#0C2046', '#004F99']}
               locations={[0.1624, 0.816]}
@@ -166,7 +277,7 @@ if (loading) {
                 />
             </LinearGradient>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => Linking.openURL('https://eyes.nasa.gov/apps/solar-system/#/home')} style={{ flexGrow:1}}>
+          <TouchableOpacity onPress={() => Linking.openURL(page?.acf?.space_map) } style={{ flexGrow:1}}>
             <LinearGradient
               colors={['#0C2046', '#004F99']}
               locations={[0.1624, 0.816]}
@@ -423,7 +534,58 @@ if (loading) {
             <ScrollView
               contentContainerStyle={{ paddingBottom: 20 }}
             >
-             <Text style={styles.modalContent}> {page.acf.captains_message } </Text>
+              <RenderHTML
+  contentWidth={width}
+  source={{
+    html: htmlMessage,
+  }}
+
+  systemFonts={[
+    'Audiowide_400Regular',
+  ]}
+
+  baseStyle={{
+    fontFamily: 'Audiowide_400Regular',
+    fontSize: 12,
+    lineHeight: 20,
+    color: '#000',
+  }}
+
+
+  tagsStyles={{
+    
+    body: {
+      fontSize: 12,
+      lineHeight: 20,
+      marginBottom: 10,
+      color: '#000',
+      fontFamily: 'Audiowide_400Regular',
+    },
+    p: {
+      fontSize: 12,
+      lineHeight: 20,
+      marginBottom: 10,
+      color: '#000',
+      fontFamily: 'Audiowide_400Regular',
+    },
+
+    ul: {
+      paddingLeft: 10,
+      marginTop: 10,
+      marginBottom: 10,
+    },
+
+    li: {
+      fontSize: 12,
+      lineHeight: 20,
+      marginBottom: 10,
+      color: '#000',
+      fontFamily: 'Audiowide_400Regular',
+    },
+  }}
+/>
+
+
             </ScrollView>
             <TouchableOpacity
               onPress={() => setVisible(false)}
@@ -466,9 +628,9 @@ const styles = StyleSheet.create({
   topHeading: {  fontSize: 9, color: '#fff', fontFamily: 'Audiowide_400Regular',  marginBottom: 5, textTransform: 'uppercase',},
   topContent: {  fontSize: 10,  color: 'rgba(0, 221, 241, 1)',   fontFamily: 'Audiowide_400Regular',  marginBottom: 5,  textTransform: 'uppercase',  },
   captainLogs: {  fontSize: 31,  color: '#fff',  fontFamily: 'Audiowide_400Regular',  textAlign: 'center',  marginBottom: 15, textTransform: 'uppercase', },
-  information: {  color: '#fff',  fontFamily: 'Audiowide_400Regular',  fontSize: 10,  textAlign: 'center',  marginBottom: 12, lineHeight:10, textTransform: 'uppercase',},
+  information: {  color: '#fff',  fontFamily: 'Audiowide_400Regular',  fontSize: 10,  textAlign: 'center',  marginBottom: 12, lineHeight:15, textTransform: 'uppercase',},
   informationHeading: { color: '#fff', fontFamily: 'Audiowide_400Regular', fontSize: 15, textAlign: 'center',  marginBottom: 15, textTransform: 'uppercase',},
-  optionGradient: { height: 36,  borderRadius: 6, justifyContent: 'center', alignItems: 'center',},
+  optionGradient: { height: 36,  borderRadius: 6, justifyContent: 'center', alignItems: 'center', paddingHorizontal:15,},
   optionGradient2: { height: 36,  borderRadius: 6, justifyContent: 'center', alignItems: 'center', flexDirection:'row',  gap:8,},
   optionText: {  fontFamily: 'Audiowide_400Regular',  fontSize: 12,  textTransform: 'uppercase',  color: '#fff',},
   modalOverlay: {  flex: 1,  backgroundColor: 'rgba(0,0,0,0.6)',  justifyContent: 'center',  alignItems: 'center',
@@ -486,6 +648,59 @@ const styles = StyleSheet.create({
   communityHeading:{ textAlign:'center', fontFamily: 'Audiowide_400Regular', fontWeight:400,  fontSize: 16,   textTransform: 'uppercase',  color: '#00DDF1', paddingTop:20, paddingBottom:15,},
   communityContent:{ textAlign:'center', fontFamily: 'Audiowide_400Regular', fontWeight:400,  fontSize: 12,   textTransform: 'uppercase',  color: '#CCF6FF', marginBottom:25,},
   loading:{ width:109, height:16,},
-  loaderContainer:{  flex: 1,  justifyContent: 'center',  alignItems: 'center',  backgroundColor: '#000',}
+  loaderContainer:{  flex: 1,  justifyContent: 'center',  alignItems: 'center',  backgroundColor: '#000',},
+
+  resupplyBox: {
+  marginTop: 20,
+  padding: 32,
+  borderRadius: 10,
+  borderWidth: 1,
+  borderColor: '#00DDF1',
+  backgroundColor: '#000',
+},
+
+resupplyText: {
+  color: '#00ddf1',
+  fontSize: 16,
+  lineHeight:20,
+  textAlign: 'center',
+  fontFamily: 'Audiowide_400Regular',
+  textTransform: 'uppercase',
+  marginBottom:5,
+},
+
+referText:{ color: '#fff',
+  fontSize: 11,
+  lineHeight:20,
+  textAlign: 'center',
+  fontFamily: 'Audiowide_400Regular',
+  textTransform: 'uppercase',
+  marginBottom:10,},
+
+
+journeyCom:{ color: '#a8d7ff',
+  fontSize: 12,
+  lineHeight:20,
+  textAlign: 'center',
+  fontFamily: 'Audiowide_400Regular',
+  textTransform: 'uppercase',
+  marginBottom:10,},
+
+  
+resupplyBtn: {
+  flex: 1,
+  height: 36,
+  borderRadius: 6,
+  backgroundColor: '#004F99',
+  justifyContent: 'center',
+  alignItems: 'center',
+},
+
+resupplyBtnText: {
+  color: '#fff',
+  fontSize: 11,
+  fontFamily: 'Audiowide_400Regular',
+  textTransform: 'uppercase',
+},
 
 });

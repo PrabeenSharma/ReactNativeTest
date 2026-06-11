@@ -45,7 +45,7 @@ export default function useMissionPage(slugParam?: string) {
 
         // 🌐 2. API CALL
         const res = await fetch(
-          `https://dev4work.com/thefirstonmars/wp-json/wp/v2/pages?slug=${slug}`
+          `https://trip.redplanetresorts.com/wp-json/wp/v2/pages?slug=${slug}`
         );
         const data = await res.json();
         const result = data?.[0] || null;

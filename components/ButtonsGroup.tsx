@@ -111,6 +111,6 @@ export default function ButtonsGroup() {
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12,},
   box: { width: '48%',},
-  anchorBox: { width: '100%', height: 40, borderRadius: 40, justifyContent: 'center', alignItems: 'center',borderColor: 'rgba(101, 129, 135, 1)', borderWidth: 1, paddingHorizontal: 5,},
+  anchorBox: { width: '100%', height: 40, borderRadius: 40, justifyContent: 'center', alignItems: 'center',borderColor: 'rgba(101, 129, 135, 1)', borderWidth: 1, paddingHorizontal: 15,},
   text: { color: '#fff', fontFamily: 'Audiowide_400Regular',  fontSize: 10, textAlign: 'center', },
 });

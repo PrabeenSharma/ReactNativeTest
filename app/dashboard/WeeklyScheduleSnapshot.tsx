@@ -16,6 +16,7 @@ import {
 
 import { WebView } from 'react-native-webview';
 
+
 import ButtonsGroup from '../../components/ButtonsGroup';
 
 import useMissionPage from '@/hooks/useMissionPage';
@@ -40,15 +41,17 @@ export default function MissionPage() {
     setPdfModalVisible,
   ] = useState(false);
 
-  const pdfUrl =
-    page?.acf?.view_class_syllabus_url;
+const pdfUrl =
+  page?.acf?.view_class_syllabus_url;
 
-  // PDF VIEWER URL
-  const pdfViewerUrl = pdfUrl
-    ? `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(
-        pdfUrl
-      )}`
-    : null;
+
+const calendarIframe = page?.acf?.calendar_code || '';
+
+const match = calendarIframe.match(/src="([^"]+)"/);
+
+const calendarUrl = match?.[1] || '';
+
+
 
   return (
     <>
@@ -91,36 +94,38 @@ export default function MissionPage() {
                   {page?.acf?.upcoming_events}
                 </Text>
 
-                <Pressable
-                  onPress={() =>
-                    setPdfModalVisible( true)
-                  }
-                  style={({
-                    pressed,
-                  }) => [
-                    styles.pdfButton,
-                    {
-                      opacity: pressed
-                        ? 0.6
-                        : 1,
-                    },
-                  ]}
-                >
-                  <Text style={ styles.pdfButtonText}>
-                    View Class Syllabus
-                  </Text>
-                </Pressable>
-
+                  {pdfUrl && (
+                    <Pressable
+                      onPress={() =>
+                        setPdfModalVisible(true)
+                      }
+                      style={({ pressed }) => [
+                        styles.pdfButton,
+                        {
+                          opacity: pressed ? 0.6 : 1,
+                        },
+                      ]}
+                    >
+                      <Text style={styles.pdfButtonText}>
+                        View Class Syllabus
+                      </Text>
+                    </Pressable>
+                  )}
+                {calendarUrl ? (
                 <WebView
                   source={{
-                    uri: 'https://calendar.google.com/calendar/embed?height=450&wkst=1&ctz=America%2FNew_York&showPrint=0&src=MjM5ODEwMTg1ZmRlOTM3ZWU1ODNlZDdlMmIyNGQ3MzE2OGI3M2FiOWVhNWMyZGQxZTQxMGU3NDRkYjYxYTU0MUBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&src=Yjc0NDI4NDJiNjZlNjIwMjQwMjE4YWE0M2I4YjQzMzdhMWUyNWFhN2M4NmMyMDI5NTY4YWEyOTY1M2I4ZGMyYkBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&color=%23e4c441&color=%237cb342',
+                    uri: calendarUrl,
                   }}
+                  javaScriptEnabled
+                  domStorageEnabled
+                  originWhitelist={['*']}
                   style={{
                     width:'100%',
                     height: 450,
                     marginVertical: 25,
                   }}
                 />
+                ) : null}
               </View>
 
               <Image
@@ -176,20 +181,16 @@ export default function MissionPage() {
                 Class Syllabus
               </Text>
             </View>
-            {pdfViewerUrl && (
-              <View style={{ paddingVertical:10, flex:1, backgroundColor:'#313131',}}>
-                <WebView
-                  source={{
-                    uri: pdfViewerUrl,
-                  }}
-                  style={styles.pdfView}
-                  originWhitelist={['*']}
-                  javaScriptEnabled
-                  domStorageEnabled
-                  startInLoadingState
-                />
-              </View>
-            )}
+
+                    {pdfUrl && (
+                      <WebView
+                        source={{
+                          uri: `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(pdfUrl)}`,
+                        }}
+                        style={{ flex: 1 }}
+                        originWhitelist={['*']}
+                      />
+                    )}
 
           </View>
         </View>

@@ -1,7 +1,7 @@
 import { CameraType, CameraView, useCameraPermissions } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   Platform,
   StyleSheet,
@@ -16,7 +16,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 const QR_API_URL = 'https://api.qrserver.com/v1/read-qr-code/';
 
 // 🔥 👉 CHANGE THIS
-const CHECK_API = 'https://dev4work.com/thefirstonmars/wp-json/wp/v2/pages?slug=';
+const CHECK_API = 'https://trip.redplanetresorts.com/wp-json/wp/v2/pages?slug=';
 
 export default function Scanner() {
   const [permission, requestPermission] = useCameraPermissions();
@@ -29,13 +29,9 @@ export default function Scanner() {
 
   const router = useRouter();
 
-  useEffect(() => {
-    if (Platform.OS !== 'web') {
-      ImagePicker.requestMediaLibraryPermissionsAsync();
-    }
-  }, []);
 
-  // 🔍 Extract slug
+
+
   const extractSlug = (data: string) => {
     const raw = (data || '').trim();
 
@@ -72,37 +68,43 @@ export default function Scanner() {
   };
 
   // ✅ VALIDATION FUNCTION
-  const validateAndNavigate = async (slug: string) => {
-    try {
-      setProcessing(true);
+const validateAndNavigate = async (slug: string) => {
+  try {
+    setProcessing(true);
 
-      const res = await fetch(`${CHECK_API}${slug}`);
-      const data = await res.json();
+    // ✅ API URL
+    const apiUrl = `${CHECK_API}${slug}`;
 
-      console.log('Validation API:', data);
+    // ✅ Console log
+    console.log('API URL:', apiUrl);
 
-      const page = data?.[0];
+    const res = await fetch(apiUrl);
 
-      if (!page) {
-        alert('Invalid Ticket ❌');
-        return;
-      }
+    const data = await res.json();
 
-      if (!page?.acf?.mission_code) {
-        alert('Invalid Ticket ❌');
-        return;
-      }
+    console.log('Validation API:', data);
 
-      // ✅ success
-      goToNotificationSettings(slug);
+    const page = data?.[0];
 
-    } catch (err) {
-      console.log('Validation error:', err);
-      alert('Something went wrong');
-    } finally {
-      setProcessing(false);
+    if (!page) {
+      alert('Invalid Ticket ❌');
+      return;
     }
-  };
+
+    if (!page?.acf?.mission_code) {
+      alert('Invalid Ticket ❌');
+      return;
+    }
+
+    goToNotificationSettings(slug);
+
+  } catch (err) {
+    console.log('Validation error:', err);
+    alert('Something went wrong');
+  } finally {
+    setProcessing(false);
+  }
+};
 
   // 📷 Camera scan
   const handleScan = ({ data }: { data: string }) => {
@@ -219,27 +221,43 @@ export default function Scanner() {
       return (
         <View style={{ flex: 1 }}>
           <View style={styles.container}>
-            <Text style={{ color: '#fff', marginBottom: 10 , fontFamily: 'Audiowide_400Regular', fontSize:16}}>
-              No camera access
+            <Text
+              style={{
+                color: '#fff',
+                marginBottom: 20,
+                textAlign: 'center',
+                fontFamily: 'Audiowide_400Regular',
+                fontSize: 16,
+              }}
+            >
+              Scan your ticket QR code using the camera, or upload a QR image from your photo library.
             </Text>
 
-            <TouchableOpacity style={styles.button} onPress={requestPermission}>
-              <LinearGradient
-                colors={['#0C2046', '#004F99']}
-                style={styles.optionGradient}
+            <TouchableOpacity
+                style={styles.button}
+                onPress={requestPermission}
               >
-                <Text style={styles.buttonText}>Allow Camera</Text>
-              </LinearGradient>
-            </TouchableOpacity>
+                <LinearGradient
+                  colors={['#0C2046', '#004F99']}
+                  style={styles.optionGradient}
+                >
+                  <Text style={styles.buttonText}>Continue</Text>
+                </LinearGradient>
+              </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.button, { marginTop: 20 }]}
-              onPress={handleUploadPress}
-            >
-              <Text style={styles.buttonText}>
-                Upload QR Image
-              </Text>
-            </TouchableOpacity>
+                style={[styles.button, { marginTop: 20 }]}
+                onPress={handleUploadPress}
+              >
+                <LinearGradient
+                  colors={['#0C2046', '#004F99']}
+                  style={styles.optionGradient}
+                >
+                  <Text style={styles.buttonText}>
+                    Upload QR Image
+                  </Text>
+                </LinearGradient>
+              </TouchableOpacity>
           </View>
           <Footer/>
         </View>

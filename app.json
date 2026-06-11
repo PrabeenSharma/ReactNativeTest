@@ -1,35 +1,50 @@
 {
   "expo": {
-    "name": "Red Planet Recorts",
-    "slug": "myApp",
-    "version": "1.0.0",
+    "name": "Red Planet Resorts",
+    "slug": "red-planet-resorts",
+    "version": "1.1.0",
     "orientation": "default",
     "icon": "./assets/images/icon.png",
-    "scheme": "redplanetrecorts",
+    "scheme": "redplanetresorts",
     "userInterfaceStyle": "automatic",
+
     "ios": {
+       "googleServicesFile": "./GoogleService-Info.plist",
       "supportsTablet": true,
-      "bundleIdentifier": "com.indranilkhara007.myApp",
+      "bundleIdentifier": "com.redplanetresorts.redplanetresorts",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSCameraUsageDescription": "Red Planet Resorts uses your camera to scan ticket QR codes for entry verification and booking validation.",
+        "NSPhotoLibraryUsageDescription": "This app uses your photo library so you can upload QR Code image, trip photos and share resort experiences.",
       }
+      
     },
+
     "android": {
+      "googleServicesFile": "./google-services.json",
+
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#000000",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
+
       "predictiveBackGestureEnabled": false,
-      "package": "com.indranilkhara007.myApp"
+      "package": "com.redplanetresorts.redplanetresorts",
+
+      "permissions": [
+        "NOTIFICATIONS"
+      ]
     },
+
     "web": {
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
+
     "plugins": [
       "expo-router",
+
       [
         "expo-splash-screen",
         {
@@ -37,25 +52,39 @@
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff",
+
           "dark": {
             "backgroundColor": "#000000"
           }
         }
       ],
+
       "expo-font",
       "expo-image",
-      "expo-web-browser"
+      "expo-web-browser",
+
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/notification-icon.png",
+          "color": "#ff0000"
+        }
+      ]
     ],
+
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
     },
+
     "extra": {
       "router": {},
+
       "eas": {
-        "projectId": "40dd223f-68bc-401a-842d-5aa28d988f27"
+        "projectId": "04cfa4ab-7aff-4884-bf4e-8cdac57c4a0f"
       }
     },
-    "owner": "indranilkhara007"
+
+    "owner": "virginworkzteam"
   }
 }

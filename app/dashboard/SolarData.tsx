@@ -1,17 +1,20 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams } from 'expo-router';
+
 import {
+  ActivityIndicator,
   Dimensions,
   Image,
   ScrollView,
   StyleSheet,
   Text,
-  View,
+  View
 } from 'react-native';
 
 import ButtonsGroup from '../../components/ButtonsGroup';
 
 import useMissionPage from '@/hooks/useMissionPage';
+import { useState } from 'react';
 
 export default function MissionPage() {
 
@@ -20,6 +23,9 @@ export default function MissionPage() {
 
   const screenWidth = Dimensions.get('window').width;
   const imageHeight = screenWidth / 3.33;
+
+  const [imageLoading, setImageLoading] = useState(true);
+
 
   return (
     
@@ -54,22 +60,62 @@ export default function MissionPage() {
 
                         <Text style={styles.contentHeadingMain}>Solar wind prediction </Text>
 
-                        <Image
-                          source={{ uri: 'https://services.swpc.noaa.gov/images/animations/enlil/latest.jpg' }}
-                          style={{
-                            width: '100%',
-                            height: 'auto',
-                            aspectRatio: 960/600,
-                            borderRadius:10,
-                            marginTop:10,
-                            marginBottom:25,
-                          }}
-                          resizeMode="cover"
-                        />
+                          <View style={{ position: 'relative' }}>
+                             {imageLoading  && (
+                                <View
+                                  style={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    left: 0,
+                                    right: 0,
+                                    bottom: 0,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    zIndex: 10,
+                                  }}
+                                >
+                                  <ActivityIndicator size="large" color="#fff" />
+                                </View>
+                              )}
+                            <Image
+                              source={{ uri: 'https://services.swpc.noaa.gov/images/animations/enlil/latest.jpg' }}
+                              style={{
+                                width: '100%',
+                                height: 'auto',
+                                aspectRatio: 960/600,
+                                borderRadius:10,
+                                marginTop:10,
+                                marginBottom:25,
+                              }}
+                              resizeMode="cover"
+                              onLoadStart={() => setImageLoading(true)}
+                              onLoadEnd={() => setImageLoading(false)}
+                            />
+                          </View>
+
+
+
+
 
                       <Text style={styles.contentHeadingMain}>Space Weather Overview </Text>
-
-                      <Image
+                      <View style={{ position: 'relative' }}>
+                        {imageLoading  && (
+                          <View
+                            style={{
+                              position: 'absolute',
+                              top: 0,
+                              left: 0,
+                              right: 0,
+                              bottom: 0,
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              zIndex: 10,
+                            }}
+                          >
+                            <ActivityIndicator size="large" color="#fff" />
+                          </View>
+                        )}
+                        <Image
                           source={{ uri: 'https://services.swpc.noaa.gov/images/swx-overview-small.gif' }}
                           style={{
                             width: '100%',
@@ -79,7 +125,10 @@ export default function MissionPage() {
                             marginTop:10,
                           }}
                           resizeMode="cover"
+                          onLoadStart={() => setImageLoading(true)}
+                          onLoadEnd={() => setImageLoading(false)}
                         />
+                      </View>
 
                     </View>
                   <Image
@@ -111,7 +160,7 @@ const styles = StyleSheet.create({
   pageContent:{ marginTop:20,  paddingHorizontal: 10, },
   pageBox:{ padding:0, borderRadius:20, borderColor: 'rgba(101, 129, 135, 1)' , borderWidth:0.5,  overflow:'hidden', paddingBottom:0,},
   mainInnerContent:{ paddingHorizontal:17, paddingBottom:60, paddingTop:17,},
-  pageInnerheading:{ textAlign:'center', paddingHorizontal:15, paddingVertical:10, color:'#CCF6FF', fontSize:13, fontFamily: 'Audiowide_400Regular',  textTransform: 'uppercase', borderRadius:10, borderWidth:0.5, borderColor:'rgba(101, 129, 135, 1)', shadowColor: '#000',  shadowOffset: { width: 0, height: 4 },  shadowOpacity: 0.2,  shadowRadius: 9.6, marginBottom:25,},
+  pageInnerheading:{ textAlign:'center', paddingHorizontal:15, paddingVertical:10, color:'#CCF6FF', fontSize:13, fontFamily: 'Audiowide_400Regular',  textTransform: 'uppercase', borderRadius:10, borderWidth:0.5, borderColor:'rgba(101, 129, 135, 1)', boxShadow: '0px 4px 9.6px rgba(0,0,0,0.2)', marginBottom:25,},
   sectionheading:{  fontSize: 13, textAlign:'center', lineHeight: 20,  color: '#CCF6FF',  fontFamily: 'Audiowide_400Regular',  textTransform: 'uppercase', },
   contentHeading:{  fontSize: 11, textAlign:'center', lineHeight: 20, color: '#CCF6FF',  fontFamily: 'Audiowide_400Regular',  textTransform: 'uppercase', marginBottom:10,},
   contentHeadingMain:{  fontSize: 20, textAlign:'center', lineHeight: 22, color: '#CCF6FF',  fontFamily: 'Audiowide_400Regular', marginBottom:10,},

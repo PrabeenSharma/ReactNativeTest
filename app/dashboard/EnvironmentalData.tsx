@@ -71,7 +71,7 @@ export default function MissionPage() {
                           >
                             <Image
                               source={require('../../assets/images/mars.gif')}
-                              style={{ width: 55, height: 55, borderRadius:100, shadowColor: 'rgba(204,246,255,1)',  shadowOffset: { width: 0, height: -1 },  shadowOpacity: 0.2,    shadowRadius: 34,  }}
+                              style={{ width: 55, height: 55, borderRadius:100,  }}
                             />
                           </View>
                           <Text style={styles.temLocationHeading}>Mars Temperature at{'\n'}Elysium Planitia</Text>
@@ -92,7 +92,7 @@ export default function MissionPage() {
                           >
                             <Image
                               source={require('../../assets/images/earth.gif')}
-                              style={{ width: 55, height: 55, borderRadius:100, shadowColor: 'rgba(204,246,255,1)',  shadowOffset: { width: 0, height: -1 },  shadowOpacity: 0.2,    shadowRadius: 34,  }}
+                              style={{ width: 55, height: 55, borderRadius:100, }}
                             />
                           </View>
                           <Text style={styles.temLocationHeading}>Earth Temperature (Houston)</Text>
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
   pageContent:{ marginTop:20,  paddingHorizontal: 10, },
   pageBox:{ padding:0, borderRadius:20, borderColor: 'rgba(101, 129, 135, 1)' , borderWidth:0.5,  overflow:'hidden', paddingBottom:0,},
   mainInnerContent:{ paddingHorizontal:17, paddingBottom:60, paddingTop:17,},
-  pageInnerheading:{ textAlign:'center', paddingHorizontal:15, paddingVertical:10, color:'#CCF6FF', fontSize:13, fontFamily: 'Audiowide_400Regular',  textTransform: 'uppercase', borderRadius:10, borderWidth:0.5, borderColor:'rgba(101, 129, 135, 1)', shadowColor: '#000',  shadowOffset: { width: 0, height: 4 },  shadowOpacity: 0.2,  shadowRadius: 9.6, marginBottom:25,},
+  pageInnerheading:{ textAlign:'center', paddingHorizontal:15, paddingVertical:10, color:'#CCF6FF', fontSize:13, fontFamily: 'Audiowide_400Regular',  textTransform: 'uppercase', borderRadius:10, borderWidth:0.5, borderColor:'rgba(101, 129, 135, 1)', boxShadow: '0px 4px 9.6px rgba(0,0,0,0.2)', marginBottom:25,},
   sectionheading:{  fontSize: 13, textAlign:'center', lineHeight: 20,  color: '#CCF6FF',  fontFamily: 'Audiowide_400Regular',  textTransform: 'uppercase', },
   contentHeading:{  fontSize: 11, textAlign:'center', lineHeight: 20, color: '#CCF6FF',  fontFamily: 'Audiowide_400Regular',  textTransform: 'uppercase', marginBottom:10,},
   contentHeadingMain:{  fontSize: 22, textAlign:'center', lineHeight: 22, color: '#CCF6FF',  fontFamily: 'Audiowide_400Regular', marginBottom:10,},

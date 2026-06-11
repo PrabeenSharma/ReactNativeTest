@@ -21,7 +21,7 @@ const SpaceHistory = () => {
     });
 
     fetch(
-      'https://dev4work.com/thefirstonmars/wp-content/themes/red-planet-resort/assets/data/space_history.json'
+      'https://trip.redplanetresorts.com/wp-content/themes/red-planet-resort/assets/data/space_history.json'
     )
       .then(res => res.json())
       .then(data => {
@@ -86,8 +86,8 @@ const styles = StyleSheet.create({
   },
   desc: {
     color: '#CCF6FF',
-    fontSize: 16,
-    lineHeight: 25,
+    fontSize: 15,
+    lineHeight: 22,
     fontWeight: '400',
     fontFamily: 'Audiowide_400Regular',
     textTransform: 'uppercase',
